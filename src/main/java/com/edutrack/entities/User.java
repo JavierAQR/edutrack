@@ -45,8 +45,8 @@ public class User {
     private LocalDate birthdate;
 
     @ManyToOne
-    @JoinColumn(name = "institution_id", nullable = false)
-    private Institution institution;
+    @JoinColumn(name = "institution_id", nullable = true)
+    private Institution institution = null;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

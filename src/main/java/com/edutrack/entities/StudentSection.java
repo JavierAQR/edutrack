@@ -47,5 +47,5 @@ public class StudentSection {
     private Double averageScore;
 
     @Enumerated(EnumType.STRING)
-    private StudentState state;
+    private StudentState state = StudentState.PENDING;
 }
