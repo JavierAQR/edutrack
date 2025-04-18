@@ -1,5 +1,6 @@
 package com.edutrack.entities;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,6 +14,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,9 +38,15 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
+    private Role role;
     
     private Boolean active = true;
+
+    private LocalDate birthdate;
+
+    @ManyToOne
+    @JoinColumn(name = "institution_id", nullable = false)
+    private Institution institution;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

@@ -40,6 +40,7 @@ public class UserServiceManager implements UserService{
         u.setPassword(u.getPassword());
         u.setRole(u.getRole());
         u.setActive(u.getActive());
+        u.setInstitution(u.getInstitution());
         
         return this.userRepository.save(u);
     }

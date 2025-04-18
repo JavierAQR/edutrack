@@ -1,7 +1,5 @@
 package com.edutrack.entities;
 
-
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,22 +12,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "courses")
+@Table(name = "academic_levels")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Course {
-
+public class AcademicLevel {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
-    @Column(name = "academic_area")
-    private String academicArea;
-
     @ManyToOne
-    @JoinColumn(name = "academic_level_id")
-    private AcademicLevel academicLevel;
+    @JoinColumn(name = "institution_id", nullable = false)
+    private Institution institution;
 }

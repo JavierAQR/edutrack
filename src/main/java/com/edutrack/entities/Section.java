@@ -1,5 +1,6 @@
 package com.edutrack.entities;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 import jakarta.persistence.Column;
@@ -36,6 +37,8 @@ public class Section {
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
+
+    private LocalDate date;
 
     @Column(name = "start_time")
     private LocalTime startTime;
