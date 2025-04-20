@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.edutrack.entities.enums.Role;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,6 +43,7 @@ public class User {
     
     private Boolean active = true;
 
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate birthdate;
 
     @ManyToOne
