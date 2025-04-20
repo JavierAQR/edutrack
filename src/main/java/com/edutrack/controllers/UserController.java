@@ -55,6 +55,8 @@ public class UserController {
             newUser.setEmail(user.getEmail());
             newUser.setActive(user.getActive());
             newUser.setPassword(user.getPassword());
+            newUser.setBirthdate(user.getBirthdate());
+            newUser.setInstitution(user.getInstitution());
             newUser.setRole(user.getRole());
              
             return ResponseEntity.status(HttpStatus.CREATED).body(this.userServiceManager.update(id, newUser));
