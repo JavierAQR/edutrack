@@ -43,7 +43,6 @@ public class CourseController {
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
         if (courseService.findById(id).isPresent()) {
