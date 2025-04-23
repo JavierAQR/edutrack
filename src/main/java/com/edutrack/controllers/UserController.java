@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.edutrack.entities.User;
 import com.edutrack.services.UserServiceManager;
 
-@RestController
+@RestControllerr
 @RequestMapping("/api/users")
 public class UserController {
     
