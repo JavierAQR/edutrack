@@ -1,2 +1,2 @@
 /mvnw text eol=lf
-*.cmd text eol=crl
+*.cmd text eol=crlf
