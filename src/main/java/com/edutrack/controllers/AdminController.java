@@ -16,43 +16,48 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.edutrack.entities.Institution;
-import com.edutrack.services.InstitutionService;
+import com.edutrack.entities.Admin;
+import com.edutrack.services.AdminService;
 
 @RestController
-@RequestMapping("/api/institutions")
-public class InstitutionController {
+@RequestMapping("/api/admins")
+public class AdminController {
     
     @Autowired
-    private InstitutionService institutionService;
+    private AdminService adminService;
 
     @GetMapping()
     @Transactional(readOnly = true)
-    public List<Institution> findAllInstitutions(){
-        return this.institutionService.findAll();
+    public List<Admin> findAllAdmins(){
+        return this.adminService.findAll();
     }
 
     @PostMapping()
     @Transactional
-    public Institution save(@RequestBody Institution institution){
-        return this.institutionService.save(institution);
+    public Admin save(@RequestBody Admin admin){
+        return this.adminService.save(admin);
     }
 
     @GetMapping("/{id}")
     @Transactional(readOnly = true)
-    public Institution getInstitutionById(@PathVariable Long id){
-        return this.institutionService.findById(id);
+    public Admin getAdminById(@PathVariable Long id){
+        return this.adminService.findById(id);
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Institution user){
-        Optional<Institution> i = Optional.of(this.institutionService.findById(id));
-        if(i.isPresent()){
-            Institution newIns = i.get();
-            newIns.setName(user.getName());
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Admin admin){
+        Optional<Admin> a = Optional.of(this.adminService.findById(id));
+        if(a.isPresent()){
+            Admin newAdmin = a.get();
+            newAdmin.setName(admin.getName());
+            newAdmin.setLastname(admin.getLastname());
+            newAdmin.setEmail(admin.getEmail());
+            newAdmin.setActive(admin.getActive());
+            newAdmin.setPassword(admin.getPassword());
+            newAdmin.setBirthdate(admin.getBirthdate());
              
-            return ResponseEntity.status(HttpStatus.CREATED).body(this.institutionService.update(id, newIns));
+            return ResponseEntity.status(HttpStatus.CREATED).body(this.adminService.update(id, newAdmin));
         }
 
         return ResponseEntity.notFound().build();
@@ -60,8 +65,8 @@ public class InstitutionController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<Void> deleteInstitution(@PathVariable Long id) {
-        institutionService.delete(id); 
+    public ResponseEntity<Void> deleteAdmin(@PathVariable Long id) {
+        adminService.delete(id); 
         return ResponseEntity.noContent().build();
     }
 }
