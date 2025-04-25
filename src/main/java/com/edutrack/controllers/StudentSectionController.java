@@ -33,14 +33,10 @@ public class StudentSectionController {
         return service.save(studentSection);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<StudentSection> update(@PathVariable Long id, @RequestBody StudentSection updatedSection) {
-        try {
-            StudentSection updated = service.update(id, updatedSection);
-            return ResponseEntity.ok(updated);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+  @PostMapping
+    public ResponseEntity<StudentSection> create(@Valid @RequestBody StudentSection studentSection) {
+        StudentSection saved = service.save(studentSection);
+        return ResponseEntity.ok(saved);
     }
 
     @DeleteMapping("/{id}")
