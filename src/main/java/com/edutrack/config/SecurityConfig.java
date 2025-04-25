@@ -20,7 +20,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/institutions/**").permitAll()
                 .requestMatchers("/api/sections/**").permitAll()
                 .requestMatchers("/api/student-sections**").permitAll()
-                // .anyRequest().permitAll()
+                .anyRequest().permitAll()
             );
             // .httpBasic(Customizer.withDefaults());
             

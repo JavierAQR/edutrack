@@ -33,7 +33,7 @@ public class StudentSection {
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
-    private User student;
+    private Student student;
 
     @ManyToOne
     @JoinColumn(name = "section_id", nullable = false)
