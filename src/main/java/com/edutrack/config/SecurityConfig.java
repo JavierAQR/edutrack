@@ -19,8 +19,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/users/**").permitAll()
                 .requestMatchers("/api/institutions/**").permitAll()
 
+
                             .requestMatchers("/api/courses/**").permitAll()
                             .requestMatchers("/api/levels/**").permitAll()
+
 
                 // .anyRequest().authenticated()
             );
