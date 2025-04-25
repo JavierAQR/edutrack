@@ -33,7 +33,7 @@ public class Calification {
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
-    private User student;
+    private Student student;
 
     private Double score;
 
