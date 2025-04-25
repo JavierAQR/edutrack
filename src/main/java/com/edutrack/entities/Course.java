@@ -33,8 +33,5 @@ public class Course {
     @JoinColumn(name = "academic_level_id")
     private AcademicLevel academicLevel;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
 }

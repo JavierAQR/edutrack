@@ -56,6 +56,7 @@ public class AdminController {
             newAdmin.setActive(admin.getActive());
             newAdmin.setPassword(admin.getPassword());
             newAdmin.setBirthdate(admin.getBirthdate());
+            newAdmin.setAccessLevel(admin.getAccessLevel());
              
             return ResponseEntity.status(HttpStatus.CREATED).body(this.adminService.update(id, newAdmin));
         }
