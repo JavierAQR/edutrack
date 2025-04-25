@@ -18,7 +18,10 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/users/**").permitAll()
                 .requestMatchers("/api/institutions/**").permitAll()
-                .requestMatchers("/api/califications/**").permitAll()
+
+                            .requestMatchers("/api/courses/**").permitAll()
+                            .requestMatchers("/api/levels/**").permitAll()
+
                 // .anyRequest().authenticated()
             );
             // .httpBasic(Customizer.withDefaults());
