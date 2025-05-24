@@ -37,7 +37,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter{
                 if (JwtUtils.validateToken(jwtToken)){
                     var usernameOptional = JwtUtils.getUsernameFromToken(jwtToken);
                     usernameOptional.ifPresent(username -> {
-                        var userDetails = userDetailsService.loadByUsername(username);
+                        var userDetails = userDetailsService.loadUserByUsername(username);
 
                         var authenticationToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
@@ -60,7 +60,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter{
         var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")){
-            return Optional.empty();
+            return Optional.of(authHeader.substring(7));
         }
+
+        return Optional.empty();
     }
 }
