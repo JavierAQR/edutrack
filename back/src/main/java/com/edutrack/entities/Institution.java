@@ -31,6 +31,4 @@ public class Institution {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    public void setName(String name) {
-    }
 }
