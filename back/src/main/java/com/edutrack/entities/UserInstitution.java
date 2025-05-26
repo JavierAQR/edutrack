@@ -4,12 +4,13 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.edutrack.entities.enums.StudentState;
+import com.edutrack.entities.enums.InstitutionUserStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,31 +22,28 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "student_section")
+@Table(name = "user_institution")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentSection {
+public class UserInstitution {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "student_id", nullable = false)
-    private StudentDetails student;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "section_id", nullable = false)
-    private Section section;
-
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "average_score", updatable = false)
-    private Double averageScore;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "institution_id", nullable = false)
+    private Institution institution;
 
     @Enumerated(EnumType.STRING)
-    private StudentState state = StudentState.PENDING;
+    private InstitutionUserStatus status = InstitutionUserStatus.PENDING;
+
+    @Column(name = "joined_at", updatable = false)
+    @CreationTimestamp
+    private LocalDateTime joinedAt;
 }

@@ -24,11 +24,20 @@ public class Institution {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
+    @Column(nullable = false)
     private String name;
 
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    @Column(nullable = true)
+    private String address;
+
+    @Column(nullable = false)
+    private String description;
+
+    @Column(nullable = false)
+    private String phone;
+
+    @Column(nullable = true)
+    private String website;
 
 }
