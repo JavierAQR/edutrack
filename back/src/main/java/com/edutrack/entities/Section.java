@@ -28,7 +28,7 @@ public class Section {
 
     @ManyToOne
     @JoinColumn(name = "teacher_id", nullable = false)
-    private Teacher teacher;
+    private TeacherDetails teacher;
 
     @ManyToOne
     @JoinColumn(name = "period_id", nullable = false)

@@ -28,7 +28,7 @@ public class AuthenticationConfig {
     }
 
     @Bean
-    public PasswordEncoder bCryPasswordEncoder(){
+    public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
 }

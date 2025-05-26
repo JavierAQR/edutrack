@@ -26,9 +26,8 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(
                 requestMatcher->requestMatcher
-                    .requestMatchers("/api/auth/login/**").permitAll()
-                    .requestMatchers("/api/auth/register/**").permitAll()
-                    .anyRequest().authenticated()
+                    .requestMatchers("/api/auth/**").permitAll()
+                    .anyRequest().permitAll() //para pruebas
         );
 
         http.exceptionHandling(
