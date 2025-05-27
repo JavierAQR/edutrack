@@ -43,8 +43,11 @@ public class User {
     @Column(nullable = false)
     private String password; 
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private LocalDate birthdate;
+
+    @Column (nullable = false)
+    private Boolean enabled = false;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type", nullable = true)
