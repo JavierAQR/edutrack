@@ -6,6 +6,7 @@ import HomeUser from './Pages/HomeStudent'
 import HomeAdmin from './Pages/HomeAdmin'
 import VerificationPage from './Pages/VerificationPage'
 import Home from './Pages/Home'
+import Tablero from './Pages/tablero'
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
           <Route path='/homeUser' element={<HomeUser/>}/>
           <Route path='/homeAdmin' element={<HomeAdmin/>}/>
           <Route path='/verification' element={<VerificationPage/>}/>
+          <Route path='/tablero' element={<Tablero/>}/>
         </Routes>
       </div>
     </Router>
