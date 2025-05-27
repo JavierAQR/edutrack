@@ -2,6 +2,7 @@ package com.edutrack.auth;
 
 public record AuthResponseDTO(
     String token,
-    AuthStatus authStatus) {
+    AuthStatus authStatus,
+    String message) {
     
 }
