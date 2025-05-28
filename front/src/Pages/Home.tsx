@@ -15,10 +15,10 @@ const Home = () => {
       <Swiper
         spaceBetween={10}
         centeredSlides={true}
-        // autoplay={{
-        //   delay: 5000,
-        //   disableOnInteraction: false,
-        // }}
+        autoplay={{
+          delay: 5000,
+          disableOnInteraction: false,
+        }}
         pagination={{
           clickable: true,
         }}
