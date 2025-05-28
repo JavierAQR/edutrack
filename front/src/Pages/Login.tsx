@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router";
+import Navbar from "../Components/Navbar";
+import Footer from "../Components/Footer";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -44,6 +46,8 @@ const Login = () => {
   }
 
   return (
+    <>
+    <Navbar basic={true}/>
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
         <div className="text-center">
@@ -164,6 +168,8 @@ const Login = () => {
         </div>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 };
 

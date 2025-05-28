@@ -2,22 +2,29 @@ import { useEffect, useState } from "react";
 import { FaEnvelope, FaPhone, FaUser } from "react-icons/fa"
 import { Link } from "react-router";
 
-const Navbar = () => {
-  const [scrolled, setScrolled] = useState(false);
+interface Props{
+  basic?: boolean
+}
+
+const Navbar = ({basic = false}: Props) => {
+  const [scrolled, setScrolled] = useState(basic);
 
   useEffect(() => {
+    if (basic){
+      return;
+    }
     const handleScroll = () => {
       setScrolled(window.scrollY > 100);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [basic]);
 
   return (
      <div className="fixed w-full z-50 bg-transparent text-white">
-      {/* Barra superior (contacto + redes) */}
-      <div className={`bg-opacity-80 py-4 px-6 border-b border-gray-500 ${scrolled && 'hidden'}`}>
+      {/* Barra superior (contacto + login) */}
+      <div className={`${scrolled ? 'hidden' : 'bg-opacity-80 py-4 px-6 border-b border-gray-500'}`}>
 
         <div className="max-w-5xl mx-auto flex justify-between flex-wrap items-center text-sm">
           {/* Contacto */}
