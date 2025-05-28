@@ -1,5 +1,23 @@
+import { useEffect, useState } from "react";
+import { IoIosArrowUp } from "react-icons/io";
 
 const Footer = () => {
+
+  const [showButton, setShowButton] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowButton(window.scrollY > 200);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <footer className="bg-black text-white py-12 px-6 md:px-16">
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -40,13 +58,14 @@ const Footer = () => {
         </div>
     </div>
       {/* Botón Scroll to Top */}
-      <div className="fixed bottom-6 right-6">
-        <button className="bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-full shadow-lg">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 transform rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-          </svg>
-        </button>
-      </div>
+      {showButton && (
+          <div className="fixed bottom-6 right-6">
+          <button onClick={scrollToTop} className="bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-full shadow-lg">
+            <IoIosArrowUp/>
+          </button>
+        </div>
+      )}
+      
     </footer>
   )
 }

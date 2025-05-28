@@ -45,7 +45,7 @@ const Home = () => {
                   <div className="flex text-lg gap-4">
                     <div className="bg-cyan-400 h-full w-5"></div>
                     ¡Sé parte de una nueva experiencia en gestión educativa!
-                    Edutrack interface intuitiva, práctica y de fácil uso, capaz
+                    Edutrack ofrece una interfaz intuitiva, práctica y de fácil uso, capaz
                     de adaptarse a todas las necesidades y métodos de trabajo de
                     las instituciones educativas.
                   </div>
