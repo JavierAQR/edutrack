@@ -53,7 +53,12 @@ const Navbar = ({basic = false}: Props) => {
       <nav className={`px-6 ${scrolled ? 'bg-white text-black py-3 shadow-md' : 'bg-opacity-70 py-5'}`}>
         <div className="max-w-5xl mx-auto flex justify-between items-center">
           {/* Logo */}
-          <div className="flex items-center gap-2 text-4xl font-semibold"><img src="https://cdn-icons-png.flaticon.com/512/6671/6671494.png" alt="" className="object-cover w-15 h-15"/>Edutrack</div>
+          <Link
+              to="/"
+            >
+              <div className="flex items-center gap-2 text-4xl font-semibold"><img src="https://cdn-icons-png.flaticon.com/512/6671/6671494.png" alt="" className="object-cover w-15 h-15"/>Edutrack</div>
+            </Link>
+          
 
           {/* Menú */}
           <div className="hidden md:flex space-x-8">
