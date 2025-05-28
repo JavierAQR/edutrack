@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from "../Components/Navbar";
 
 const Tablero = () => {
-    // Datos que luego se extraerán desde una API
+    // Datos que luego se traerán por una API
     const cursos = [
         {
             id: 1,
