@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from "../Components/Navbar";
 
 const Tablero = () => {
-    // Datos de ejemplo - en una aplicación real estos vendrían de una API
+    // Datos que luego se extraerán desde una API
     const cursos = [
         {
             id: 1,
@@ -87,18 +87,9 @@ const Tablero = () => {
 
     return (
         <>
-            <Navbar />
-            <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-                {/* Hero Section */}
-                <div className="bg-blue-600 text-white py-8">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <h1 className="text-3xl font-bold">Mi Tablero Educativo</h1>
-                        <p className="mt-2 text-blue-100">
-                            Gestiona tus cursos y actividades académicas de manera sencilla e intuitiva
-                        </p>
-                    </div>
-                </div>
+            <Navbar basic={true} />
 
+            <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24">
                 {/* Main Content */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex flex-col lg:flex-row gap-8">
@@ -141,7 +132,7 @@ const Tablero = () => {
 
                         {/* Sección de Actividades */}
                         <div className="lg:w-1/3">
-                            <div className="bg-white rounded-xl shadow-lg overflow-hidden sticky top-4">
+                            <div className="bg-white rounded-xl shadow-lg overflow-hidden sticky top-28">
                                 <div className="bg-blue-500 px-6 py-4">
                                     <h2 className="text-xl font-semibold text-white">Actividades Pendientes</h2>
                                 </div>
