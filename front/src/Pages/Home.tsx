@@ -19,6 +19,10 @@ const Home = () => {
           delay: 5000,
           disableOnInteraction: false,
         }}
+        style={{
+          '--swiper-navigation-color': '#F6EAF9',
+          '--swiper-pagination-color': '#F6EAF9',
+        }}
         pagination={{
           clickable: true,
         }}
@@ -59,9 +63,10 @@ const Home = () => {
         </SwiperSlide>
         <SwiperSlide>
           <div className="relative h-165 text-white">
-            <div className="absolute h-full bottom-0 left-[10%] mt-40 flex items-center justify-center">
-              <div className="bg-transparent sm:px-12 lg:px-24 pt-45">
+            <div className="absolute h-full w-full bottom-0 mt-40 flex items-end justify-center">
+              <div className="bg-transparent h-[300px] w-full mb-15 px-6">
                 {/* Titulo principal */}
+                <div className="max-w-5xl mx-auto">
                 <h1 className="text-3xl md:text-5xl font-bold mb-10 max-w-130">
                   Conoce nuestra Agencia Publicitaria
                 </h1>
@@ -77,6 +82,8 @@ const Home = () => {
                   </div>
                 </div>
               </div>
+                </div>
+                
             </div>
             <img
               src="https://www.cubicol.pe/public/img/banner/2.jpg"
