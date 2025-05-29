@@ -2,27 +2,27 @@ package com.edutrack.auth;
 
 import java.io.IOException;
 
+import com.edutrack.dto.request.UserInfoDTO;
+import com.edutrack.entities.User;
+import com.edutrack.repositories.UserRepository;
+import com.edutrack.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.edutrack.token.VerificationToken;
 import com.edutrack.token.VerificationTokenRepository;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/auth/")
 @RequiredArgsConstructor
 @CrossOrigin
+@Slf4j
 public class AuthController {
     
     @Autowired
@@ -33,6 +33,11 @@ public class AuthController {
 
     @Autowired
     private AuthServiceImpl userService;
+
+    private final JwtUtils jwtUtils;
+
+    private final UserRepository userRepository;
+
 
 
     @PostMapping("/login") // Define que este método manejará solicitudes POST a "/api/auth/login".
@@ -138,6 +143,31 @@ public class AuthController {
             System.out.println("Error durante la verificación: " + e.getMessage());
             e.printStackTrace();
             response.sendRedirect("http://localhost:5173/verification?status=error");
+        }
+    }
+
+    @GetMapping("/user-info")
+    public ResponseEntity<?> getUserInfo(@RequestHeader(value = "Authorization", required = false) String authHeader) {
+        try {
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.badRequest().body("Authorization header is missing or invalid");
+            }
+
+            String jwtToken = authHeader.substring(7);
+            String username = jwtUtils.getUsernameFromToken(jwtToken)
+                    .orElseThrow(() -> new RuntimeException("Invalid token"));
+
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            return ResponseEntity.ok(new UserInfoDTO(
+                    user.getUserType().toString(),
+                    user.getName() + " " + user.getLastname(),
+                    user.getEmail()
+            ));
+        } catch (Exception e) {
+            log.error("Error in /user-info endpoint: {}", e.getMessage());
+            return ResponseEntity.internalServerError().body("Error processing your request");
         }
     }
 }

@@ -22,5 +22,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     
     @Query("SELECT u FROM User u WHERE u.userType = :userType")
     List<User> findByUserType(@Param("userType") UserType userType);
-    
+
+    Optional<User> findByEmailIgnoreCase(String email);
+
+    @Query("SELECT u FROM User u WHERE u.username = :identifier OR u.email = :identifier")
+    Optional<User> findByUsernameOrEmail(@Param("identifier") String identifier);
 }

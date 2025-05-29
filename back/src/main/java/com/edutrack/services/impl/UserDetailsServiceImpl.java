@@ -17,14 +17,22 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+        // Buscar usuario por username o email usando un solo parámetro
+        User user = userRepository.findByUsernameOrEmail(usernameOrEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con: " + usernameOrEmail));
+
+        // Convertir UserType a roles (ej. "STUDENT" -> "ROLE_STUDENT")
+        String role = user.getUserType().name();
 
         return org.springframework.security.core.userdetails.User.builder()
-            .username(user.getEmail())
-            .password(user.getPassword())
-            // .roles(user.getUserType().name()) // Convierte tu UserType a roles
-            .build();
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .disabled(!user.getEnabled())
+                .accountExpired(false)
+                .accountLocked(false)
+                .credentialsExpired(false)
+                .roles(role)
+                .build();
     }
 }
