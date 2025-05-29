@@ -69,7 +69,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDTO> signUp (@RequestBody AuthRequestDTO authRequestDTO){
         try{
-        var jwtToken = authService.signUp(authRequestDTO.name(), authRequestDTO.lastname(), authRequestDTO.username(), authRequestDTO.password(), authRequestDTO.email(), authRequestDTO.birthdate());
+        var jwtToken = authService.signUp(authRequestDTO.name(), authRequestDTO.lastname(), authRequestDTO.username(), authRequestDTO.password(), authRequestDTO.email(), authRequestDTO.birthdate(), authRequestDTO.userType());
 
         var authResponseDTO = new AuthResponseDTO(jwtToken, AuthStatus.USER_CREATED_SUCCESSFULLY, "Usuario registrado exitosamente.");
 
