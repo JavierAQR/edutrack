@@ -16,4 +16,6 @@ public interface AuthService {
     void saveUserVerificationToken(User theUser, String verificationToken);
 
     String validateToken (String theToken);
+
+    User getUserByUsername(String username); //Nuevo
 }
