@@ -25,9 +25,12 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(
-                requestMatcher->requestMatcher
-                    .requestMatchers("/api/auth/**").permitAll()
-                    .anyRequest().permitAll() //para pruebas
+                requestMatcher -> requestMatcher
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/user/**").authenticated()
+                        .requestMatchers("/api/courses/**").authenticated()
+                        .requestMatchers("/api/activities/**").authenticated()
+                        .anyRequest().permitAll() // para pruebas
         );
 
         http.exceptionHandling(
