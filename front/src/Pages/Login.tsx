@@ -1,8 +1,7 @@
 import axios from "axios";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router";
-import Navbar from "../Components/Navbar";
-import Footer from "../Components/Footer";
+import { useAuth } from "../hooks/useAuth";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -10,6 +9,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   async function handleLogin(e: FormEvent) {
     e.preventDefault();
@@ -29,13 +29,18 @@ const Login = () => {
         setSuccessMessage("Inicio de sesión exitoso"); // Muestra el mensaje de éxito
         // Guarda el token JWT en el almacenamiento local para futuras solicitudes
         localStorage.setItem("token", response.data.token);
+        console.log(response.data.token);
+        
+        login({
+          username: username
+        });
 
         // Espera 1 segundo antes de redirigir al usuario a la página principal
         setTimeout(() => {
-          navigate("/homeUser"); // Redirige a la ruta home
+          navigate("/estudiante"); // Redirige a la ruta home
         }, 2000);
       }
-    } catch (err: unknown) {
+    } catch (err) {
       if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else {
@@ -47,128 +52,127 @@ const Login = () => {
 
   return (
     <>
-    <Navbar basic={true}/>
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
-        <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Iniciar sesión
-          </h2>
-        </div>
-
-        {error !== "" && (
-          <div
-            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-1"
-            role="alert"
-          >
-            <strong className="font-bold">Error:</strong>
-            <span className="block sm:inline ml-1">{error}</span>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
+          <div className="text-center">
+            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+              Iniciar sesión
+            </h2>
           </div>
-        )}
 
-        {successMessage !== "" && (
-          <div
-            className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-1"
-            role="alert"
-          >
-            <strong className="font-bold">Éxito:</strong>
-            <span className="block sm:inline ml-1">{successMessage}</span>
-          </div>
-        )}
+          {error && !successMessage && (
+            <div
+              className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-1"
+              role="alert"
+            >
+              {error}
+            </div>
+          )}
 
-        <form className="mt-8 space-y-6">
-          <div className="rounded-md shadow-sm space-y-4 p-5">
+          {successMessage && !error && (
+            <div
+              className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-1"
+              role="alert"
+            >
+              {successMessage}
+            </div>
+          )}
+
+          <form className="mt-8 space-y-6">
+            <div className="rounded-md shadow-sm space-y-4 p-5">
+              <div>
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Usuario
+                </label>
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  value={username}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setUsername(e.target.value)
+                  }
+                  required
+                  className={`appearance-none relative block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
+                  placeholder="Ej: juan123"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Contraseña
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setPassword(e.target.value)
+                  }
+                  required
+                  className={`appearance-none relative block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
+                  placeholder="••••••••"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label
+                  htmlFor="remember-me"
+                  className="ml-2 block text-sm text-gray-900"
+                >
+                  Recuérdame
+                </label>
+              </div>
+
+              <div className="text-sm">
+                <a
+                  href="#"
+                  className="font-medium text-blue-600 hover:text-blue-500"
+                >
+                  ¿Olvidaste tu contraseña?
+                </a>
+              </div>
+            </div>
+
             <div>
-              <label
-                htmlFor="username"
-                className="block text-sm font-medium text-gray-700 mb-1"
+              <button
+                type="submit"
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                onClick={handleLogin}
               >
-                Email
-              </label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                value={username}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
-                required
-                className={`appearance-none relative block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
-                placeholder="Ej: juan123"
-              />
+                Iniciar sesión
+              </button>
             </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Contraseña
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-                required
-                className={`appearance-none relative block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
-                placeholder="••••••••"
-              />
-            </div>
-          </div>
+          </form>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label
-                htmlFor="remember-me"
-                className="ml-2 block text-sm text-gray-900"
-              >
-                Recuérdame
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <a
-                href="#"
+          <div className="text-center mt-4">
+            <p className="text-sm text-gray-600">
+              ¿No tienes cuenta?
+              <Link
+                to="/register"
                 className="font-medium text-blue-600 hover:text-blue-500"
               >
-                ¿Olvidaste tu contraseña?
-              </a>
-            </div>
+                Regístrate
+              </Link>
+            </p>
           </div>
-
-          <div>
-            <button
-              type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
-              onClick={handleLogin}
-            >
-              Iniciar sesión
-            </button>
-          </div>
-        </form>
-
-        <div className="text-center mt-4">
-          <p className="text-sm text-gray-600">
-            ¿No tienes cuenta?
-            <Link
-              to="/register"
-              className="font-medium text-blue-600 hover:text-blue-500"
-            >
-              {" "}
-              Regístrate
-            </Link>
-          </p>
         </div>
       </div>
-    </div>
-    <Footer/>
     </>
   );
 };

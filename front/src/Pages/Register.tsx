@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Link } from "react-router";
+import type { UserType } from "../types";
 
 const Register = () => {
 
@@ -13,6 +14,7 @@ const Register = () => {
     const [birthdate, setBirthdate] = useState("");
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+    const [userType, setUserType] = useState<UserType>("STUDENT");
 
     async function save (e: FormEvent) {
         e.preventDefault();
@@ -31,7 +33,8 @@ const Register = () => {
                 lastname,
                 email,
                 birthdate,
-                password
+                password,
+                userType
             });
 
             if (response.data.authStatus == "USER_CREATED_SUCCESSFULLY"){
@@ -190,7 +193,19 @@ const Register = () => {
             className="appearance-none block w-full px-3 py-2 border text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           />
         </div>
+
+        <div>
+          <label htmlFor="birthdate" className="block text-sm font-medium text-gray-700 mb-1">
+            Tipo de usuario
+          </label>
+          <select name="userType" id="userType" value={userType} onChange={(e: ChangeEvent<HTMLSelectElement>) => setUserType(e.target.value as UserType)} className="block w-full px-3 py-2 border text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            <option value="STUDENT">Estudiante</option>
+            <option value="TEACHER">Profesor(a)</option>
+            <option value="PARENT">Apoderado</option>
+          </select>
+        </div>
       </div>
+      
 
       <div>
         <button

@@ -2,8 +2,8 @@
 
 const HomeStudent = () => {
   return (
-    <div>Inicio de Usuario</div>
-  )
-}
+    <p>XDDD</p>
+  );
+};
 
-export default HomeStudent
+export default HomeStudent;

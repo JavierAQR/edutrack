@@ -1,17 +1,14 @@
 import { Swiper, SwiperSlide } from "swiper/react";
-import Navbar from "../Components/Navbar";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { FaArrowAltCircleUp, FaCoins, FaGraduationCap, FaHeadset, FaLaptop, FaUsers } from "react-icons/fa";
 import type { ReactNode } from "react";
-import Footer from "../Components/Footer";
 
 const Home = () => {
   return (
     <>
-      <Navbar />
       <Swiper
         spaceBetween={10}
         centeredSlides={true}
@@ -95,7 +92,7 @@ const Home = () => {
       </Swiper>
       <main className="bg-white">
         {/* Contenedor principal */}
-        <div className="flex justify center py-40 px-2">
+        <div className="flex justify center pt-20 pb-50 px-2">
         <article className="max-w-5xl mx-auto flex max-md:flex-col">
           {/* Sección de texto */}
           <section className="lg:w-1/2 mb-10 lg:mb-0">
@@ -176,7 +173,6 @@ const Home = () => {
           </div>
         </article>
       </main>
-      <Footer />
     </>
   );
 };
