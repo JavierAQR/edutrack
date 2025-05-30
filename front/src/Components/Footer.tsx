@@ -24,7 +24,7 @@ const Footer = () => {
         {/* Logo y descripción */}
         <div className="flex flex-col justify-center">
           <div className="flex items-center space-x-2">
-          <div className="flex items-center gap-2 text-4xl font-semibold"><img src="https://cdn-icons-png.flaticon.com/512/6671/6671494.png" alt="" className="object-cover w-15 h-15"/>Edutrack</div>
+            <div className="flex items-center gap-2 text-4xl font-semibold"><img src="https://cdn-icons-png.flaticon.com/512/6671/6671494.png" alt="" className="object-cover w-15 h-15" />Edutrack</div>
             {/* <h2 className="text-2xl font-semibold">Edutrack</h2> */}
           </div>
           <p className="mt-4 text-sm leading-relaxed">
@@ -38,14 +38,10 @@ const Footer = () => {
 
         {/* Nuestros Módulos */}
         <div>
-          <h3 className="text-xl font-semibold mb-4">Nuestro Módulos</h3>
+          <h3 className="text-xl font-semibold mb-4">¿Quiénes somos?</h3>
           <ul className="text-sm space-y-1">
-            <li>Módulo Tesorería</li>
-            <li>Módulo Académico</li>
-            <li>Módulo Intranet</li>
-            <li>Módulo Admisión</li>
-            <li>Módulo Biblioteca</li>
-            <li>Módulo Talleres</li>
+            <li> Edutrack es la plataforma ideal que comunica a padres de familia, estudiantes, docentes y directivos, con la más alta tecnología. </li>
+            <li> Accede a una nueva experiencia en gestión educativa con nuestra Aula Virtual, generando Calificaciones, Tareas, Control de Asistencia, Certificado de estudios, Admisión, Pensiones y mucho más desde la web. </li>
           </ul>
         </div>
 
@@ -56,16 +52,16 @@ const Footer = () => {
           <p className="text-sm mb-2">Celular: 902 779 069</p>
           <p className="text-sm">Atención: Lun a Vie: 8 am - 6 pm /<br />Sábados: 9 am - 2 pm</p>
         </div>
-    </div>
+      </div>
       {/* Botón Scroll to Top */}
       {showButton && (
-          <div className="fixed bottom-6 right-6">
+        <div className="fixed bottom-6 right-6">
           <button onClick={scrollToTop} className="bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-full shadow-lg">
-            <IoIosArrowUp/>
+            <IoIosArrowUp />
           </button>
         </div>
       )}
-      
+
     </footer>
   )
 }

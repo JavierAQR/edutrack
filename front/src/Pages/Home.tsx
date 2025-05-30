@@ -6,7 +6,6 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { FaArrowAltCircleUp, FaCoins, FaGraduationCap, FaHeadset, FaLaptop, FaUsers } from "react-icons/fa";
 import type { ReactNode } from "react";
-import Footer from "../Components/Footer";
 
 const Home = () => {
   return (
@@ -68,17 +67,17 @@ const Home = () => {
                 {/* Titulo principal */}
                 <div className="max-w-5xl mx-auto">
                   <h1 className="text-3xl md:text-5xl font-bold mb-10 max-w-130">
-                    Conoce nuestra Agencia Publicitaria
+                    Transformamos la educación con soluciones digitales innovadoras
                   </h1>
 
                   {/* Descripción */}
                   <div className="max-w-2xl mb-8 flex ">
                     <div className="flex text-lg gap-4">
                       <div className="bg-cyan-400 h-full w-5"></div>
-                      ¿Necesitas actualizar tu web, diseños o algún video?
-                      Edutrack Agencia te ofrece diferentes servicios para
-                      potenciar tu negocio en el mundo digital, así como manejar
-                      tus redes sociales.
+                      ¿Buscas fortalecer la comunicación entre docentes y estudiantes?
+                      En Edutrack Agencia desarrollamos soluciones educativas que impulsan
+                      el aprendizaje, facilitan la gestión académica y mejoran la interacción
+                      en entornos digitales.
                     </div>
                   </div>
                 </div>
@@ -176,7 +175,6 @@ const Home = () => {
           </div>
         </article>
       </main>
-      <Footer />
     </>
   );
 };
