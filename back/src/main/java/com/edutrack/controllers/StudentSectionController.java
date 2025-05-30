@@ -3,6 +3,8 @@ package com.edutrack.controllers;
 import com.edutrack.entities.StudentSection;
 import com.edutrack.services.StudentSectionService;
 
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,11 +28,6 @@ public class StudentSectionController {
         return service.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @PostMapping
-    public StudentSection create(@RequestBody StudentSection studentSection) {
-        return service.save(studentSection);
     }
 
   @PostMapping
