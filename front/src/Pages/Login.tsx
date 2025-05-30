@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, type ChangeEvent, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link  } from "react-router";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 
