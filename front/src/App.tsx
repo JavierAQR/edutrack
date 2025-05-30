@@ -10,6 +10,7 @@ import StudentLayout from './Components/StudentLayout';
 import Tablero from './Pages/Tablero';
 import AdminLayout from './Components/AdminLayout';
 import UsuariosAdmin from './Pages/UsuariosAdmin';
+import PaymentsTable from './Pages/PaymentAdmin'
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
 
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<UsuariosAdmin />} />
+             <Route path="payments" element={<PaymentsTable />} />
           </Route>
         </Routes>
       </Router>
