@@ -1,18 +1,21 @@
 package com.edutrack.auth;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Optional;
 
 import com.edutrack.dto.request.UserInfoDTO;
 import com.edutrack.entities.User;
 import com.edutrack.repositories.UserRepository;
-import com.edutrack.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.edutrack.token.VerificationToken;
 import com.edutrack.token.VerificationTokenRepository;
+import com.edutrack.util.JwtUtils;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -145,7 +148,32 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/user-info")
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(Authentication authentication) {
+    String username = authentication.getName(); // viene del token
+    Optional<User> optionalUser = userRepository.findByUsername(username);
+
+    if (optionalUser.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+    }
+
+    User user = optionalUser.get();
+    
+    // Devuelve solo los campos necesarios (puedes usar un DTO)
+    Map<String, Object> userInfo = Map.of(
+        "username", user.getUsername(),
+        "name", user.getName(),
+        "lastname", user.getLastname(),
+        "email", user.getEmail(),
+        "userType", user.getUserType(),
+        "birthdate", user.getBirthdate()
+    );
+
+    return ResponseEntity.ok(userInfo);
+}
+
+
+ @GetMapping("/user-info")
     public ResponseEntity<?> getUserInfo(@RequestHeader(value = "Authorization", required = false) String authHeader) {
         try {
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
