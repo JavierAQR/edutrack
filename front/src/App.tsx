@@ -11,7 +11,12 @@ import Tablero from './Pages/Tablero';
 import AdminLayout from './Components/AdminLayout';
 import UsuariosAdmin from './Pages/UsuariosAdmin';
 
+
+import PaymentsTable from './Pages/PaymentAdmin';
+import Payments from './Pages/Payment';
+
 import Profile from './Pages/Profile';
+
 import InstitutionsAdmin from './Pages/IntitutionsAdmin';
 
 
@@ -32,13 +37,22 @@ function App() {
 
           {/* Rutas de estudiante */}
           <Route path="/estudiante" element={<StudentLayout />}>
+
+            <Route index element={<Tablero />} />
+            <Route path='payments' element={<Payments />} />
+
             <Route path="tablero" element={<Tablero />} />
+
           </Route>
 
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<UsuariosAdmin />} />
+
+             <Route path="payments" element={<PaymentsTable />} />
+
             <Route path="institutions" element={<InstitutionsAdmin />} />
             <Route path="usuarios" element={<UsuariosAdmin />} />
+
           </Route>
         </Routes>
       </Router>

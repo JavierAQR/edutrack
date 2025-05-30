@@ -15,6 +15,7 @@ interface JwtPayload {
 }
 
 
+
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -23,6 +24,8 @@ const Login = () => {
 
   // const navigate = useNavigate();
   const { login } = useAuth();
+
+
 
 
   async function handleLogin(e: FormEvent) {
@@ -53,6 +56,7 @@ const Login = () => {
           username: username,
         });
 
+
         // Redirigimos según el rol
         if (role === "ADMIN") {
           window.location.href = "/admin";
@@ -61,6 +65,22 @@ const Login = () => {
         } else {
           window.location.href = "/";
         }
+
+        // Espera 1 segundo antes de redirigir al usuario a la página principal
+        setTimeout(() => {
+          navigate("/homeUser"); // Redirige a la ruta home
+        }, 2000);
+
+
+        // Redirigimos según el rol
+        if (role === "ADMIN") {
+          window.location.href = "/admin";
+        } else if (role === "STUDENT") {
+          window.location.href = "/estudiante";
+        } else {
+          window.location.href = "/";
+        }
+
       }
     } catch (err: unknown) {
       if (err.response?.data?.message) {
