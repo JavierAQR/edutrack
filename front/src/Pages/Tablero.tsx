@@ -76,7 +76,7 @@ const Tablero = () => {
     if (loading) {
         return (
             <>
-                <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 flex items-center justify-center">
+                <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 flex items-center justify-center w-full">
                     <div className="text-center">
                         <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-blue-600" role="status">
                             <span className="visually-hidden">Cargando...</span>
@@ -160,6 +160,7 @@ const Tablero = () => {
                                 <div className="bg-blue-500 px-6 py-4">
                                     <h2 className="text-xl font-semibold text-white">Actividades Pendientes</h2>
                                 </div>
+
                                 <div className="p-6">
                                     {activities.length === 0 ? (
                                         <div className="text-center py-4">
