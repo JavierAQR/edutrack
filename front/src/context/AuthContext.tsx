@@ -1,17 +1,14 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import type { ReactNode } from 'react';
-import axios from 'axios';
+import React, { createContext, useContext, useState } from 'react';
 
 interface AuthContextType {
     token: string | null;
     login: (token: string) => void;
     logout: () => void;
-    isAuthenticated: boolean;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
 
     const login = (newToken: string) => {
@@ -24,19 +21,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setToken(null);
     };
 
-    const isAuthenticated = !!token;
-
-    // Configura axios para incluir el token en las solicitudes
-    useEffect(() => {
-        if (token) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        } else {
-            delete axios.defaults.headers.common['Authorization'];
-        }
-    }, [token]);
-
     return (
-        <AuthContext.Provider value={{ token, login, logout, isAuthenticated }}>
+        <AuthContext.Provider value={{ token, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
@@ -44,7 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
     const context = useContext(AuthContext);
-    if (context === undefined) {
+    if (!context) {
         throw new Error('useAuth must be used within an AuthProvider');
     }
     return context;

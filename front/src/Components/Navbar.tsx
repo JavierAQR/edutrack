@@ -1,31 +1,43 @@
 import { useEffect, useState } from "react";
-import { FaEnvelope, FaPhone, FaUser } from "react-icons/fa"
-import { Link } from "react-router";
+import { FaEnvelope, FaPhone, FaUser } from "react-icons/fa";
+import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import UserDropdown from "./UserDropdown";
 
-interface Props{
-  basic?: boolean
+interface Props {
+  children?: React.ReactNode;
+  basic?: boolean;
 }
 
-const Navbar = ({basic = false}: Props) => {
-  const [scrolled, setScrolled] = useState(basic);
+const Navbar = ({ children, basic = false }: Props) => {
+  const { token, logout } = useAuth();
+  const location = useLocation();
+
+  // Determinar si la ruta actual debe tener scroll habilitado
+  const isScrollEnabledRoute = location.pathname === "/";
+
+  const [scrolled, setScrolled] = useState(() => {
+    return basic ? true : isScrollEnabledRoute ? window.scrollY > 100 : true;
+  });
 
   useEffect(() => {
-    if (basic){
+    if (basic || !isScrollEnabledRoute) {
+      setScrolled(true);
       return;
     }
+
     const handleScroll = () => {
       setScrolled(window.scrollY > 100);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [basic]);
+  }, [basic, location.pathname]);
 
   return (
-     <div className="fixed w-full z-50 bg-transparent text-white">
+    <div className="fixed w-full z-50 bg-transparent text-white">
       {/* Barra superior (contacto + login) */}
       <div className={`${scrolled ? 'hidden' : 'bg-opacity-80 py-4 px-6 border-b border-gray-500'}`}>
-
         <div className="max-w-5xl mx-auto flex justify-between flex-wrap items-center text-sm">
           {/* Contacto */}
           <div className="flex space-x-4">
@@ -37,37 +49,48 @@ const Navbar = ({basic = false}: Props) => {
             </a>
           </div>
 
-          {/* Redes sociales */}
-          <div className="flex items-center gap-2 text-lg">
-            <FaUser />
-            <Link
-              to="/login"
-              className="text-sm"
-            >
-              Iniciar Sesión
+          {/* Usuario */}
+          {!token ? (
+            <Link to="/login" className="flex items-center gap-2 text-lg">
+              <FaUser />
+              <span className="text-sm">Iniciar Sesión</span>
             </Link>
-          </div>
+          ) : (
+            <UserDropdown />
+          )}
         </div>
       </div>
+
       {/* Navbar principal */}
       <nav className={`px-6 ${scrolled ? 'bg-white text-black py-3 shadow-md' : 'bg-opacity-70 py-5'}`}>
         <div className="max-w-5xl mx-auto flex justify-between items-center">
           {/* Logo */}
-          <Link
-              to="/"
-            >
-              <div className="flex items-center gap-2 text-4xl font-semibold"><img src="https://cdn-icons-png.flaticon.com/512/6671/6671494.png" alt="" className="object-cover w-15 h-15"/>Edutrack</div>
-            </Link>
-          
+          <Link to="/">
+            <div className="flex items-center gap-2 text-4xl font-semibold">
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/6671/6671494.png"
+                alt="Logo Edutrack"
+                className="object-cover w-15 h-15"
+              />
+              Edutrack
+            </div>
+          </Link>
 
           {/* Menú */}
           <div className="hidden md:flex space-x-8">
-            <a href="#" className="hover:text-gray-900 font-medium">Instituciones</a>
-            <a href="#" className="hover:text-gray-900 font-medium">Certificaciones</a>
-            <a href="#" className="hover:text-gray-900 font-medium">Servicios</a>
-            <a href="#" className="hover:text-gray-900 font-medium">Contáctanos</a>
-            <a href="#" className="hover:text-gray-900 font-medium">Sobre Nosotros</a>
+            {children || (
+              <>
+                <Link to="/instituciones" className="hover:text-gray-900 font-medium">Instituciones</Link>
+                <Link to="/certificaciones" className="hover:text-gray-900 font-medium">Certificaciones</Link>
+                <Link to="/servicios" className="hover:text-gray-900 font-medium">Servicios</Link>
+                <Link to="/contacto" className="hover:text-gray-900 font-medium">Contáctanos</Link>
+                <Link to="/nosotros" className="hover:text-gray-900 font-medium">Sobre Nosotros</Link>
+              </>
+            )}
           </div>
+
+          {/* Mostrar UserDropdown si está autenticado y scrolled */}
+          {token && scrolled && <UserDropdown />}
 
           {/* Botón móvil */}
           <button className="md:hidden">
@@ -78,7 +101,6 @@ const Navbar = ({basic = false}: Props) => {
         </div>
       </nav>
     </div>
-  
   );
 };
 

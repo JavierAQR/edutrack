@@ -1,181 +1,121 @@
 import React, { useEffect, useState } from 'react';
-import Navbar from "../Components/Navbar";
-import axios from 'axios';
+import api from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
-import { toast } from 'react-toastify';
-
-// Tipos de datos mejorados
-interface UserData {
-    id: number;
-    name: string;
-    lastname: string;
-    email: string;
-    role: 'STUDENT' | 'TEACHER' | 'ADMIN' | 'DIRECTOR';
-    code?: string;
-    additionalInfo?: string;
-    institutionName?: string;
-}
 
 interface Course {
     id: number;
     name: string;
-    code: string;
-    modality: string;
-    teacher: string;
+    teacherName: string;
     period: string;
-    academicArea?: string;
 }
 
 interface Activity {
     id: number;
     title: string;
     completed: boolean;
-    course: string;
-    date: string;
-    type?: 'TASK' | 'EXAM' | 'PROJECT';
+    courseName: string;
+    dueDate: string;
 }
 
 const Tablero = () => {
-    const [userData, setUserData] = useState<UserData | null>(null);
+    const { token } = useAuth();
     const [courses, setCourses] = useState<Course[]>([]);
     const [activities, setActivities] = useState<Activity[]>([]);
-    const [loading, setLoading] = useState({
-        user: true,
-        courses: true,
-        activities: true
-    });
-    const { token } = useAuth();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    // Función para manejar errores de API
-    const handleApiError = (error: any, section: string) => {
-        console.error(`Error fetching ${section}:`, error);
-        toast.error(`Error al cargar ${section === 'user' ? 'datos del usuario' : section}`);
-        return [];
-    };
-
-    // Función para obtener datos del usuario
-    const fetchUserData = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/api/user/me', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            setUserData(response.data);
-        } catch (error) {
-            handleApiError(error, 'user');
-        } finally {
-            setLoading(prev => ({ ...prev, user: false }));
-        }
-    };
-
-    // Función para obtener cursos
-    const fetchCourses = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/api/courses/my-courses', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            setCourses(response.data);
-        } catch (error) {
-            handleApiError(error, 'courses');
-        } finally {
-            setLoading(prev => ({ ...prev, courses: false }));
-        }
-    };
-
-    // Función para obtener actividades
-    const fetchActivities = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/api/activities/pending', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            setActivities(response.data);
-        } catch (error) {
-            handleApiError(error, 'activities');
-        } finally {
-            setLoading(prev => ({ ...prev, activities: false }));
-        }
-    };
-
-    // Cargar todos los datos
     useEffect(() => {
-        if (token) {
-            const loadData = async () => {
-                await Promise.all([
-                    fetchUserData(),
-                    fetchCourses(),
-                    fetchActivities()
-                ]);
-            };
-            loadData();
-        }
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+
+                // Verificar si hay token
+                if (!token) {
+                    throw new Error('No authentication token found');
+                }
+
+                // Configuración común para las solicitudes
+                const config = {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                };
+
+                // Obtener información del usuario
+                const userResponse = await api.get('/auth/user-info', config);
+                const isTeacher = userResponse.data.userType === 'TEACHER';
+
+                // Obtener datos según el tipo de usuario
+                if (isTeacher) {
+                    const coursesResponse = await api.get('/dashboard/teacher/courses', config);
+                    setCourses(coursesResponse.data);
+                    setActivities([]); // O implementar lógica para profesores
+                } else {
+                    const [coursesResponse, activitiesResponse] = await Promise.all([
+                        api.get('/dashboard/student/courses', config),
+                        api.get('/dashboard/student/activities', config)
+                    ]);
+                    setCourses(coursesResponse.data);
+                    setActivities(activitiesResponse.data.map((act: any) => ({
+                        ...act,
+                        dueDate: new Date(act.dueDate).toLocaleDateString()
+                    })));
+                }
+            } catch (err: any) {
+                setError(err.response?.data?.message || err.message || 'Error loading data');
+                console.error('Error fetching data:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, [token]);
 
-    // Estado de carga general
-    const isLoading = loading.user || loading.courses || loading.activities;
-
-    if (isLoading) {
+    if (loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 flex items-center justify-center">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Cargando tu información...</p>
+            <>
+                <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 flex items-center justify-center">
+                    <div className="text-center">
+                        <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-blue-600" role="status">
+                            <span className="visually-hidden">Cargando...</span>
+                        </div>
+                        <p className="mt-2 text-gray-600">Cargando tu tablero...</p>
+                    </div>
                 </div>
-            </div>
+            </>
+        );
+    }
+
+    if (error) {
+        return (
+            <>
+                <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 flex items-center justify-center w-full">
+                    <div className="bg-white p-6 rounded-lg shadow-md max-w-md text-center">
+                        <div className="text-red-500 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">Error</h3>
+                        <p className="text-gray-600">{error}</p>
+                        <button
+                            onClick={() => window.location.reload()}
+                            className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                        >
+                            Intentar de nuevo
+                        </button>
+                    </div>
+                </div>
+            </>
         );
     }
 
     return (
         <>
-            <Navbar basic={true} />
-
-            <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24">
-                {/* Bienvenida con datos del usuario */}
-                {userData && (
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-                        <div className="bg-white p-6 rounded-xl shadow-md">
-                            <h1 className="text-2xl font-bold text-gray-800 mb-2">
-                                Bienvenido, {userData.name} {userData.lastname}
-                            </h1>
-                            {userData.institutionName && (
-                                <p className="text-gray-600 mb-4">Institución: {userData.institutionName}</p>
-                            )}
-
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div className="bg-blue-50 p-4 rounded-lg">
-                                    <p className="text-sm text-gray-500">Rol</p>
-                                    <p className="font-medium capitalize">
-                                        {userData.role.toLowerCase().replace('_', ' ')}
-                                    </p>
-                                </div>
-
-                                <div className="bg-blue-50 p-4 rounded-lg">
-                                    <p className="text-sm text-gray-500">Correo electrónico</p>
-                                    <p className="font-medium">{userData.email}</p>
-                                </div>
-
-                                {userData.code && (
-                                    <div className="bg-blue-50 p-4 rounded-lg">
-                                        <p className="text-sm text-gray-500">
-                                            {userData.role === 'STUDENT' ? 'Código de estudiante' : 'Código de profesor'}
-                                        </p>
-                                        <p className="font-medium">{userData.code}</p>
-                                    </div>
-                                )}
-                            </div>
-
-                            {userData.additionalInfo && (
-                                <div className="mt-4 bg-blue-50 p-4 rounded-lg">
-                                    <p className="text-sm text-gray-500">
-                                        {userData.role === 'STUDENT' ? 'Nivel académico' : 'Especialización'}
-                                    </p>
-                                    <p className="font-medium">{userData.additionalInfo}</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                )}
-
-                {/* Contenido principal */}
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+            <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 w-full">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex flex-col lg:flex-row gap-8">
                         {/* Sección de Cursos */}
                         <div className="lg:w-2/3">
@@ -183,40 +123,24 @@ const Tablero = () => {
                                 <div className="bg-blue-500 px-6 py-4">
                                     <h2 className="text-xl font-semibold text-white">Mis Cursos</h2>
                                 </div>
-
                                 <div className="p-6">
-                                    {loading.courses ? (
-                                        <div className="flex justify-center py-8">
-                                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-                                        </div>
-                                    ) : courses.length === 0 ? (
+                                    {courses.length === 0 ? (
                                         <div className="text-center py-8">
-                                            <p className="text-gray-500">No tienes cursos asignados</p>
+                                            {/* Mensaje cuando no hay cursos */}
                                         </div>
                                     ) : (
                                         <div className="space-y-6">
-                                            {courses.map((course) => (
-                                                <div key={course.id} className="border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow">
+                                            {courses.map((curso) => (
+                                                <div key={curso.id} className="border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow">
                                                     <div className="flex justify-between items-start">
                                                         <div>
-                                                            <h3 className="font-bold text-lg text-gray-800">{course.name}</h3>
-                                                            <div className="flex items-center mt-2 text-sm text-gray-600">
-                                                                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded mr-2">
-                                                                    {course.code}
-                                                                </span>
-                                                                <span>{course.modality}</span>
-                                                            </div>
+                                                            <h3 className="font-bold text-lg text-gray-800">{curso.name}</h3>
                                                             <p className="mt-3 text-gray-700">
-                                                                <span className="font-medium">Profesor:</span> {course.teacher}
+                                                                <span className="font-medium">Profesor:</span> {curso.teacherName}
                                                             </p>
-                                                            {course.academicArea && (
-                                                                <p className="mt-1 text-sm text-gray-600">
-                                                                    <span className="font-medium">Área:</span> {course.academicArea}
-                                                                </p>
-                                                            )}
                                                         </div>
                                                         <span className="bg-blue-600 text-white text-xs px-3 py-1 rounded-full">
-                                                            {course.period}
+                                                            {curso.period}
                                                         </span>
                                                     </div>
                                                     <button className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
@@ -236,46 +160,31 @@ const Tablero = () => {
                                 <div className="bg-blue-500 px-6 py-4">
                                     <h2 className="text-xl font-semibold text-white">Actividades Pendientes</h2>
                                 </div>
-
                                 <div className="p-6">
-                                    {loading.activities ? (
-                                        <div className="flex justify-center py-8">
-                                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-                                        </div>
-                                    ) : activities.length === 0 ? (
-                                        <div className="text-center py-8">
-                                            <p className="text-gray-500">No hay actividades pendientes</p>
+                                    {activities.length === 0 ? (
+                                        <div className="text-center py-4">
+                                            {/* Mensaje cuando no hay actividades */}
                                         </div>
                                     ) : (
                                         <>
                                             <div className="space-y-4">
-                                                {activities.map((activity) => (
-                                                    <div key={activity.id} className="border-b border-gray-100 pb-4 last:border-0">
+                                                {activities.map((actividad) => (
+                                                    <div key={actividad.id} className="border-b border-gray-100 pb-4 last:border-0">
                                                         <div className="flex items-start">
                                                             <input
                                                                 type="checkbox"
-                                                                checked={activity.completed}
+                                                                checked={actividad.completed}
+                                                                onChange={() => { }}
                                                                 className="mt-1 h-5 w-5 text-blue-600 rounded focus:ring-blue-500 cursor-pointer"
                                                             />
                                                             <div className="ml-3 flex-1">
                                                                 <div className="flex justify-between">
-                                                                    <p className={`font-medium ${activity.completed ? 'line-through text-gray-400' : 'text-gray-700'}`}>
-                                                                        {activity.title}
+                                                                    <p className={`font-medium ${actividad.completed ? 'line-through text-gray-400' : 'text-gray-700'}`}>
+                                                                        {actividad.title}
                                                                     </p>
-                                                                    <span className="text-xs text-gray-500">{activity.date}</span>
+                                                                    <span className="text-xs text-gray-500">{actividad.dueDate}</span>
                                                                 </div>
-                                                                <div className="flex justify-between items-center mt-1">
-                                                                    <p className="text-sm text-gray-500">{activity.course}</p>
-                                                                    {activity.type && (
-                                                                        <span className={`text-xs px-2 py-1 rounded ${activity.type === 'EXAM' ? 'bg-red-100 text-red-800' :
-                                                                                activity.type === 'PROJECT' ? 'bg-purple-100 text-purple-800' :
-                                                                                    'bg-green-100 text-green-800'
-                                                                            }`}>
-                                                                            {activity.type === 'EXAM' ? 'Examen' :
-                                                                                activity.type === 'PROJECT' ? 'Proyecto' : 'Tarea'}
-                                                                        </span>
-                                                                    )}
-                                                                </div>
+                                                                <p className="text-sm text-gray-500 mt-1">{actividad.courseName}</p>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -293,12 +202,6 @@ const Tablero = () => {
                                                     <span className="text-gray-600">Completadas:</span>
                                                     <span className="font-medium text-green-600">
                                                         {activities.filter(a => a.completed).length}
-                                                    </span>
-                                                </div>
-                                                <div className="flex justify-between text-sm mt-1">
-                                                    <span className="text-gray-600">Por completar:</span>
-                                                    <span className="font-medium text-blue-600">
-                                                        {activities.filter(a => !a.completed).length}
                                                     </span>
                                                 </div>
                                             </div>
