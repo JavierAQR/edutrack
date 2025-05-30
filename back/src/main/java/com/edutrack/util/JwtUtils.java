@@ -8,11 +8,14 @@ import javax.crypto.SecretKey;
 
 import org.apache.commons.lang3.time.DateUtils;
 
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import com.edutrack.entities.enums.UserType;
 
 @Component
 @Slf4j
@@ -46,7 +49,8 @@ public class JwtUtils {
         return claimsOptional.map(Claims::getSubject);
     }
 
-    public static String generateToken (String username){
+    /* cambios */
+    public static String generateToken (String username, UserType role){
         var currentDate = new Date();
         var jwtExpirationInMinutes = 10;
         var expiration = DateUtils.addMinutes(currentDate, jwtExpirationInMinutes);
@@ -55,6 +59,7 @@ public class JwtUtils {
                 .id(UUID.randomUUID().toString())
                 .issuer(ISSUER)
                 .subject(username)
+                .claim("role", role)
                 .signWith(secretKey)
                 .issuedAt(currentDate)
                 .expiration(expiration)
