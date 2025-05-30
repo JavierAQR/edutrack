@@ -76,7 +76,7 @@ const Tablero = () => {
     if (loading) {
         return (
             <>
-                <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 flex items-center justify-center">
+                <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 flex items-center justify-center w-full">
                     <div className="text-center">
                         <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-blue-600" role="status">
                             <span className="visually-hidden">Cargando...</span>
