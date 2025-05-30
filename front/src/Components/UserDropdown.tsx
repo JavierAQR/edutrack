@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { FaUser } from "react-icons/fa";
-import { Link } from "react-router-dom";
 
 const UserDropdown = () => {
     const { user, logout } = useAuth();
@@ -19,13 +18,6 @@ const UserDropdown = () => {
 
             {open && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-md z-50">
-                    {/* <Link
-                        to="perfil"
-                        className="block px-4 py-2 text-sm text-black hover:bg-gray-100"
-                        onClick={() => setOpen(false)}
-                    >
-                        Perfil
-                    </Link> */}
                     <button
                         onClick={() => {
                             logout();
