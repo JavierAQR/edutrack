@@ -3,6 +3,7 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
+
 import { useAuth } from "../context/AuthContext";
 import { jwtDecode } from "jwt-decode";
 
@@ -13,13 +14,19 @@ interface JwtPayload {
   exp: number; // expiración
 }
 
+
+
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
   // const navigate = useNavigate();
   const { login } = useAuth();
+
+  const navigate = useNavigate();
+
 
   async function handleLogin(e: FormEvent) {
     e.preventDefault();
@@ -41,6 +48,7 @@ const Login = () => {
         const token = response.data.token
         localStorage.setItem("token", token);
 
+
         // Decodificamos el token
         const decoded = jwtDecode<JwtPayload>(token);
         const role = decoded.role;
@@ -57,6 +65,12 @@ const Login = () => {
         } else {
           window.location.href = "/";
         }
+
+        // Espera 1 segundo antes de redirigir al usuario a la página principal
+        setTimeout(() => {
+          navigate("/homeUser"); // Redirige a la ruta home
+        }, 2000);
+
       }
     } catch (err: unknown) {
       if (err.response?.data?.message) {

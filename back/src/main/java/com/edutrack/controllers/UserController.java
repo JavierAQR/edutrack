@@ -3,8 +3,12 @@ package com.edutrack.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import com.edutrack.dto.request.UserCreateDTO;
+import com.edutrack.dto.request.UserUpdateDTO;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
     
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping()
     @Transactional(readOnly = true)
@@ -35,8 +40,30 @@ public class UserController {
 
     @PostMapping()
     @Transactional
-    public User save(@RequestBody User user){
-        return this.userService.save(user);
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserCreateDTO userDTO) {
+        try {
+            // Validar que el email no exista
+            if (userService.existsByEmail(userDTO.getEmail())) {
+                return ResponseEntity.badRequest().body("El email ya está registrado");
+            }
+
+            // Mapear DTO a entidad User
+            User user = new User();
+            user.setUsername(userDTO.getUsername());
+            user.setName(userDTO.getName());
+            user.setLastname(userDTO.getLastname());
+            user.setEmail(userDTO.getEmail());
+            user.setPassword(passwordEncoder.encode(userDTO.getPassword())); // Hashear la contraseña
+            user.setBirthdate(userDTO.getBirthdate());
+            user.setUserType(userDTO.getUserType());
+            user.setEnabled(false); // Requerirá activación
+
+            User savedUser = userService.save(user);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error al crear el usuario");
+        }
     }
 
     @GetMapping("/{id}")
@@ -47,26 +74,30 @@ public class UserController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody User user){
-        Optional<User> s = Optional.of(this.userService.findById(id));
-        if(s.isPresent()){
-            User newUser = s.get();
-            newUser.setName(user.getName());
-            newUser.setLastname(user.getLastname());
-            newUser.setEmail(user.getEmail());
-            newUser.setPassword(user.getPassword());
-            newUser.setBirthdate(user.getBirthdate());
-             
-            return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.update(id, newUser));
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UserUpdateDTO userDTO) {
+        Optional<User> userOpt = Optional.ofNullable(this.userService.findById(id));
+        if(userOpt.isPresent()){
+            User user = userOpt.get();
+            user.setUsername(userDTO.getUsername());
+            user.setName(userDTO.getName());
+            user.setLastname(userDTO.getLastname());
+            user.setUserType(userDTO.getUserType());
+            return ResponseEntity.ok(this.userService.save(user));
         }
-
         return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
-        userService.delete(id); 
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        try {
+            if (!userService.existsById(id)) {
+                return ResponseEntity.notFound().build();
+            }
+            userService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error al eliminar el usuario");
+        }
     }
 }

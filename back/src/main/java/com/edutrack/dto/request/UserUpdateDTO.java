@@ -1,15 +1,14 @@
 package com.edutrack.dto.request;
 
+import com.edutrack.entities.enums.UserType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class UserUpdateDTO {
-    @NotBlank
+    private String username;
     private String name;
-    
-    @NotBlank
     private String lastname;
-
-    
+    private UserType userType;
+    // getters y setters
 }
