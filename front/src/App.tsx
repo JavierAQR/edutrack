@@ -3,13 +3,13 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
-import HomeAdmin from './Pages/HomeAdmin';
 import VerificationPage from './Pages/VerificationPage';
 import Home from './Pages/Home';
 import MainLayout from './Components/MainLayout';
 import StudentLayout from './Components/StudentLayout';
-import HomeStudent from './Pages/HomeStudent';
 import Tablero from './Pages/Tablero';
+import AdminLayout from './Components/AdminLayout';
+import UsuariosAdmin from './Pages/UsuariosAdmin';
 
 function App() {
   return (
@@ -26,12 +26,12 @@ function App() {
 
           {/* Rutas de estudiante */}
           <Route path="/estudiante" element={<StudentLayout />}>
-            <Route index element={<HomeStudent />} />
-            <Route path="tablero" element={<Tablero />} />
+            <Route index element={<Tablero />} />
           </Route>
 
-          {/* Rutas de administrador */}
-          <Route path="/admin" element={<HomeAdmin />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<UsuariosAdmin />} />
+          </Route>
         </Routes>
       </Router>
     </AuthProvider>

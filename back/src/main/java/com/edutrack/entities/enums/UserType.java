@@ -4,6 +4,7 @@ public enum UserType {
     STUDENT("ROLE_STUDENT"),
     TEACHER("ROLE_TEACHER"),
     PARENT("ROLE_PARENT"),
+    DIRECTOR("ROLE_DIRECTOR"),
     ADMIN("ROLE_ADMIN");
     
     private final String displayName;

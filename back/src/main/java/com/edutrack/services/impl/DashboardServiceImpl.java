@@ -21,8 +21,7 @@ import java.util.LinkedHashMap;
 @RequiredArgsConstructor
 public class DashboardServiceImpl implements DashboardService {
 
-    @Autowired
-    private JwtUtils jwtUtils;
+
 
     @Autowired
     private UserRepository userRepository;
@@ -47,7 +46,7 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public List<StudentCourseDTO> getStudentCourses(String jwtToken) {
-        String username = jwtUtils.getUsernameFromToken(jwtToken)
+        String username = JwtUtils.getUsernameFromToken(jwtToken)
                 .orElseThrow(() -> new RuntimeException("Token inválido"));
 
         User user = userRepository.findByUsername(username)
@@ -75,7 +74,7 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public List<StudentActivityDTO> getStudentActivities(String jwtToken) {
-        String username = jwtUtils.getUsernameFromToken(jwtToken)
+        String username = JwtUtils.getUsernameFromToken(jwtToken)
                 .orElseThrow(() -> new RuntimeException("Token inválido"));
 
         User user = userRepository.findByUsername(username)
@@ -120,7 +119,7 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public List<TeacherCourseDTO> getTeacherCourses(String jwtToken) {
-        String username = jwtUtils.getUsernameFromToken(jwtToken)
+        String username = JwtUtils.getUsernameFromToken(jwtToken)
                 .orElseThrow(() -> new RuntimeException("Token inválido"));
 
         User user = userRepository.findByUsername(username)

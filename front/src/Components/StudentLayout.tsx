@@ -12,7 +12,7 @@ const StudentLayout = () => {
                 <Link to="/estudiante/evaluaciones" className="hover:text-gray-900 font-medium">Evaluaciones</Link>
                 <Link to="/estudiante/pagos" className="hover:text-gray-900 font-medium">Pagos</Link>
             </Navbar>
-            <main className="bg-white flex justify-center pt-20 pb-12 px-6 min-h-screen">
+            <main className="bg-white flex justify-center pt-20 pb-12 min-h-screen">
                 <Outlet />
             </main>
             <Footer />

@@ -1,21 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import api from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
+import type { Activity, Course } from '../types';
 
-interface Course {
-    id: number;
-    name: string;
-    teacherName: string;
-    period: string;
-}
 
-interface Activity {
-    id: number;
-    title: string;
-    completed: boolean;
-    courseName: string;
-    dueDate: string;
-}
 
 const Tablero = () => {
     const { token } = useAuth();

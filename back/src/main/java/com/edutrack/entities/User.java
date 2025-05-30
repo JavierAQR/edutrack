@@ -50,7 +50,7 @@ public class User {
     private Boolean enabled = false;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_type", nullable = true)
+    @Column(name = "user_type", nullable = false)
     private UserType userType;
 
 }
