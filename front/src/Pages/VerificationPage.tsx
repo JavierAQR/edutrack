@@ -29,22 +29,22 @@ const VerificationPage = () => {
             messageType = "info";
     }
 
-  return (
-    <div className={`verification-container ${messageType}`}>
-    <h1>Verificacion Email</h1>
-    <p>{message}</p>
-    {messageType === "success" && (
-        <button onClick={() => window.location.href ="/login"}>
-            Ir a iniciar sesión
-        </button>
+    return (
+        <div className={`verification-container ${messageType}`}>
+            <h1>Verificacion Email</h1>
+            <p>{message}</p>
+            {messageType === "success" && (
+                <button onClick={() => window.location.href = "/login"}>
+                    Ir a iniciar sesión
+                </button>
+            )
+
+
+            }
+
+
+        </div>
     )
-    
-    
-    }
-
-
-</div>
-  )
 }
 
 export default VerificationPage

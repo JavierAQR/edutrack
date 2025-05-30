@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Navbar from "../Components/Navbar";
 import api from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 
@@ -77,7 +76,6 @@ const Tablero = () => {
     if (loading) {
         return (
             <>
-                <Navbar basic={true} />
                 <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 flex items-center justify-center">
                     <div className="text-center">
                         <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-blue-600" role="status">
@@ -93,8 +91,7 @@ const Tablero = () => {
     if (error) {
         return (
             <>
-                <Navbar basic={true} />
-                <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 flex items-center justify-center">
+                <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 flex items-center justify-center w-full">
                     <div className="bg-white p-6 rounded-lg shadow-md max-w-md text-center">
                         <div className="text-red-500 mb-4">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -117,8 +114,7 @@ const Tablero = () => {
 
     return (
         <>
-            <Navbar basic={true} />
-            <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24">
+            <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 w-full">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex flex-col lg:flex-row gap-8">
                         {/* Sección de Cursos */}
