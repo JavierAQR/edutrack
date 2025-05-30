@@ -10,6 +10,7 @@ import StudentLayout from './Components/StudentLayout';
 import Tablero from './Pages/Tablero';
 import AdminLayout from './Components/AdminLayout';
 import UsuariosAdmin from './Pages/UsuariosAdmin';
+import InstitutionsAdmin from './Pages/IntitutionsAdmin';
 
 function App() {
   return (
@@ -26,11 +27,13 @@ function App() {
 
           {/* Rutas de estudiante */}
           <Route path="/estudiante" element={<StudentLayout />}>
-            <Route index element={<Tablero />} />
+            <Route path="tablero" element={<Tablero />} />
           </Route>
 
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<UsuariosAdmin />} />
+            <Route path="institutions" element={<InstitutionsAdmin />} />
+            <Route path="usuarios" element={<UsuariosAdmin />} />
           </Route>
         </Routes>
       </Router>
