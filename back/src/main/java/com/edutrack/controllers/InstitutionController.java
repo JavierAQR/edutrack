@@ -46,15 +46,21 @@ public class InstitutionController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Institution user){
-        Optional<Institution> i = Optional.of(this.institutionService.findById(id));
-        if(i.isPresent()){
-            Institution newIns = i.get();
-            newIns.setName(user.getName());
-             
-            return ResponseEntity.status(HttpStatus.CREATED).body(this.institutionService.update(id, newIns));
-        }
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Institution updatedInstitution) {
+        Optional<Institution> optionalInstitution = Optional.of(this.institutionService.findById(id));
+        if(optionalInstitution.isPresent()){
+            Institution existingInstitution = optionalInstitution.get();
 
+            // Actualizar todos los campos
+            existingInstitution.setName(updatedInstitution.getName());
+            existingInstitution.setAddress(updatedInstitution.getAddress());
+            existingInstitution.setDescription(updatedInstitution.getDescription());
+            existingInstitution.setPhone(updatedInstitution.getPhone());
+            existingInstitution.setWebsite(updatedInstitution.getWebsite());
+
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(this.institutionService.update(id, existingInstitution));
+        }
         return ResponseEntity.notFound().build();
     }
 
