@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
-import HomeAdmin from './Pages/HomeAdmin';
 import VerificationPage from './Pages/VerificationPage';
 import Home from './Pages/Home';
 import MainLayout from './Components/MainLayout';
@@ -31,8 +30,7 @@ function App() {
           </Route>
 
           <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<HomeAdmin />} />
-            <Route path="usuarios" element={<UsuariosAdmin />} />
+            <Route index element={<UsuariosAdmin />} />
           </Route>
         </Routes>
       </Router>

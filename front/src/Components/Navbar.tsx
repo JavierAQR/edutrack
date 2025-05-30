@@ -9,19 +9,22 @@ interface Props {
   basic?: boolean;
 }
 
-const Navbar = ({ children, basic = false }: Props) => {
-  const { token, logout } = useAuth();
+const Navbar = ({ children }: Props) => {
+  const { token } = useAuth();
   const location = useLocation();
 
   // Determinar si la ruta actual debe tener scroll habilitado
   const isScrollEnabledRoute = location.pathname === "/";
 
   const [scrolled, setScrolled] = useState(() => {
-    return basic ? true : isScrollEnabledRoute ? window.scrollY > 100 : true;
+    return isScrollEnabledRoute ? window.scrollY > 100 : true;
   });
 
+  // Manejamos el efecto del scroll solo si no es ruta básica
   useEffect(() => {
-    if (basic || !isScrollEnabledRoute) {
+    const isScrollEnabledRoute = location.pathname === "/";
+
+    if (!isScrollEnabledRoute) {
       setScrolled(true);
       return;
     }
@@ -30,9 +33,11 @@ const Navbar = ({ children, basic = false }: Props) => {
       setScrolled(window.scrollY > 100);
     };
 
+    handleScroll();
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [basic, location.pathname]);
+  }, [location.pathname]);
 
   return (
     <div className="fixed w-full z-50 bg-transparent text-white">
@@ -53,7 +58,7 @@ const Navbar = ({ children, basic = false }: Props) => {
           {!token ? (
             <Link to="/login" className="flex items-center gap-2 text-lg">
               <FaUser />
-              <span className="text-sm">Iniciar Sesión</span>
+              <span className="text-sm">Iniciar Sesión / Registrarse</span>
             </Link>
           ) : (
             <UserDropdown />

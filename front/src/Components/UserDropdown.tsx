@@ -4,7 +4,7 @@ import { FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const UserDropdown = () => {
-    const { logout } = useAuth();
+    const { user, logout } = useAuth();
     const [open, setOpen] = useState(false);
 
     return (
@@ -14,7 +14,7 @@ const UserDropdown = () => {
                 className="flex items-center gap-2 focus:outline-none cursor-pointer"
             >
                 <FaUser />
-                <span>Mi Cuenta</span>
+                <span>{user?.username}</span>
             </button>
 
             {open && (

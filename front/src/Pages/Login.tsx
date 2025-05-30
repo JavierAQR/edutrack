@@ -3,6 +3,7 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -10,6 +11,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   async function handleLogin(e: FormEvent) {
     e.preventDefault();
@@ -21,7 +23,6 @@ const Login = () => {
         "http://localhost:8080/api/auth/login",
         {
           username,
-          password,
         }
       );
 
@@ -29,6 +30,10 @@ const Login = () => {
         setSuccessMessage("Inicio de sesión exitoso"); // Muestra el mensaje de éxito
         // Guarda el token JWT en el almacenamiento local para futuras solicitudes
         localStorage.setItem("token", response.data.token);
+
+        login(response.data.token, {
+          username: username,  
+        });
 
         // Espera 1 segundo antes de redirigir al usuario a la página principal
         setTimeout(() => {
