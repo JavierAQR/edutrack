@@ -11,8 +11,11 @@ import Tablero from './Pages/Tablero';
 import AdminLayout from './Components/AdminLayout';
 import UsuariosAdmin from './Pages/UsuariosAdmin';
 
+
 import PaymentsTable from './Pages/PaymentAdmin';
 import Payments from './Pages/Payment';
+
+import Profile from './Pages/Profile';
 
 import InstitutionsAdmin from './Pages/IntitutionsAdmin';
 
@@ -29,6 +32,8 @@ function App() {
             <Route path="register" element={<Register />} />
             <Route path="verification" element={<VerificationPage />} />
           </Route>
+
+
 
           {/* Rutas de estudiante */}
           <Route path="/estudiante" element={<StudentLayout />}>

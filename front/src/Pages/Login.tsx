@@ -25,7 +25,7 @@ const Login = () => {
   // const navigate = useNavigate();
   const { login } = useAuth();
 
-  const navigate = useNavigate();
+
 
 
   async function handleLogin(e: FormEvent) {
@@ -48,7 +48,6 @@ const Login = () => {
         const token = response.data.token
         localStorage.setItem("token", token);
 
-
         // Decodificamos el token
         const decoded = jwtDecode<JwtPayload>(token);
         const role = decoded.role;
@@ -56,6 +55,7 @@ const Login = () => {
         login(response.data.token, {
           username: username,
         });
+
 
         // Redirigimos según el rol
         if (role === "ADMIN") {
@@ -70,6 +70,16 @@ const Login = () => {
         setTimeout(() => {
           navigate("/homeUser"); // Redirige a la ruta home
         }, 2000);
+
+
+        // Redirigimos según el rol
+        if (role === "ADMIN") {
+          window.location.href = "/admin";
+        } else if (role === "STUDENT") {
+          window.location.href = "/estudiante";
+        } else {
+          window.location.href = "/";
+        }
 
       }
     } catch (err: unknown) {
