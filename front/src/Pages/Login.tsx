@@ -4,12 +4,26 @@ import { Link, useNavigate } from "react-router";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 
+import { useAuth } from "../context/AuthContext";
+import { jwtDecode } from "jwt-decode";
+
+// Interfaz para los datos que vienen en el token
+interface JwtPayload {
+  sub: string; // username
+  role: string; // rol del usuario
+  exp: number; // expiración
+}
+
+
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const navigate = useNavigate();
+
+  // const navigate = useNavigate();
+  const { login } = useAuth();
+
 
   async function handleLogin(e: FormEvent) {
     e.preventDefault();
@@ -28,12 +42,25 @@ const Login = () => {
       if (response.data.authStatus === "LOGIN_SUCCESS") {
         setSuccessMessage("Inicio de sesión exitoso"); // Muestra el mensaje de éxito
         // Guarda el token JWT en el almacenamiento local para futuras solicitudes
-        localStorage.setItem("token", response.data.token);
+        const token = response.data.token
+        localStorage.setItem("token", token);
 
-        // Espera 1 segundo antes de redirigir al usuario a la página principal
-        setTimeout(() => {
-          navigate("/homeUser"); // Redirige a la ruta home
-        }, 2000);
+        // Decodificamos el token
+        const decoded = jwtDecode<JwtPayload>(token);
+        const role = decoded.role;
+        
+        login(response.data.token, {
+          username: username,
+        });
+
+        // Redirigimos según el rol
+        if (role === "ADMIN") {
+          window.location.href = "/admin";
+        } else if (role === "STUDENT") {
+          window.location.href = "/estudiante";
+        } else {
+          window.location.href = "/";
+        }
       }
     } catch (err: unknown) {
       if (err.response?.data?.message) {
@@ -90,7 +117,9 @@ const Login = () => {
                   name="username"
                   type="text"
                   value={username}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setUsername(e.target.value)
+                  }
                   required
                   className={`appearance-none relative block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
                   placeholder="Ej: juan123"
@@ -109,7 +138,9 @@ const Login = () => {
                   type="password"
                   autoComplete="current-password"
                   value={password}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setPassword(e.target.value)
+                  }
                   required
                   className={`appearance-none relative block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
                   placeholder="••••••••"

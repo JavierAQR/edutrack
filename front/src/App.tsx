@@ -10,7 +10,10 @@ import StudentLayout from './Components/StudentLayout';
 import Tablero from './Pages/Tablero';
 import AdminLayout from './Components/AdminLayout';
 import UsuariosAdmin from './Pages/UsuariosAdmin';
+
+import Profile from './Pages/Profile';
 import InstitutionsAdmin from './Pages/IntitutionsAdmin';
+
 
 function App() {
   return (
@@ -24,6 +27,8 @@ function App() {
             <Route path="register" element={<Register />} />
             <Route path="verification" element={<VerificationPage />} />
           </Route>
+
+
 
           {/* Rutas de estudiante */}
           <Route path="/estudiante" element={<StudentLayout />}>
