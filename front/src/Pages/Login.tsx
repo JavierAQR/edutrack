@@ -3,6 +3,7 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
+
 import { useAuth } from "../context/AuthContext";
 import { jwtDecode } from "jwt-decode";
 
@@ -13,13 +14,16 @@ interface JwtPayload {
   exp: number; // expiración
 }
 
+
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
   // const navigate = useNavigate();
   const { login } = useAuth();
+
 
   async function handleLogin(e: FormEvent) {
     e.preventDefault();

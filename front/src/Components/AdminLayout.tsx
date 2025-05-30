@@ -10,6 +10,7 @@ const AdminLayout = () => {
       <Link to="/admin/cursos" className="hover:text-gray-900 font-medium">Cursos</Link>
       <Link to="/admin/pagos" className="hover:text-gray-900 font-medium">Pagos</Link>
       <Link to="/admin/configuracion" className="hover:text-gray-900 font-medium">Configuración</Link>
+      <Link to="/admin/institutions" className="hover:text-gray-900 font-medium">Instituciones</Link>
     </Navbar>
     <main className="bg-white flex justify-center pt-20 pb-12 px-6 min-h-screen">
       <Outlet />
