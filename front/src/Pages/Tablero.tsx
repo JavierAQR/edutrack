@@ -170,6 +170,62 @@ const Tablero = () => {
                 </div>
               </div>
             </div>
+            <div className="lg:w-1/3">
+              <div className="bg-white rounded-xl shadow-lg overflow-hidden sticky top-28">
+                <div className="bg-blue-500 px-6 py-4">
+                  <h2 className="text-xl font-semibold text-white">Actividades Pendientes</h2>
+                </div>
+
+                <div className="p-6">
+                  {activities.length === 0 ? (
+                    <div className="text-center py-4">
+                      {/* Mensaje cuando no hay actividades */}
+                    </div>
+                  ) : (
+                    <>
+                      <div className="space-y-4">
+                        {activities.map((actividad) => (
+                          <div key={actividad.id} className="border-b border-gray-100 pb-4 last:border-0">
+                            <div className="flex items-start">
+                              <input
+                                type="checkbox"
+                                checked={actividad.completed}
+                                onChange={() => { }}
+                                className="mt-1 h-5 w-5 text-blue-600 rounded focus:ring-blue-500 cursor-pointer"
+                              />
+                              <div className="ml-3 flex-1">
+                                <div className="flex justify-between">
+                                  <p className={`font-medium ${actividad.completed ? 'line-through text-gray-400' : 'text-gray-700'}`}>
+                                    {actividad.title}
+                                  </p>
+                                  <span className="text-xs text-gray-500">{actividad.dueDate}</span>
+                                </div>
+                                <p className="text-sm text-gray-500 mt-1">{actividad.courseName}</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Resumen de Actividades */}
+                      <div className="mt-6 bg-blue-50 rounded-lg p-4">
+                        <h3 className="font-medium text-blue-800 mb-2">Resumen</h3>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Total actividades:</span>
+                          <span className="font-medium">{activities.length}</span>
+                        </div>
+                        <div className="flex justify-between text-sm mt-1">
+                          <span className="text-gray-600">Completadas:</span>
+                          <span className="font-medium text-green-600">
+                            {activities.filter(a => a.completed).length}
+                          </span>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
