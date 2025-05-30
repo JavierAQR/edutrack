@@ -160,6 +160,7 @@ const Tablero = () => {
                                 <div className="bg-blue-500 px-6 py-4">
                                     <h2 className="text-xl font-semibold text-white">Actividades Pendientes</h2>
                                 </div>
+
                                 <div className="p-6">
                                     {activities.length === 0 ? (
                                         <div className="text-center py-4">
