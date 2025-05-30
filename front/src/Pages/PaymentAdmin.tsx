@@ -24,7 +24,7 @@ const PaymentsTable: React.FC = () => {
         setLoading(false);
       })
       .catch(err => {
-        setError(err.message);
+        setError(err.message);n
         setLoading(false);
       });
   }, []);

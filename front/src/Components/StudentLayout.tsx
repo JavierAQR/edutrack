@@ -10,7 +10,8 @@ const StudentLayout = () => {
                 <Link to="/estudiante/instituciones" className="hover:text-gray-900 font-medium">Instituciones</Link>
                 <Link to="/estudiante/cursos" className="hover:text-gray-900 font-medium">Cursos</Link>
                 <Link to="/estudiante/evaluaciones" className="hover:text-gray-900 font-medium">Evaluaciones</Link>
-                <Link to="/estudiante/pagos" className="hover:text-gray-900 font-medium">Pagos</Link>
+                <Link to="/estudiante/payments" className="hover:text-gray-900 font-medium">Pagos</Link>
+                
             </Navbar>
             <main className="bg-white flex justify-center pt-20 pb-12 min-h-screen">
                 <Outlet />

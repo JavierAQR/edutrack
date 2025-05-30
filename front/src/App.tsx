@@ -10,7 +10,8 @@ import StudentLayout from './Components/StudentLayout';
 import Tablero from './Pages/Tablero';
 import AdminLayout from './Components/AdminLayout';
 import UsuariosAdmin from './Pages/UsuariosAdmin';
-import PaymentsTable from './Pages/PaymentAdmin'
+import PaymentsTable from './Pages/PaymentAdmin';
+import Payments from './Pages/Payment';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           {/* Rutas de estudiante */}
           <Route path="/estudiante" element={<StudentLayout />}>
             <Route index element={<Tablero />} />
+            <Route path='payments' element={<Payments />} />
           </Route>
 
           <Route path="/admin" element={<AdminLayout />}>
