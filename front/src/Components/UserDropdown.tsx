@@ -20,7 +20,7 @@ const UserDropdown = () => {
             {open && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-md z-50">
                     <Link
-                        to="/perfil"
+                        to="#"
                         className="block px-4 py-2 text-sm text-black hover:bg-gray-100"
                         onClick={() => setOpen(false)}
                     >
@@ -31,7 +31,7 @@ const UserDropdown = () => {
                             logout();
                             setOpen(false);
                         }}
-                        className="block w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-100"
+                        className="block w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-100 cursor-pointer"
                     >
                         Cerrar sesión
                     </button>

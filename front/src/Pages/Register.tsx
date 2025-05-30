@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Link } from "react-router";
+import type { UserType } from "../types";
 
 const Register = () => {
-
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [lastname, setLastname] = useState("");
@@ -11,6 +11,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [birthdate, setBirthdate] = useState("");
+  const [userType, setUserType] = useState<UserType>("STUDENT");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -25,31 +26,34 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/register", {
-        username,
-        name,
-        lastname,
-        email,
-        birthdate,
-        password
-      });
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/register",
+        {
+          username,
+          name,
+          lastname,
+          email,
+          birthdate,
+          password,
+          userType,
+        }
+      );
 
       if (response.data.authStatus == "USER_CREATED_SUCCESSFULLY") {
         setSuccessMessage(response.data.message);
         setTimeout(() => {
-          window.location.href = '/login';
+          window.location.href = "/login";
         }, 2000);
       } else {
         setError(response.data.message || "No se pudo completar el registro.");
       }
-
     } catch (err: unknown) {
       if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else if (err.response?.data?.authStatus === "USER_NOT_CREATED") {
         setError("No se pudo crear el usuario. Por favor, intente nuevamente.");
       } else {
-        setError("Error en el registro. Por favor intente más tarde.")
+        setError("Error en el registro. Por favor intente más tarde.");
       }
       console.error("Error detallado: ", err);
     }
@@ -59,18 +63,26 @@ const Register = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Registro de Usuario</h2>
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+            Registro de Usuario
+          </h2>
         </div>
 
         {error !== "" && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-1" role="alert">
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-1"
+            role="alert"
+          >
             <strong className="font-bold">Error:</strong>
             <span className="block sm:inline ml-1">{error}</span>
           </div>
         )}
 
         {successMessage !== "" && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-1" role="alert">
+          <div
+            className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-1"
+            role="alert"
+          >
             <strong className="font-bold">Éxito:</strong>
             <span className="block sm:inline ml-1">{successMessage}</span>
           </div>
@@ -78,16 +90,20 @@ const Register = () => {
 
         <form className="mt-8 space-y-6">
           <div className="rounded-md shadow-sm space-y-4 p-5">
-
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Username
               </label>
               <input
                 id="username"
                 name="username"
                 value={username}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setUsername(e.target.value)
+                }
                 required
                 type="text"
                 className="appearance-none block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -96,7 +112,10 @@ const Register = () => {
             </div>
 
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Nombres
               </label>
               <input
@@ -104,7 +123,9 @@ const Register = () => {
                 name="name"
                 type="text"
                 value={name}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setName(e.target.value)
+                }
                 required
                 className="appearance-none block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="Juan Carlos"
@@ -112,7 +133,10 @@ const Register = () => {
             </div>
 
             <div>
-              <label htmlFor="lastname" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="lastname"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Apellidos
               </label>
               <input
@@ -120,7 +144,9 @@ const Register = () => {
                 name="lastname"
                 type="text"
                 value={lastname}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setLastname(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setLastname(e.target.value)
+                }
                 required
                 className="appearance-none block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="Pérez López"
@@ -128,7 +154,10 @@ const Register = () => {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Email
               </label>
               <input
@@ -137,7 +166,9 @@ const Register = () => {
                 type="email"
                 autoComplete="email"
                 value={email}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setEmail(e.target.value)
+                }
                 required
                 className="appearance-none block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="tu@email.com"
@@ -145,7 +176,10 @@ const Register = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Contraseña
               </label>
               <input
@@ -153,7 +187,9 @@ const Register = () => {
                 name="password"
                 type="password"
                 value={password}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setPassword(e.target.value)
+                }
                 required
                 className="appearance-none block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="••••••••"
@@ -161,7 +197,10 @@ const Register = () => {
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Confirmar Contraseña
               </label>
               <input
@@ -169,7 +208,9 @@ const Register = () => {
                 name="confirmPassword"
                 type="password"
                 value={confirmPassword}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setConfirmPassword(e.target.value)
+                }
                 required
                 className="appearance-none block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="••••••••"
@@ -177,7 +218,10 @@ const Register = () => {
             </div>
 
             <div>
-              <label htmlFor="birthdate" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="birthdate"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Fecha de nacimiento
               </label>
               <input
@@ -185,10 +229,34 @@ const Register = () => {
                 name="birthdate"
                 type="date"
                 value={birthdate}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setBirthdate(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setBirthdate(e.target.value)
+                }
                 required
                 className="appearance-none block w-full px-3 py-2 border text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               />
+            </div>
+
+            <div>
+              <label
+                htmlFor="birthdate"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Tipo de usuario
+              </label>
+              <select
+                name="userType"
+                id="userType"
+                value={userType}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                  setUserType(e.target.value as UserType)
+                }
+                className="block w-full px-3 py-2 border text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              >
+                <option value="STUDENT">Estudiante</option>
+                <option value="TEACHER">Profesor(a)</option>
+                <option value="PARENT">Apoderado</option>
+              </select>
             </div>
           </div>
 
@@ -205,13 +273,18 @@ const Register = () => {
 
         <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
-            ¿Ya tienes una cuenta?{' '}
-            <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">Iniciar sesión</Link>
+            ¿Ya tienes una cuenta?{" "}
+            <Link
+              to="/login"
+              className="font-medium text-blue-600 hover:text-blue-500"
+            >
+              Iniciar sesión
+            </Link>
           </p>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;

@@ -32,7 +32,7 @@ const Login = () => {
 
         // Espera 1 segundo antes de redirigir al usuario a la página principal
         setTimeout(() => {
-          navigate("/homeUser"); // Redirige a la ruta home
+          navigate("/estudiante"); // Redirige a la ruta home
         }, 2000);
       }
     } catch (err: unknown) {

@@ -1,18 +1,8 @@
 package com.edutrack.controllers;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
-import com.edutrack.auth.AuthService;
-import com.edutrack.dto.request.UserDetailsDTO;
-import com.edutrack.entities.StudentDetails;
-import com.edutrack.entities.TeacherDetails;
-import com.edutrack.entities.UserInstitution;
-import com.edutrack.entities.enums.UserType;
-import com.edutrack.repositories.StudentDetailsRepository;
-import com.edutrack.repositories.TeacherDetailsRepository;
-import com.edutrack.repositories.UserInstitutionRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,10 +26,6 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
     
     private final UserService userService;
-    private final AuthService authService;
-    private final StudentDetailsRepository studentRepository;
-    private final TeacherDetailsRepository teacherRepository;
-    private final UserInstitutionRepository userInstitutionRepository;
 
     @GetMapping()
     @Transactional(readOnly = true)

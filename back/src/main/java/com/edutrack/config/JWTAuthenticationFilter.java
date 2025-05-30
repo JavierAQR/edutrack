@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,11 +27,9 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
-    private final JwtUtils jwtUtils;
 
     public JWTAuthenticationFilter(UserDetailsService userDetailsService, JwtUtils jwtUtils) {
         this.userDetailsService = userDetailsService;
-        this.jwtUtils = jwtUtils;
     }
 
     @Override
@@ -49,9 +46,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 String jwtToken = jwtTokenOptional.get();
 
                 // 2. Validar token JWT
-                if (jwtUtils.validateToken(jwtToken)) {
+                if (JwtUtils.validateToken(jwtToken)) {
                     // 3. Extraer username del token
-                    Optional<String> usernameOptional = jwtUtils.getUsernameFromToken(jwtToken);
+                    Optional<String> usernameOptional = JwtUtils.getUsernameFromToken(jwtToken);
 
                     if (usernameOptional.isPresent()) {
                         String username = usernameOptional.get();

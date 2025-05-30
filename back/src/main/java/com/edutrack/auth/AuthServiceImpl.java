@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.edutrack.entities.User;
+import com.edutrack.entities.enums.UserType;
 import com.edutrack.listener.RegistrationCompleteEvent;
 import com.edutrack.repositories.UserRepository;
 import com.edutrack.token.VerificationToken;
@@ -66,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String signUp(String name, String lastname, String username, String password, String email, LocalDate birthdate) {
+    public String signUp(String name, String lastname, String username, String password, String email, LocalDate birthdate, UserType userType) {
 
         // Verifica si el nombre de usuario ya existe en la base de datos.
         if (userRepository.existsByUsername(username)) {
@@ -85,6 +86,7 @@ public class AuthServiceImpl implements AuthService {
         user.setLastname(lastname);
         user.setEmail(email); 
         user.setEnabled(false);
+        user.setUserType(userType);
 
         user = userRepository.save(user);
 
