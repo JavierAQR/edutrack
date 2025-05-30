@@ -8,7 +8,7 @@ const AdminLayout = () => {
     <Navbar>
       <Link to="/admin/usuarios" className="hover:text-gray-900 font-medium">Usuarios</Link>
       <Link to="/admin/cursos" className="hover:text-gray-900 font-medium">Cursos</Link>
-      <Link to="/admin/pagos" className="hover:text-gray-900 font-medium">Pagos</Link>
+      <Link to="/admin/payments" className="hover:text-gray-900 font-medium">Pagos</Link>
       <Link to="/admin/configuracion" className="hover:text-gray-900 font-medium">Configuración</Link>
       <Link to="/admin/institutions" className="hover:text-gray-900 font-medium">Instituciones</Link>
     </Navbar>

@@ -3,6 +3,8 @@ package com.edutrack.controllers;
 import com.edutrack.entities.StudentSection;
 import com.edutrack.services.StudentSectionService;
 
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,19 +30,10 @@ public class StudentSectionController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    public StudentSection create(@RequestBody StudentSection studentSection) {
-        return service.save(studentSection);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<StudentSection> update(@PathVariable Long id, @RequestBody StudentSection updatedSection) {
-        try {
-            StudentSection updated = service.update(id, updatedSection);
-            return ResponseEntity.ok(updated);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+  @PostMapping
+    public ResponseEntity<StudentSection> create(@Valid @RequestBody StudentSection studentSection) {
+        StudentSection saved = service.save(studentSection);
+        return ResponseEntity.ok(saved);
     }
 
     @DeleteMapping("/{id}")
