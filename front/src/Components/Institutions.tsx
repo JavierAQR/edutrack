@@ -36,7 +36,7 @@ const Institutions = () => {
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
       <div className="bg-blue-500 px-6 py-4">
         <h2 className="text-xl font-semibold text-white">
-          Instituciones vinculadas
+          Institución vinculada
         </h2>
       </div>
       <>

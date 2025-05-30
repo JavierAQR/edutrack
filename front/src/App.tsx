@@ -39,7 +39,7 @@ function App() {
 
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<UsuariosAdmin />} />
-             <Route path="payments" element={<PaymentsTable />} />
+            <Route path="payments" element={<PaymentsTable />} />
             <Route path="institutions" element={<InstitutionsAdmin />} />
             <Route path="usuarios" element={<UsuariosAdmin />} />
           </Route>
