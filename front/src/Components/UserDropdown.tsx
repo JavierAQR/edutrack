@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { FaUser } from "react-icons/fa";
+import { FaUserCircle } from "react-icons/fa";
 
 const UserDropdown = () => {
     const { user, logout } = useAuth();
@@ -8,16 +8,8 @@ const UserDropdown = () => {
 
     return (
         <div className="relative">
-            <button
-                onClick={() => setOpen(!open)}
-                className="flex items-center gap-2 focus:outline-none cursor-pointer"
-            >
-                <FaUser />
-                <span>{user?.username}</span>
-            </button>
-
             {open && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-md z-50">
+                <div className="absolute left-30 bottom-0 mt-2 w-30 bg-white border border-gray-200 rounded shadow-md z-50">
                     <button
                         onClick={() => {
                             logout();
@@ -29,6 +21,15 @@ const UserDropdown = () => {
                     </button>
                 </div>
             )}
+            <button
+                onClick={() => setOpen(!open)}
+                className="flex items-center gap-4 focus:outline-none cursor-pointer"
+            >
+                <FaUserCircle size={30} />
+                <span>{user?.username}</span>
+            </button>
+
+            
         </div>
     );
 };

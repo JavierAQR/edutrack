@@ -6,7 +6,6 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { FaArrowAltCircleUp, FaCoins, FaGraduationCap, FaHeadset, FaLaptop, FaUsers } from "react-icons/fa";
 import type { ReactNode } from "react";
-import Footer from "../Components/Footer";
 
 const Home = () => {
   return (
@@ -176,7 +175,6 @@ const Home = () => {
           </div>
         </article>
       </main>
-      <Footer />
     </>
   );
 };

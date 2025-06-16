@@ -1,54 +1,50 @@
 package com.edutrack.controllers;
 
-import com.edutrack.entities.AcademicLevel;
-import com.edutrack.services.AcademicLevelService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/levels")
-public class AcademicLevelController {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.edutrack.entities.AcademicLevel;
+import com.edutrack.services.AcademicLevelService;
+
+@RestController
+@RequestMapping("/admin/academic-levels")
+public class AcademicLevelController {
+    
     @Autowired
-    private AcademicLevelService service;
+    private AcademicLevelService academicLevelService;
 
     @GetMapping
     public List<AcademicLevel> getAll() {
-        return service.findAll();
+        return academicLevelService.getAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AcademicLevel> getById(@PathVariable Long id) {
-        return service.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public AcademicLevel getById(@PathVariable Long id) {
+        return academicLevelService.getById(id)
+                .orElseThrow(() -> new RuntimeException("AcademicLevel no encontrado con ID: " + id));
     }
 
     @PostMapping
-    public AcademicLevel create(@RequestBody AcademicLevel academicLevel) {
-        return service.save(academicLevel);
+    public AcademicLevel create(@RequestBody AcademicLevel level) {
+        return academicLevelService.create(level);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AcademicLevel> update(@PathVariable Long id, @RequestBody AcademicLevel academicLevel) {
-        return service.findById(id)
-                .map(existing -> {
-                    academicLevel.setId(id);
-                    return ResponseEntity.ok(service.save(academicLevel));
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public AcademicLevel update(@PathVariable Long id, @RequestBody AcademicLevel level) {
+        return academicLevelService.update(id, level);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (service.findById(id).isPresent()) {
-            service.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public void delete(@PathVariable Long id) {
+        academicLevelService.delete(id);
     }
 }

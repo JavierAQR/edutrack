@@ -117,7 +117,7 @@ public class DashboardServiceImpl implements DashboardService {
                 .collect(Collectors.toList());
     }
 
-    @Override
+   /*  @Override
     public List<TeacherCourseDTO> getTeacherCourses(String jwtToken) {
         String username = JwtUtils.getUsernameFromToken(jwtToken)
                 .orElseThrow(() -> new RuntimeException("Token inválido"));
@@ -166,7 +166,7 @@ public class DashboardServiceImpl implements DashboardService {
                     );
                 })
                 .collect(Collectors.toList());
-    }
+    } */
 
     // Método auxiliar para formatear el horario
     private String formatSchedule(LocalTime startTime, LocalTime endTime) {

@@ -1,12 +1,9 @@
 package com.edutrack.controllers;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,58 +13,43 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.edutrack.dto.request.InstitutionDTO;
 import com.edutrack.entities.Institution;
 import com.edutrack.services.InstitutionService;
 
 @RestController
-@RequestMapping("/api/institutions")
+@RequestMapping("/admin/institutions")
 public class InstitutionController {
-    
-    @Autowired
-    private InstitutionService institutionService;
 
-    @GetMapping()
-    @Transactional(readOnly = true)
-    public List<Institution> findAllInstitutions(){
-        return this.institutionService.findAll();
+    private final InstitutionService institutionService;
+
+    public InstitutionController(InstitutionService institutionService) {
+        this.institutionService = institutionService;
     }
 
-    @PostMapping()
-    @Transactional
-    public Institution save(@RequestBody Institution institution){
-        return this.institutionService.save(institution);
+    @GetMapping("/dto")
+    public List<InstitutionDTO> getAllDTO() {
+        return institutionService.getAllInstitutionsAsDTO();
     }
 
     @GetMapping("/{id}")
-    @Transactional(readOnly = true)
-    public Institution getInstitutionById(@PathVariable Long id){
-        return this.institutionService.findById(id);
+    public Institution getById(@PathVariable Long id) {
+        return institutionService.getInstitutionById(id);
+    }
+
+    @PostMapping
+    public ResponseEntity<Institution> create(@RequestBody Institution institution) {
+        return new ResponseEntity<>(institutionService.createInstitution(institution), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    @Transactional
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Institution updatedInstitution) {
-        Optional<Institution> optionalInstitution = Optional.of(this.institutionService.findById(id));
-        if(optionalInstitution.isPresent()){
-            Institution existingInstitution = optionalInstitution.get();
-
-            // Actualizar todos los campos
-            existingInstitution.setName(updatedInstitution.getName());
-            existingInstitution.setAddress(updatedInstitution.getAddress());
-            existingInstitution.setDescription(updatedInstitution.getDescription());
-            existingInstitution.setPhone(updatedInstitution.getPhone());
-            existingInstitution.setWebsite(updatedInstitution.getWebsite());
-
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(this.institutionService.update(id, existingInstitution));
-        }
-        return ResponseEntity.notFound().build();
+    public Institution update(@PathVariable Long id, @RequestBody Institution institution) {
+        return institutionService.updateInstitution(id, institution);
     }
 
     @DeleteMapping("/{id}")
-    @Transactional
-    public ResponseEntity<Void> deleteInstitution(@PathVariable Long id) {
-        institutionService.delete(id); 
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        institutionService.deleteInstitution(id);
         return ResponseEntity.noContent().build();
     }
 }

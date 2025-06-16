@@ -1,10 +1,15 @@
 package com.edutrack.entities;
 
+import java.util.List;
+
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,5 +40,8 @@ public class Institution {
 
     @Column(nullable = true)
     private String website;
+
+    @OneToMany(mappedBy = "institution", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<InstitutionAcademicLevels> academicLevels;
 
 }

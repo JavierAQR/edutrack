@@ -1,56 +1,42 @@
 package com.edutrack.controllers;
 
+import com.edutrack.dto.request.CourseDTO;
 import com.edutrack.entities.*;
 import com.edutrack.services.CourseService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/courses")
-@RequiredArgsConstructor
+@RequestMapping("/admin/courses")
 public class CourseController {
 
-    @Autowired
+   @Autowired
     private CourseService courseService;
 
     @GetMapping
-    public List<Course> getAll() {
-        return courseService.findAll();
+    public List<CourseDTO> getAll() {
+        return courseService.getAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Course> getById(@PathVariable Long id) {
-        return courseService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public Course getById(@PathVariable Long id) {
+        return courseService.getById(id);
     }
 
     @PostMapping
-    public Course create(@RequestBody Course course) {
-        return courseService.save(course);
+    public Course create(@RequestBody CourseDTO dto) {
+        return courseService.create(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Course> update(@PathVariable Long id, @RequestBody Course course) {
-        return courseService.findById(id)
-                .map(existing -> {
-                    course.setId(id);
-                    return ResponseEntity.ok(courseService.save(course));
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public Course update(@PathVariable Long id, @RequestBody CourseDTO dto) {
+        return courseService.update(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (courseService.findById(id).isPresent()) {
-            courseService.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public void delete(@PathVariable Long id) {
+        courseService.delete(id);
     }
 }

@@ -43,7 +43,7 @@ public class DashboardController {
         }
     }
 
-    @GetMapping("/teacher/courses")
+    /* @GetMapping("/teacher/courses")
     public ResponseEntity<List<TeacherCourseDTO>> getTeacherCourses(@RequestHeader("Authorization") String token) {
         try {
             String jwtToken = token.substring(7); // Remove "Bearer " prefix
@@ -52,5 +52,5 @@ public class DashboardController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-    }
+    } */
 }

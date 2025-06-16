@@ -1,7 +1,6 @@
 package com.edutrack.dto.request;
 
 import com.edutrack.entities.enums.UserType;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
