@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, type ChangeEvent, type FormEvent } from "react";
-import { Link  } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 
@@ -14,19 +14,65 @@ interface JwtPayload {
   exp: number; // expiración
 }
 
-
-
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  // const navigate = useNavigate();
   const { login } = useAuth();
+  const navigate = useNavigate();
 
+  // Función para verificar si necesita completar perfil
+  const checkProfileStatus = async (token: string) => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/api/auth/profile-status",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error checking profile status:", error);
+      return null;
+    }
+  };
 
+  // Función para redirigir según el rol y estado del perfil
+  const redirectUser = async (role: string, token: string) => {
+    // Si es TEACHER, verificar si necesita completar perfil
+    if (role === "TEACHER") {
+      const profileStatus = await checkProfileStatus(token);
 
+      if (profileStatus?.needsProfileCompletion) {
+        navigate("/complete-teacher-profile");
+        return;
+      }
+    }
+    // Redirección normal según el rol
+    switch (role) {
+      case "ADMIN":
+        navigate("/admin");
+        break;
+      case "STUDENT":
+        navigate("/estudiante");
+        break;
+      case "TEACHER":
+        navigate("/profesor"); // Dashboard del profesor
+        break;
+      case "DIRECTOR":
+        navigate("/director");
+        break;
+      case "PARENT":
+        navigate("/padre");
+        break;
+      default:
+        navigate("/");
+    }
+  };
 
   async function handleLogin(e: FormEvent) {
     e.preventDefault();
@@ -45,41 +91,23 @@ const Login = () => {
       if (response.data.authStatus === "LOGIN_SUCCESS") {
         setSuccessMessage("Inicio de sesión exitoso"); // Muestra el mensaje de éxito
         // Guarda el token JWT en el almacenamiento local para futuras solicitudes
-        const token = response.data.token
+        const token = response.data.token;
         localStorage.setItem("token", token);
 
         // Decodificamos el token
         const decoded = jwtDecode<JwtPayload>(token);
         const role = decoded.role;
-        
+
         login(response.data.token, {
           username: username,
+          role: role,
         });
 
-
-        // Redirigimos según el rol
-        if (role === "ADMIN") {
-          window.location.href = "/admin";
-        } else if (role === "STUDENT") {
-          window.location.href = "/estudiante";
-        } else {
-          window.location.href = "/";
-        }
-
-
-
-        // Redirigimos según el rol
-        if (role === "ADMIN") {
-          window.location.href = "/admin";
-        } else if (role === "STUDENT") {
-          window.location.href = "/estudiante";
-        } else {
-          window.location.href = "/";
-        }
-
+        // Redirigir según el rol y estado del perfil
+        await redirectUser(role, token);
       }
     } catch (err: unknown) {
-      if (err.response?.data?.message) {
+      if (axios.isAxiosError(err) && err.response?.data?.message) {
         setError(err.response.data.message);
       } else {
         setError("Error al iniciar sesión. Por favor, intente más tarde");

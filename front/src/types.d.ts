@@ -1,8 +1,8 @@
-declare type UserType = "STUDENT" | "TEACHER" | "PARENT" | "ADMIN" | "SUPER_ADMIN";
+export type UserType = "STUDENT" | "TEACHER" | "PARENT" | "ADMIN" | "SUPER_ADMIN" | string;
 
 export interface User {
     username: string,
-    // user_type: UserType
+    role: string
 }
 
 export interface Usuario {
@@ -34,3 +34,11 @@ export interface Activity {
     courseName: string;
     dueDate: string;
 }
+
+// Tipado para los ítems del menú
+export type MenuItem = {
+    icons: JSX.Element;
+    label: string;
+    href: string;
+  };
+  

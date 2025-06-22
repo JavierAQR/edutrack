@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaEnvelope, FaPhone, FaUser } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import UserDropdown from "./UserDropdown";
 
 interface Props {
   children?: React.ReactNode;
@@ -10,7 +8,6 @@ interface Props {
 }
 
 const Navbar = ({ children }: Props) => {
-  const { token } = useAuth();
   const location = useLocation();
 
   // Determinar si la ruta actual debe tener scroll habilitado
@@ -42,32 +39,42 @@ const Navbar = ({ children }: Props) => {
   return (
     <div className="fixed w-full z-50 bg-transparent text-white">
       {/* Barra superior (contacto + login) */}
-      <div className={`${scrolled ? 'hidden' : 'bg-opacity-80 py-4 px-6 border-b border-gray-500'}`}>
+      <div
+        className={`${
+          scrolled
+            ? "hidden"
+            : "bg-opacity-80 py-4 px-6 border-b border-gray-500"
+        }`}
+      >
         <div className="max-w-5xl mx-auto flex justify-between flex-wrap items-center text-sm">
           {/* Contacto */}
           <div className="flex space-x-4">
-            <a href="mailto:contacto@edutrack.com" className="flex items-center">
+            <a
+              href="mailto:contacto@edutrack.com"
+              className="flex items-center"
+            >
               <FaEnvelope className="mr-1" /> contacto@edutrack.com
             </a>
             <a href="tel:+123456789" className="flex items-center">
-              <FaPhone className="mr-1" />+1 234 567 89
+              <FaPhone className="mr-1" />
+              +1 234 567 89
             </a>
           </div>
 
           {/* Usuario */}
-          {!token ? (
-            <Link to="/login" className="flex items-center gap-2 text-lg">
-              <FaUser />
-              <span className="text-sm">Iniciar Sesión / Registrarse</span>
-            </Link>
-          ) : (
-            <UserDropdown />
-          )}
+          <Link to="/login" className="flex items-center gap-2 text-lg">
+            <FaUser />
+            <span className="text-sm">Iniciar Sesión / Registrarse</span>
+          </Link>
         </div>
       </div>
 
       {/* Navbar principal */}
-      <nav className={`px-6 ${scrolled ? 'bg-white text-black py-3 shadow-md' : 'bg-opacity-70 py-5'}`}>
+      <nav
+        className={`px-6 ${
+          scrolled ? "bg-white text-black py-3 shadow-md" : "bg-opacity-70 py-5"
+        }`}
+      >
         <div className="max-w-5xl mx-auto flex justify-between items-center">
           {/* Logo */}
           <Link to="/">
@@ -85,22 +92,55 @@ const Navbar = ({ children }: Props) => {
           <div className="hidden md:flex space-x-8">
             {children || (
               <>
-                <Link to="/instituciones" className="hover:text-gray-900 font-medium">Instituciones</Link>
-                <Link to="/certificaciones" className="hover:text-gray-900 font-medium">Certificaciones</Link>
-                <Link to="/servicios" className="hover:text-gray-900 font-medium">Servicios</Link>
-                <Link to="/contacto" className="hover:text-gray-900 font-medium">Contáctanos</Link>
-                <Link to="/nosotros" className="hover:text-gray-900 font-medium">Sobre Nosotros</Link>
+                <Link
+                  to="/instituciones"
+                  className="hover:text-gray-900 font-medium"
+                >
+                  Instituciones
+                </Link>
+                <Link
+                  to="/certificaciones"
+                  className="hover:text-gray-900 font-medium"
+                >
+                  Certificaciones
+                </Link>
+                <Link
+                  to="/servicios"
+                  className="hover:text-gray-900 font-medium"
+                >
+                  Servicios
+                </Link>
+                <Link
+                  to="/contacto"
+                  className="hover:text-gray-900 font-medium"
+                >
+                  Contáctanos
+                </Link>
+                <Link
+                  to="/nosotros"
+                  className="hover:text-gray-900 font-medium"
+                >
+                  Sobre Nosotros
+                </Link>
               </>
             )}
           </div>
 
-          {/* Mostrar UserDropdown si está autenticado y scrolled */}
-          {token && scrolled && <UserDropdown />}
-
           {/* Botón móvil */}
           <button className="md:hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
             </svg>
           </button>
         </div>
