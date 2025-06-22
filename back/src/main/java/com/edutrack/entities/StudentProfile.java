@@ -1,35 +1,35 @@
 package com.edutrack.entities;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "courses", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"name", "grade_id"})
-})
+@Table(name = "student_profiles")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Course {
-
+public class StudentProfile {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "grade_id", nullable = false)
-    private Grade grade;
+  /*   @OneToMany
+    @JoinColumn(name = "academic_level_id", nullable = false)
+    private AcademicLevel academicLevel;
+ */
 
+    
 }

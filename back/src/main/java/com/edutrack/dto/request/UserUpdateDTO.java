@@ -9,5 +9,4 @@ public class UserUpdateDTO {
     private String name;
     private String lastname;
     private UserType userType;
-    // getters y setters
 }
