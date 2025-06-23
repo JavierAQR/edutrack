@@ -14,40 +14,39 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.edutrack.dto.ApiResponse;
-import com.edutrack.dto.request.TeacherProfileDTO;
-import com.edutrack.dto.response.TeacherProfileResponseDTO;
-import com.edutrack.entities.TeacherProfile;
+import com.edutrack.dto.request.StudentProfileDTO;
+import com.edutrack.dto.response.StudentProfileResponseDTO;
+import com.edutrack.entities.StudentProfile;
 import com.edutrack.entities.User;
 import com.edutrack.entities.enums.UserType;
 import com.edutrack.repositories.UserRepository;
-import com.edutrack.services.TeacherProfileService;
+import com.edutrack.services.StudentProfileService;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/teacher-profile")
+@RequestMapping("/api/student-profile")
 @RequiredArgsConstructor
-public class TeacherProfileController {
-
-    private final TeacherProfileService teacherProfileService;
-    private final UserRepository userRepository;
+public class StudentProfileController {
+    private final StudentProfileService studentProfileService;
+    private final UserRepository userRepository; 
 
     @PostMapping("/create")
     public ResponseEntity<?> createProfile(
-            @RequestBody @Valid TeacherProfileDTO profileDTO,
+            @RequestBody @Valid StudentProfileDTO profileDTO,
             Authentication authentication) {
 
         try {
- 
+
             String username = authentication.getName();
             User user = userRepository.findByUsername(username)
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-            TeacherProfile profile = teacherProfileService.createProfile(user.getId(), profileDTO);
+            StudentProfile profile = studentProfileService.createProfile(user.getId(), profileDTO);
 
-            return ResponseEntity.ok(new ApiResponse("Perfil de profesor creado exitosamente", profile));
+            return ResponseEntity.ok(new ApiResponse("Perfil de estudiante creado exitosamente", profile));
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
@@ -65,13 +64,13 @@ public class TeacherProfileController {
             User user = userRepository.findByUsername(username)
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-            // Verificar que es un profesor
-            if (user.getUserType() != UserType.TEACHER) {
+            // Verificar que es un estudiante
+            if (user.getUserType() != UserType.STUDENT) {
                 return ResponseEntity.badRequest()
-                        .body(new ApiResponse("Solo los profesores pueden acceder a esta información"));
+                        .body(new ApiResponse("Solo los estudiantes pueden acceder a esta información"));
             }
 
-            Optional<TeacherProfileResponseDTO> profile = teacherProfileService.getProfileByUserId(user.getId());
+            Optional<StudentProfileResponseDTO> profile = studentProfileService.getProfileByUserId(user.getId());
 
             if (profile.isPresent()) {
                 return ResponseEntity.ok(new ApiResponse("Perfil encontrado", profile.get()));
@@ -92,7 +91,7 @@ public class TeacherProfileController {
             User user = userRepository.findByUsername(username)
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-            boolean hasProfile = teacherProfileService.hasCompleteProfile(user.getId());
+            boolean hasProfile = studentProfileService.hasCompleteProfile(user.getId());
 
             Map<String, Object> response = Map.of(
                     "hasCompleteProfile", hasProfile,
@@ -108,7 +107,7 @@ public class TeacherProfileController {
     @PutMapping("/update-professional-info")
     @Transactional
     public ResponseEntity<?> updateProfessionalInfo(
-            @RequestBody @Valid TeacherProfileDTO profileDTO,
+            @RequestBody @Valid StudentProfileDTO profileDTO,
             Authentication authentication) {
         
         try {
@@ -116,13 +115,13 @@ public class TeacherProfileController {
             User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
             
-            // Verificar que es un profesor
-            if (user.getUserType() != UserType.TEACHER) {
+            // Verificar que es un estudiante
+            if (user.getUserType() != UserType.STUDENT) {
                 return ResponseEntity.badRequest()
-                    .body(new ApiResponse("Solo los profesores pueden actualizar información profesional"));
+                    .body(new ApiResponse("Solo los estudiantees pueden actualizar información profesional"));
             }
             
-            TeacherProfileResponseDTO updatedProfile = teacherProfileService.updateProfile(user.getId(), profileDTO);
+            StudentProfileResponseDTO updatedProfile = studentProfileService.updateProfile(user.getId(), profileDTO);
             
             return ResponseEntity.ok(new ApiResponse("Información profesional actualizada exitosamente", updatedProfile));
             

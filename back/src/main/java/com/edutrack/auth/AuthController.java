@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.edutrack.dto.ApiResponse;
+import com.edutrack.entities.StudentProfile;
 import com.edutrack.entities.TeacherProfile;
 import com.edutrack.entities.User;
 import com.edutrack.entities.enums.UserType;
@@ -182,6 +183,14 @@ public class AuthController {
                         "yearsExperience", teacherProfile.getYearsExperience(),
                         "biography", teacherProfile.getBiography() != null ? teacherProfile.getBiography() : "",
                         "cvUrl", teacherProfile.getCvUrl() != null ? teacherProfile.getCvUrl() : "");
+                completeProfile.put("professionalInfo", professionalInfo);
+            }
+
+            if (user.getUserType() == UserType.STUDENT && user.getStudentProfile() != null) {
+                StudentProfile studentProfile = user.getStudentProfile();
+                Map<String, Object> professionalInfo = Map.of(
+                        "academicLevel", studentProfile.getAcademicLevel(),
+                        "biography", studentProfile.getBiography() != null ? studentProfile.getBiography() : "");
                 completeProfile.put("professionalInfo", professionalInfo);
             }
 
