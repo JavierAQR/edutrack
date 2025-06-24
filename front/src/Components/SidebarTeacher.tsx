@@ -5,10 +5,8 @@ import { IoBook } from "react-icons/io5";
 import { MdOutlineDashboard } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
 import UserLayout from "./UserLayout";
-import { Navigate, Outlet } from "react-router";
+import { Outlet } from "react-router";
 import type { MenuItem } from "../types";
-import { useAuth } from "../context/AuthContext";
-import { useLocation } from "react-router";
 
 const menuItems: MenuItem[] = [
   {
@@ -39,34 +37,15 @@ const menuItems: MenuItem[] = [
   },
 ];
 
-interface Props {
-  allowedRoles: string[];
-}
 
-const SidebarTeacher = ({ allowedRoles }: Props) => {
+const SidebarTeacher = () => {
   const [open, setOpen] = useState<boolean>(true);
-  const { user, isloading } = useAuth();
-  const location = useLocation();
-
-  if (isloading) {
-    return <div>Cargando...</div>;
-  }
-
-  if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  if (!allowedRoles.includes(user.role)) {
-    // Usuario autenticado pero sin permisos
-    return <Navigate to="/unauthorized" replace />;
-  }
-  
 
   return (
     <UserLayout
       open={open}
       setOpen={setOpen}
-      userType={user.role}
+      userType={"TEACHER"}
       menuItems={menuItems}
     >
       <Outlet />

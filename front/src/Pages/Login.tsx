@@ -41,18 +41,20 @@ const Login = () => {
     }
   };
 
-  // Función para redirigir según el rol y estado del perfil
-  const redirectUser = async (role: string, token: string) => {
-    // Si es TEACHER, verificar si necesita completar perfil
-    if (role === "TEACHER") {
-      const profileStatus = await checkProfileStatus(token);
+  const completeProfileRoutes: Record<string, string> = {
+    TEACHER: "/profesor/complete-teacher-profile",
+    STUDENT: "/estudiante/complete-student-profile",
+  };
 
-      if (profileStatus?.needsProfileCompletion) {
-        navigate("/complete-teacher-profile");
+  const redirectUser = async (role: string, token: string) => {
+    if (role === "TEACHER" || role === "STUDENT") {
+      const profileStatus = await checkProfileStatus(token);
+      if (role in completeProfileRoutes && profileStatus?.needsProfileCompletion) {
+        navigate(completeProfileRoutes[role]);
         return;
       }
     }
-    // Redirección normal según el rol
+
     switch (role) {
       case "ADMIN":
         navigate("/admin");
@@ -61,7 +63,7 @@ const Login = () => {
         navigate("/estudiante");
         break;
       case "TEACHER":
-        navigate("/profesor"); // Dashboard del profesor
+        navigate("/profesor");
         break;
       case "DIRECTOR":
         navigate("/director");
