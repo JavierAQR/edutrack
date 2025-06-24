@@ -104,7 +104,7 @@ public class StudentProfileController {
         }
     }
 
-    @PutMapping("/update-professional-info")
+    @PutMapping("/update-student-info")
     @Transactional
     public ResponseEntity<?> updateProfessionalInfo(
             @RequestBody @Valid StudentProfileDTO profileDTO,
@@ -118,12 +118,12 @@ public class StudentProfileController {
             // Verificar que es un estudiante
             if (user.getUserType() != UserType.STUDENT) {
                 return ResponseEntity.badRequest()
-                    .body(new ApiResponse("Solo los estudiantees pueden actualizar información profesional"));
+                    .body(new ApiResponse("Solo los estudiantes pueden actualizar información estudiantil"));
             }
             
             StudentProfileResponseDTO updatedProfile = studentProfileService.updateProfile(user.getId(), profileDTO);
             
-            return ResponseEntity.ok(new ApiResponse("Información profesional actualizada exitosamente", updatedProfile));
+            return ResponseEntity.ok(new ApiResponse("Información estudiantil actualizada exitosamente", updatedProfile));
             
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

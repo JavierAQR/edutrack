@@ -1,8 +1,6 @@
 package com.edutrack.dto.request;
 
-import com.edutrack.entities.AcademicLevel;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,8 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StudentProfileDTO {
 
-    @NotBlank(message = "El nivel académico es requerido.")
-    private AcademicLevel academicLevel;
+    private Long academicLevelId;
     
     private String biography;
 }

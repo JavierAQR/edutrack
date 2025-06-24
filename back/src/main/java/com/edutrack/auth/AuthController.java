@@ -155,6 +155,27 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/profile-status")
+    public ResponseEntity<?> getProfileStatus(Authentication authentication) {
+        try {
+            String username = authentication.getName();
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+         boolean needsProfileCompletion = !user.hasCompleteProfile();
+
+            Map<String, Object> status = Map.of(
+                    "userType", user.getUserType().toString(),
+                    "hasCompleteProfile", user.hasCompleteProfile(),
+                    "needsProfileCompletion", needsProfileCompletion);
+
+            return ResponseEntity.ok(status);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al verificar estado del perfil");
+        }
+    }
+
     @GetMapping("/my-complete-profile")
     public ResponseEntity<?> getCompleteProfile(Authentication authentication) {
         try {
