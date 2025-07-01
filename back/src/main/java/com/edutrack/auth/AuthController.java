@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.edutrack.dto.ApiResponse;
+import com.edutrack.dto.request.UserInfoDTO;
 import com.edutrack.entities.TeacherProfile;
 import com.edutrack.entities.User;
 import com.edutrack.entities.enums.UserType;
 import com.edutrack.repositories.UserRepository;
+import com.edutrack.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

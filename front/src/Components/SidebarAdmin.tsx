@@ -37,7 +37,7 @@ const menuItems: MenuItem[] = [
   {
     icons: <PiStudent size={30} />,
     label: "Alumnos",
-    href: "/admin/dashboard",
+    href: "/admin/students",
   },
   {
     icons: <FaRegBuilding size={30} />,

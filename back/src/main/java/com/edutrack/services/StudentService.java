@@ -1,83 +1,115 @@
 package com.edutrack.services;
 
-import org.springframework.stereotype.Service;
-
+import com.edutrack.dto.request.StudentCreateDTO;
+import com.edutrack.dto.request.StudentUpdateDTO;
+import com.edutrack.dto.StudentInfoDTO;
+import com.edutrack.entities.*;
+import com.edutrack.entities.enums.UserType;
+import com.edutrack.repositories.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class StudentService {
 
-    // private final UserRepository userRepository;
-    // private final InstitutionRepository institutionRepository;
-    // private final AcademicLevelRepository academicLevelRepository;
-    // private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final StudentProfileRepository studentProfileRepository;
+    private final GradeRepository gradeRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    // @Transactional
-    // public StudentDetails createStudent(StudentRegisterDTO studentDTO) {
-    //     // Verificar si el email ya existe
-    //     if (userRepository.existsByEmail(studentDTO.getEmail())) {
-    //         throw new IllegalArgumentException("Email already in use");
-    //     }
-        
-    //     // Obtener las entidades relacionadas
-    //     Institution institution = institutionRepository.findById(studentDTO.getInstitutionId())
-    //         .orElseThrow(() -> new EntityNotFoundException("Institution not found"));
-        
-    //     AcademicLevel academicLevel = academicLevelRepository.findById(studentDTO.getAcademicLevelId())
-    //         .orElseThrow(() -> new EntityNotFoundException("Academic level not found"));
-               
-    //     // Crear el Student específico
-    //     StudentDetails student = new StudentDetails();
-    //     // Copiar propiedades del User al Student
-    //     student.setName(studentDTO.getName());
-    //     student.setLastname(studentDTO.getLastname());
-    //     student.setEmail(studentDTO.getEmail());
-    //     student.setPassword(passwordEncoder.encode(studentDTO.getPassword()));
-    //     student.setBirthdate(studentDTO.getBirthdate());
-    //     student.setUserType(UserType.STUDENT);
-        
-    //     // Establecer campos específicos
-    //     student.setInstitution(institution);
-    //     student.setAcademicLevel(academicLevel);
-    //     student.setAverageGrade(studentDTO.getAverageGrade());
-        
-    //     // Guardar (esto persistirá en ambas tablas)
-    //     return userRepository.save(student);
-    // }
-    
-    // @Autowired
-    // private StudentRepository studentRepository;
+    public List<StudentInfoDTO> getAllStudents() {
+        List<User> students = userRepository.findByUserType(UserType.STUDENT);
+        return students.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
 
-    // public List<Student> findAll(){
-    //     return (List<Student>) this.studentRepository.findAll();
-    // }
+    @Transactional
+    public StudentInfoDTO createStudent(StudentCreateDTO studentDTO) {
+        User user = new User();
+        user.setUsername(studentDTO.getUsername());
+        user.setName(studentDTO.getName());
+        user.setLastname(studentDTO.getLastname());
+        user.setEmail(studentDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(studentDTO.getPassword()));
+        user.setBirthdate(studentDTO.getBirthdate());
+        user.setEnabled(true);
+        user.setUserType(UserType.STUDENT);
 
-    // public Student save(Student student){
-    //     return this.studentRepository.save(student);
-    // }
+        User savedUser = userRepository.save(user);
 
-    // public Student findById(Long id){
-    //     return this.studentRepository.findById(id).get();
-    // }
+        StudentProfile profile = new StudentProfile();
+        profile.setUser(savedUser);
 
-    // public Student update(Long id, Student student){
-    //     Student s = this.studentRepository.findById(id).get();
-    //     s.setId(student.getId());
-    //     s.setName(student.getName());
-    //     s.setLastname(student.getLastname());
-    //     s.setEmail(student.getEmail());
-    //     s.setCreatedAt(student.getCreatedAt());
-    //     s.setPassword(passwordEncoder.encode(student.getPassword()));
-    //     s.setActive(student.getActive());
-    //     s.setInstitution(student.getInstitution());
-    //     s.setAcademicLevel(student.getAcademicLevel());
-    //     s.setAverageGrade(student.getAverageGrade());
-        
-    //     return this.studentRepository.save(s);
-    // }
+        if(studentDTO.getGradeId() != null) {
+            Grade grade = gradeRepository.findById(studentDTO.getGradeId())
+                    .orElseThrow(() -> new RuntimeException("Grado no encontrado"));
+            profile.setGrade(grade);
+        }
 
-    // public void delete(Long id) {
-    //     studentRepository.deleteById(id);
-    // }
+        studentProfileRepository.save(profile);
+
+        return convertToDTO(savedUser);
+    }
+
+    @Transactional
+    public StudentInfoDTO updateStudent(Long id, StudentUpdateDTO studentDTO) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Estudiante no encontrado"));
+
+        user.setName(studentDTO.getName());
+        user.setLastname(studentDTO.getLastname());
+        user.setEmail(studentDTO.getEmail());
+        user.setBirthdate(studentDTO.getBirthdate());
+        user.setEnabled(studentDTO.getEnabled());
+
+        StudentProfile profile = studentProfileRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Perfil de estudiante no encontrado"));
+
+        if(studentDTO.getGradeId() != null) {
+            Grade grade = gradeRepository.findById(studentDTO.getGradeId())
+                    .orElseThrow(() -> new RuntimeException("Grado no encontrado"));
+            profile.setGrade(grade);
+        } else {
+            profile.setGrade(null);
+        }
+
+        userRepository.save(user);
+        studentProfileRepository.save(profile);
+
+        return convertToDTO(user);
+    }
+
+    @Transactional
+    public void deleteStudent(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Estudiante no encontrado"));
+
+        studentProfileRepository.deleteByUser(user);
+        userRepository.delete(user);
+    }
+
+    private StudentInfoDTO convertToDTO(User user) {
+        StudentProfile profile = studentProfileRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Perfil de estudiante no encontrado"));
+
+        return StudentInfoDTO.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .name(user.getName())
+                .lastname(user.getLastname())
+                .email(user.getEmail())
+                .birthdate(user.getBirthdate().toString())
+                .enabled(user.getEnabled())
+                .userType(user.getUserType().toString())
+                .gradeId(profile.getGrade() != null ? profile.getGrade().getId() : null)
+                .gradeName(profile.getGrade() != null ? profile.getGrade().getName() : null)
+                .academicLevel(profile.getGrade() != null && profile.getGrade().getAcademicLevel() != null ?
+                        profile.getGrade().getAcademicLevel().getName() : null)
+                .build();
+    }
 }
