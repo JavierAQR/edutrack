@@ -25,6 +25,7 @@ import TeacherManager from "./Pages/Admin/TeacherManager";
 import CompleteTeacherProfile from "./Pages/Teacher/CompleteTeacherProfile";
 import TeacherProfile from "./Pages/Teacher/TeacherProfile";
 import SidebarTeacher from "./Components/SidebarTeacher";
+import StudentManager from "./Pages/Admin/StudentManager";
 
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
           <Route path="/admin" element={<SidebarAdmin allowedRoles={["ADMIN"]}/> }>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="teachers" element={<TeacherManager />} />
+            <Route path="students" element={<StudentManager />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="institutions" element={<InstitutionManager />} />
             <Route path="academic-levels" element={<AcademicLevelManager />} />
