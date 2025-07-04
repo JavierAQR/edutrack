@@ -78,7 +78,7 @@ public class AuthController {
         try {
             var jwtToken = authService.signUp(authRequestDTO.name(), authRequestDTO.lastname(),
                     authRequestDTO.username(), authRequestDTO.password(), authRequestDTO.email(),
-                    authRequestDTO.birthdate(), authRequestDTO.userType());
+                    authRequestDTO.birthdate(), authRequestDTO.userType(), authRequestDTO.institutionId());
 
             var authResponseDTO = new AuthResponseDTO(jwtToken, AuthStatus.USER_CREATED_SUCCESSFULLY,
                     "Usuario registrado exitosamente.");

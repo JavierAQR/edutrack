@@ -1,23 +1,25 @@
 package com.edutrack.controllers;
 
-import com.edutrack.entities.Institution;
+import com.edutrack.entities.InstitutionGrade;
 import com.edutrack.services.InstitutionAdminService;
+
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/institution-admin")
+@RequestMapping("/api/institution-admin")
+@RequiredArgsConstructor
 public class InstitutionAdminController {
 
+    @Autowired
     private final InstitutionAdminService institutionAdminService;
 
-    public InstitutionAdminController(InstitutionAdminService institutionAdminService) {
-        this.institutionAdminService = institutionAdminService;
-    }
-
-    @GetMapping("/institutions")
-    public List<Institution> getOwnInstitutions() {
-        return institutionAdminService.getInstitutionsForCurrentAdmin();
+    @GetMapping("/grades")
+    public List<InstitutionGrade> getGradesForCurrentInstitution() {
+        return institutionAdminService.getGradesForCurrentAdminInstitution();
     }
 }

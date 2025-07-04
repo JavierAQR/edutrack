@@ -1,7 +1,7 @@
 import axios from "axios";
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { Link } from "react-router";
-import type { UserType } from "../types";
+import type { Institution, UserType } from "../types";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -11,15 +11,32 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [birthdate, setBirthdate] = useState("");
+  const [institutionId, setInstitution] = useState("");
+  const [institutions, setInstitutions] = useState<Institution[]>([]);
   const [userType, setUserType] = useState<UserType>("STUDENT");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  useEffect(() => {
+    fetchInstitutions();
+  }, []);
+
+  const fetchInstitutions = async () => {
+    try {
+      const [instRes] = await Promise.all([
+        axios.get("http://localhost:8080/admin/institutions/dto"),
+      ]);
+      setInstitutions(instRes.data);
+    } catch (err) {
+      console.error("Error cargando datos", err);
+    }
+  };
 
   async function save(e: FormEvent) {
     e.preventDefault();
     setError("");
     setSuccessMessage("");
-
+    
     if (password !== confirmPassword) {
       setError("Las contraseñas no coinciden");
       return;
@@ -35,6 +52,7 @@ const Register = () => {
           email,
           birthdate,
           password,
+          institutionId,
           userType,
         }
       );
@@ -44,6 +62,7 @@ const Register = () => {
         setTimeout(() => {
           window.location.href = "/login";
         }, 2000);
+        localStorage.setItem("IDInstitucion", institutionId)
       } else {
         setError(response.data.message || "No se pudo completar el registro.");
       }
@@ -256,6 +275,31 @@ const Register = () => {
                 <option value="STUDENT">Estudiante</option>
                 <option value="TEACHER">Profesor(a)</option>
                 <option value="PARENT">Apoderado</option>
+              </select>
+            </div>
+            <div>
+              <label
+                htmlFor="institution"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Institución
+              </label>
+              <select
+                value={institutionId}
+                name="institutionId"
+                id="institutionId"
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => setInstitution(e.target.value)}
+                required
+                className="border p-2 rounded mt-1 w-full"
+              >
+                <option value="" disabled>
+                  Seleccionar institución
+                </option>
+                {institutions.map((inst) => (
+                  <option key={inst.id} value={inst.id}>
+                    {inst.name}
+                  </option>
+                ))}
               </select>
             </div>
           </div>

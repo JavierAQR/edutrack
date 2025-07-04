@@ -62,6 +62,7 @@ public class UserController {
             user.setPassword(passwordEncoder.encode(userDTO.getPassword())); // Hashear la contraseña
             user.setBirthdate(userDTO.getBirthdate());
             user.setUserType(userDTO.getUserType());
+            user.setInstitution(userDTO.getInstitution());
             user.setEnabled(false); // Requerirá activación
 
             User savedUser = userService.save(user);
@@ -87,6 +88,7 @@ public class UserController {
             user.setUsername(userDTO.getUsername());
             user.setName(userDTO.getName());
             user.setLastname(userDTO.getLastname());
+            user.setInstitution(userDTO.getInstitution());
             user.setUserType(userDTO.getUserType());
             return ResponseEntity.ok(this.userService.save(user));
         }

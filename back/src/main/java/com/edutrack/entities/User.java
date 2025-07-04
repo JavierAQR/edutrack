@@ -56,7 +56,7 @@ public class User {
     private Boolean enabled = false;
 
     @ManyToOne
-    @JoinColumn(name = "institution_id", nullable = true)
+    @JoinColumn(name = "institution_id")
     private Institution institution;
 
     @Enumerated(EnumType.STRING)

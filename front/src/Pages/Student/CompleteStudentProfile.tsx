@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
-import type { AcademicLevel, Grade, Institution } from "../../types";
+import type { AcademicLevel, Grade } from "../../types";
 
 interface StudentProfileData {
   gradeId: string;
@@ -9,48 +9,42 @@ interface StudentProfileData {
 }
 
 const CompleteStudentProfile = () => {
-  const [institutions, setInstitutions] = useState<Institution[]>([]);
   const [availableLevels, setAvailableLevels] = useState<AcademicLevel[]>([]);
   const [availableGrades, setAvailableGrades] = useState<Grade[]>([]);
+  const [selectedInstitution, setSelectedInstitution] = useState("")
   const [profileData, setProfileData] = useState<StudentProfileData>({
     gradeId: "",
     biography: "",
   });
-  // const [grades, setGrades] = useState<{ id: number; name: string }[]>([]);
-  const [selectedInstitutionId, setSelectedInstitutionId] =
-    useState<string>("");
+
   const [selectedLevelId, setSelectedLevelId] = useState<string>("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchAll();
+    const storedInstitutionId = localStorage.getItem("IDInstitucion");
+    if (storedInstitutionId) {
+      loadAcademicLevels(storedInstitutionId);
+    }
+    fetchInstitution();
   }, []);
 
-  const fetchAll = async () => {
-    try {
-      const [instRes] = await Promise.all([
-        axios.get("http://localhost:8080/admin/institutions/dto"),
-      ]);
-      setInstitutions(instRes.data);
-    } catch (err) {
-      console.error("Error cargando datos", err);
+  const fetchInstitution = async () => {
+    const storedInstitutionId = localStorage.getItem("IDInstitucion");
+    if (storedInstitutionId) {
+      const res = await axios.get(`http://localhost:8080/admin/institutions/${storedInstitutionId}`);
+      setSelectedInstitution(res.data.name);
     }
   };
 
-  const handleInstitutionChange = async (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const id = e.target.value;
-    setSelectedInstitutionId(id);
-
+  const loadAcademicLevels = async (institutionId: string) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/admin/institution-academic-levels/by-institution/${id}`
+        `http://localhost:8080/admin/institution-academic-levels/by-institution/${institutionId}`
       );
       setAvailableLevels(res.data);
-      setAvailableGrades([]);
+      setAvailableGrades([]); 
       setSelectedLevelId("");
       setProfileData((prev) => ({ ...prev, gradeId: "" }));
     } catch (err) {
@@ -58,6 +52,7 @@ const CompleteStudentProfile = () => {
       setAvailableLevels([]);
     }
   };
+
 
   const handleLevelChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const id = e.target.value;
@@ -127,24 +122,6 @@ const CompleteStudentProfile = () => {
     }
   };
 
-  /*   useEffect(() => {
-    const fetchAcademicLevels = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        const response = await axios.get("http://localhost:8080/admin/grades", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        console.log(response.data);
-      } catch (error) {
-        console.error("Error al obtener grados:", error);
-      }
-    };
-
-    fetchAcademicLevels();
-  }, []); */
 
   return (
     <main className="pt-21 px-4 max-w-3xl mx-auto">
@@ -171,21 +148,7 @@ const CompleteStudentProfile = () => {
               >
                 Institución
               </label>
-              <select
-                value={selectedInstitutionId}
-                onChange={handleInstitutionChange}
-                required
-                className="border p-2 rounded mt-1"
-              >
-                <option value="" disabled>
-                  Seleccionar institución
-                </option>
-                {institutions.map((inst) => (
-                  <option key={inst.id} value={inst.id}>
-                    {inst.name}
-                  </option>
-                ))}
-              </select>
+              <p>{selectedInstitution}</p>
             </div>
             <div>
               <label

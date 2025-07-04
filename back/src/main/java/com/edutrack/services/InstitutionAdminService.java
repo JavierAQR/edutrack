@@ -1,8 +1,11 @@
 package com.edutrack.services;
 
-import com.edutrack.entities.Institution;
 import java.util.List;
 
+import com.edutrack.entities.InstitutionGrade;
+
 public interface InstitutionAdminService {
-    List<Institution> getInstitutionsForCurrentAdmin();
+
+    
+    List<InstitutionGrade> getGradesForCurrentAdminInstitution();
 }
