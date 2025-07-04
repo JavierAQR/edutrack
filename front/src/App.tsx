@@ -29,6 +29,9 @@ import VerificationRole from "./Components/VerificationRole";
 import SidebarStudent from "./Components/SidebarStudent";
 import StudentProfile from "./Pages/Student/StudentProfile";
 import StudentManager from "./Pages/Admin/StudentManager";
+import SidebarInstitutionAdmin from "./Components/SidebarInstitutionAdmin";
+import InstitutionGradeManager from "./Pages/InstitutionAdmin/InstitutionGradeManager";
+
 
 function App() {
   return (
@@ -43,6 +46,10 @@ function App() {
             <Route path="verification" element={<VerificationPage />} />
           </Route>
 
+          <Route path="/institution-admin" element={<SidebarInstitutionAdmin />}>
+          <Route index element={<Navigate to="grades" replace />} />
+          <Route path="grades" element={<InstitutionGradeManager />} />
+          </Route>
           {/* Rutas de estudiante */}
           <Route element={<VerificationRole allowedRoles={["STUDENT"]} />}>
             <Route path="/estudiante" element={<SidebarStudent />}>
