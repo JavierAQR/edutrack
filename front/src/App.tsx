@@ -26,7 +26,8 @@ import CompleteTeacherProfile from "./Pages/Teacher/CompleteTeacherProfile";
 import TeacherProfile from "./Pages/Teacher/TeacherProfile";
 import SidebarTeacher from "./Components/SidebarTeacher";
 import StudentManager from "./Pages/Admin/StudentManager";
-
+import SidebarInstitutionAdmin from "./Components/SidebarInstitutionAdmin";
+import InstitutionGradeManager from "./Pages/InstitutionAdmin/InstitutionGradeManager";
 
 function App() {
 
@@ -46,6 +47,10 @@ function App() {
             />
           </Route>
 
+          <Route path="/institution-admin" element={<SidebarInstitutionAdmin />}>
+          <Route index element={<Navigate to="grades" replace />} />
+          <Route path="grades" element={<InstitutionGradeManager />} />
+          </Route>
           {/* Rutas de estudiante */}
           <Route path="/estudiante" element={<StudentLayout />}>
             <Route index element={<Tablero />} />
