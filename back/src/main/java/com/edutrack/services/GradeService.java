@@ -67,4 +67,8 @@ public class GradeService {
     public List<Grade> getGradesByLevel(Long levelId) {
         return gradeRepository.findByAcademicLevelId(levelId);
     }
+
+    public List<Grade> getGradesByAcademicLevelName(String academicLevelName) {
+        return gradeRepository.findByAcademicLevel_Name(academicLevelName);
+    }
 }
