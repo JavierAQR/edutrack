@@ -1,57 +1,52 @@
 package com.edutrack.controllers;
 
-import java.util.List;
-
 import com.edutrack.dto.ApiResponse;
-import com.edutrack.repositories.AcademicLevelRepository;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.edutrack.entities.AcademicLevel;
 import com.edutrack.services.AcademicLevelService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@AllArgsConstructor
+import java.util.List;
+
 @RestController
-@RequestMapping("/admin/academic-levels")
+@RequestMapping("/api/academic-levels")
 public class AcademicLevelController {
-    
-    @Autowired
-    private AcademicLevelService academicLevelService;
-    private final AcademicLevelRepository academicLevelRepository;
+
+    private final AcademicLevelService academicLevelService;
+
+    public AcademicLevelController(AcademicLevelService academicLevelService) {
+        this.academicLevelService = academicLevelService;
+    }
 
     @GetMapping
     public ResponseEntity<ApiResponse> getAllAcademicLevels() {
-        List<AcademicLevel> levels = academicLevelRepository.findAll();
+        List<AcademicLevel> levels = academicLevelService.getAllAcademicLevels();
         return ResponseEntity.ok(new ApiResponse("Lista de niveles académicos obtenida", levels));
     }
 
-    @GetMapping("/{id}")
-    public AcademicLevel getById(@PathVariable Long id) {
-        return academicLevelService.getById(id)
-                .orElseThrow(() -> new RuntimeException("AcademicLevel no encontrado con ID: " + id));
+    @PostMapping
+    public ResponseEntity<ApiResponse> createAcademicLevel(@RequestBody AcademicLevel academicLevel) {
+        AcademicLevel createdLevel = academicLevelService.createAcademicLevel(academicLevel);
+        return ResponseEntity.ok(new ApiResponse("Nivel académico creado exitosamente", createdLevel));
     }
 
-    @PostMapping
-    public AcademicLevel create(@RequestBody AcademicLevel level) {
-        return academicLevelService.create(level);
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse> getAcademicLevelById(@PathVariable Long id) {
+        AcademicLevel level = academicLevelService.getAcademicLevelById(id);
+        return ResponseEntity.ok(new ApiResponse("Nivel académico encontrado", level));
     }
 
     @PutMapping("/{id}")
-    public AcademicLevel update(@PathVariable Long id, @RequestBody AcademicLevel level) {
-        return academicLevelService.update(id, level);
+    public ResponseEntity<ApiResponse> updateAcademicLevel(
+            @PathVariable Long id,
+            @RequestBody AcademicLevel academicLevel) {
+        AcademicLevel updatedLevel = academicLevelService.updateAcademicLevel(id, academicLevel);
+        return ResponseEntity.ok(new ApiResponse("Nivel académico actualizado", updatedLevel));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        academicLevelService.delete(id);
+    public ResponseEntity<ApiResponse> deleteAcademicLevel(@PathVariable Long id) {
+        academicLevelService.deleteAcademicLevel(id);
+        return ResponseEntity.ok(new ApiResponse("Nivel académico eliminado"));
     }
 }
