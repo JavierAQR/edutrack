@@ -66,10 +66,17 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private TeacherProfile teacherProfile;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private StudentProfile studentProfile;
+
      // Método helper para verificar si tiene perfil completo
      public boolean hasCompleteProfile() {
         if (userType == UserType.TEACHER) {
             return teacherProfile != null;
+        }
+
+        if (userType == UserType.STUDENT) {
+            return studentProfile != null;
         }
         // Agregar más verificaciones para otros tipos
         return true;
