@@ -1,32 +1,93 @@
 import axios from "axios";
 import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
+import type { AcademicLevel, Grade, Institution } from "../../types";
 
 interface StudentProfileData {
-  academicLevelId: string;
+  gradeId: string;
   biography: string;
 }
 
 const CompleteStudentProfile = () => {
+  const [institutions, setInstitutions] = useState<Institution[]>([]);
+  const [availableLevels, setAvailableLevels] = useState<AcademicLevel[]>([]);
+  const [availableGrades, setAvailableGrades] = useState<Grade[]>([]);
   const [profileData, setProfileData] = useState<StudentProfileData>({
-    academicLevelId: "",
+    gradeId: "",
     biography: "",
   });
-  const [academicLevels, setAcademicLevels] = useState<
-    { id: number; name: string }[]
-  >([]);
+  // const [grades, setGrades] = useState<{ id: number; name: string }[]>([]);
+  const [selectedInstitutionId, setSelectedInstitutionId] =
+    useState<string>("");
+  const [selectedLevelId, setSelectedLevelId] = useState<string>("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchAll();
+  }, []);
+
+  const fetchAll = async () => {
+    try {
+      const [instRes] = await Promise.all([
+        axios.get("http://localhost:8080/admin/institutions/dto"),
+      ]);
+      setInstitutions(instRes.data);
+    } catch (err) {
+      console.error("Error cargando datos", err);
+    }
+  };
+
+  const handleInstitutionChange = async (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const id = e.target.value;
+    setSelectedInstitutionId(id);
+
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/admin/institution-academic-levels/by-institution/${id}`
+      );
+      setAvailableLevels(res.data);
+      setAvailableGrades([]);
+      setSelectedLevelId("");
+      setProfileData((prev) => ({ ...prev, gradeId: "" }));
+    } catch (err) {
+      console.error("Error cargando niveles:", err);
+      setAvailableLevels([]);
+    }
+  };
+
+  const handleLevelChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = e.target.value;
+    setSelectedLevelId(id);
+
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/admin/grades/by-level/${id}`
+      );
+      setAvailableGrades(res.data);
+      setProfileData((prev) => ({ ...prev, gradeId: "" }));
+    } catch (err) {
+      console.error("Error cargando grados:", err);
+      setAvailableGrades([]);
+    }
+  };
+
+  const handleGradeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = e.target.value;
+    setProfileData({ ...profileData, gradeId: id });
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setProfileData((prev) => ({
-        ...prev,
-        [name]: name === "academicLevel" ? parseInt(value) : value,
-      }));
+      ...prev,
+      [name]: name === "grade" ? parseInt(value) : value,
+    }));
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -36,8 +97,8 @@ const CompleteStudentProfile = () => {
 
     try {
       const token = localStorage.getItem("token");
-        console.log(profileData);
-        
+      console.log(profileData);
+
       const response = await axios.post(
         "http://localhost:8080/api/student-profile/create",
         profileData,
@@ -49,7 +110,9 @@ const CompleteStudentProfile = () => {
         }
       );
 
-      if (response.data.message === "Perfil de estudiante creado exitosamente") {
+      if (
+        response.data.message === "Perfil de estudiante creado exitosamente"
+      ) {
         navigate("/estudiante");
       }
     } catch (err: unknown) {
@@ -64,29 +127,24 @@ const CompleteStudentProfile = () => {
     }
   };
 
-  useEffect(() => {
+  /*   useEffect(() => {
     const fetchAcademicLevels = async () => {
       try {
         const token = localStorage.getItem("token");
 
-        const response = await axios.get(
-          "http://localhost:8080/admin/academic-levels",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setAcademicLevels(response.data);
+        const response = await axios.get("http://localhost:8080/admin/grades", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         console.log(response.data);
-        
       } catch (error) {
-        console.error("Error al obtener niveles académicos:", error);
+        console.error("Error al obtener grados:", error);
       }
     };
 
     fetchAcademicLevels();
-  }, []);
+  }, []); */
 
   return (
     <main className="pt-21 px-4 max-w-3xl mx-auto">
@@ -105,29 +163,75 @@ const CompleteStudentProfile = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label
-              htmlFor="academicLevel"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Nivel Académico
-            </label>
-            <select
-              id="academicLevelId"
-              name="academicLevelId"
-              value={profileData.academicLevelId}
-              onChange={handleInputChange}
-              required
-              disabled={isLoading}
-              className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Seleccionar Nivel Académico</option>
-              {academicLevels.map((level) => (
-                <option key={level.id} value={level.id}>
-                  {level.name}
+          <div className="flex justify-between flex-wrap">
+            <div>
+              <label
+                htmlFor="institution"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Institución
+              </label>
+              <select
+                value={selectedInstitutionId}
+                onChange={handleInstitutionChange}
+                required
+                className="border p-2 rounded mt-1"
+              >
+                <option value="" disabled>
+                  Seleccionar institución
                 </option>
-              ))}
-            </select>
+                {institutions.map((inst) => (
+                  <option key={inst.id} value={inst.id}>
+                    {inst.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label
+                htmlFor="academicLevel"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Nivel Académico
+              </label>
+              <select
+                value={selectedLevelId}
+                onChange={handleLevelChange}
+                required
+                className="border p-2 rounded mt-1"
+              >
+                <option value="" disabled>
+                  Seleccionar nivel académico
+                </option>
+                {availableLevels.map((lvl) => (
+                  <option key={lvl.id} value={lvl.id}>
+                    {lvl.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label
+                htmlFor="grade"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Grado
+              </label>
+              <select
+                name="gradeId"
+                value={profileData.gradeId}
+                onChange={handleGradeChange}
+                required
+                className="border p-2 rounded mt-1"
+              >
+                <option value="">Seleccionar grado</option>
+                {availableGrades.map((g) => (
+                  <option key={g.id} value={g.id}>
+                    {g.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div>

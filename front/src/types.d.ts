@@ -41,4 +41,21 @@ export type MenuItem = {
     label: string;
     href: string;
   };
+
+
+  interface Institution {
+    id: number;
+    name: string;
+  }
+  
+  interface AcademicLevel {
+    id: number;
+    name: string;
+  }
+  
+  interface Grade {
+    id: number;
+    name: string;
+    academicLevelId: number;
+  }
   

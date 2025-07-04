@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StudentProfileDTO {
 
-    private Long academicLevelId;
+    private Long gradeId;
     
     private String biography;
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import type { AcademicLevel, Grade, Institution } from "../../types";
 
 interface CourseDTO {
   id?: number;
@@ -12,21 +13,7 @@ interface CourseDTO {
   institutionName?: string;
 }
 
-interface Institution {
-  id: number;
-  name: string;
-}
 
-interface AcademicLevel {
-  id: number;
-  name: string;
-}
-
-interface Grade {
-  id: number;
-  name: string;
-  academicLevelId: number;
-}
 
 const initialForm: CourseDTO = {
   name: "",

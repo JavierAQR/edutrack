@@ -1,21 +1,15 @@
 package com.edutrack.repositories;
 
-import java.util.List;
+import com.edutrack.entities.StudentProfile;
+import com.edutrack.entities.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
-
-import com.edutrack.entities.StudentProfile;
-
-@Repository
-public interface StudentProfileRepository extends JpaRepository<StudentProfile, Long>{
-
+public interface StudentProfileRepository extends JpaRepository<StudentProfile, Long> {
+    Optional<StudentProfile> findByUser(User user);
     Optional<StudentProfile> findByUserId(Long userId);
-    
+    boolean existsByUser(User user);
     boolean existsByUserId(Long userId);
-    
-    @Query("SELECT tp FROM StudentProfile tp WHERE tp.user.institution.id = :institutionId")
-    List<StudentProfile> findByInstitutionId(Long institutionId);
+    void deleteByUser(User user);
 }

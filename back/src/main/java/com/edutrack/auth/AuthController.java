@@ -210,7 +210,7 @@ public class AuthController {
             if (user.getUserType() == UserType.STUDENT && user.getStudentProfile() != null) {
                 StudentProfile studentProfile = user.getStudentProfile();
                 Map<String, Object> professionalInfo = Map.of(
-                        "academicLevel", studentProfile.getAcademicLevel(),
+                        "academicLevel", studentProfile.getGrade(),
                         "biography", studentProfile.getBiography() != null ? studentProfile.getBiography() : "");
                 completeProfile.put("professionalInfo", professionalInfo);
             }

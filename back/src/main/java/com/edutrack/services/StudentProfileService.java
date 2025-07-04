@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.edutrack.dto.request.StudentProfileDTO;
 import com.edutrack.dto.response.StudentProfileResponseDTO;
-import com.edutrack.entities.AcademicLevel;
+import com.edutrack.entities.Grade;
 import com.edutrack.entities.StudentProfile;
 import com.edutrack.entities.User;
 import com.edutrack.entities.enums.UserType;
-import com.edutrack.repositories.AcademicLevelRepository;
+import com.edutrack.repositories.GradeRepository;
 import com.edutrack.repositories.StudentProfileRepository;
 import com.edutrack.repositories.UserRepository;
 
@@ -25,7 +25,7 @@ public class StudentProfileService {
     private StudentProfileRepository studentProfileRepository;
 
     @Autowired
-    private AcademicLevelRepository academicLevelRepository;
+    private GradeRepository gradeRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -42,12 +42,12 @@ public class StudentProfileService {
             throw new IllegalArgumentException("El estudiante ya tiene un perfil creado");
         }
 
-        AcademicLevel level = academicLevelRepository.findById(profileDTO.getAcademicLevelId())
-                .orElseThrow(() -> new RuntimeException("Nivel académico no encontrado"));
+        Grade grade = gradeRepository.findById(profileDTO.getGradeId())
+                .orElseThrow(() -> new RuntimeException("Grado no encontrado"));
 
         StudentProfile profile = new StudentProfile();
         profile.setUser(user);
-        profile.setAcademicLevel(level);
+        profile.setGrade(grade);
         profile.setBiography(profileDTO.getBiography());
 
         return studentProfileRepository.save(profile);
@@ -62,10 +62,10 @@ public class StudentProfileService {
         StudentProfile profile = studentProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Perfil de estudiante no encontrado"));
 
-        AcademicLevel level = academicLevelRepository.findById(profileDTO.getAcademicLevelId())
-                .orElseThrow(() -> new RuntimeException("Nivel académico no encontrado"));
+        Grade grade = gradeRepository.findById(profileDTO.getGradeId())
+                .orElseThrow(() -> new RuntimeException("Grado no encontrado"));
 
-        profile.setAcademicLevel(level);
+        profile.setGrade(grade);
         profile.setBiography(profileDTO.getBiography());
 
         StudentProfile updatedProfile = studentProfileRepository.save(profile);

@@ -42,8 +42,8 @@ const Login = () => {
   };
 
   const completeProfileRoutes: Record<string, string> = {
-    TEACHER: "/profesor/complete-teacher-profile",
-    STUDENT: "/estudiante/complete-student-profile",
+    TEACHER: "/complete-teacher-profile",
+    STUDENT: "/complete-student-profile",
   };
 
   const redirectUser = async (role: string, token: string) => {

@@ -28,6 +28,7 @@ import CompleteStudentProfile from "./Pages/Student/CompleteStudentProfile";
 import VerificationRole from "./Components/VerificationRole";
 import SidebarStudent from "./Components/SidebarStudent";
 import StudentProfile from "./Pages/Student/StudentProfile";
+import StudentManager from "./Pages/Admin/StudentManager";
 
 function App() {
   return (
@@ -67,19 +68,18 @@ function App() {
           </Route>
 
           <Route element={<VerificationRole allowedRoles={["ADMIN"]} />}>
-            <Route path="/admin" element={<SidebarAdmin />}>
-              <Route index element={<Navigate to="dashboard" replace />} />
-              <Route path="teachers" element={<TeacherManager />} />
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="institutions" element={<InstitutionManager />} />
-              <Route
-                path="academic-levels"
-                element={<AcademicLevelManager />}
-              />
-              <Route path="academic-grades" element={<GradeManager />} />
-              <Route path="courses" element={<CourseAssignmentManager />} />
-            </Route>
+          <Route path="/admin" element={<SidebarAdmin/> }>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="teachers" element={<TeacherManager />} />
+            <Route path="students" element={<StudentManager />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="institutions" element={<InstitutionManager />} />
+            <Route path="academic-levels" element={<AcademicLevelManager />} />
+            <Route path="academic-grades" element={<GradeManager />} />
+            <Route path="courses" element={<CourseAssignmentManager />} />
           </Route>
+          </Route>
+
         </Routes>
       </Router>
     </AuthProvider>
