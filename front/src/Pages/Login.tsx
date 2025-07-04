@@ -154,7 +154,7 @@ const Login = () => {
                   htmlFor="username"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Email
+                  Usuario
                 </label>
                 <input
                   id="username"
