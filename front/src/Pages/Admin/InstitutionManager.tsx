@@ -8,6 +8,7 @@ type Institution = {
   description: string;
   phone: string;
   website?: string;
+  director?: string;
   academicLevels?: string[];
 };
 
@@ -17,6 +18,7 @@ const initialForm: Institution = {
   description: "",
   phone: "",
   website: "",
+  director: "",
 };
 
 const InstitutionManager = () => {
@@ -54,12 +56,13 @@ const InstitutionManager = () => {
     e.preventDefault();
 
     const dataToSend = {
-        name: formData.name,
-        address: formData.address,
-        description: formData.description,
-        phone: formData.phone,
-        website: formData.website,
-      };
+      name: formData.name,
+      address: formData.address,
+      description: formData.description,
+      phone: formData.phone,
+      website: formData.website,
+      director: formData.director
+    };
 
     try {
       if (isEditing && editingId !== null) {
@@ -148,6 +151,14 @@ const InstitutionManager = () => {
           onChange={handleChange}
           className="border p-2 rounded"
         />
+        <input
+          type="text"
+          name="director"
+          placeholder="Director"
+          value={formData.director}
+          onChange={handleChange}
+          className="border p-2 rounded col-span-full"
+        />
         <textarea
           name="description"
           placeholder="Descripción"
@@ -158,9 +169,8 @@ const InstitutionManager = () => {
         />
         <button
           type="submit"
-          className={`bg-blue-600 text-white rounded px-4 py-2 hover:bg-blue-700 ${
-            isEditing ? "" : "col-span-2"
-          }`}
+          className={`bg-blue-600 text-white rounded px-4 py-2 hover:bg-blue-700 ${isEditing ? "" : "col-span-2"
+            }`}
         >
           {isEditing ? "Actualizar Institución" : "Guardar Institución"}
         </button>
@@ -197,6 +207,9 @@ const InstitutionManager = () => {
             </th>
             <th className="px-4 py-3 text-left text-sm font-semibold">
               Sitio web
+            </th>
+            <th className="px-4 py-3 text-left text-sm font-semibold">
+              Director
             </th>
             <th className="px-4 py-3 text-left text-sm font-semibold">
               Niveles Académicos
