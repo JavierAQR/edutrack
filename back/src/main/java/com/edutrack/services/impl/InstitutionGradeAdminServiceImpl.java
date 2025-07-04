@@ -2,11 +2,14 @@ package com.edutrack.services.impl;
 
 import com.edutrack.entities.Institution;
 import com.edutrack.entities.InstitutionGrade;
+import com.edutrack.entities.User;
 import com.edutrack.repositories.InstitutionGradeRepository;
-import com.edutrack.repositories.InstitutionRepository;
 import com.edutrack.repositories.UserRepository;
 import com.edutrack.services.InstitutionGradeAdminService;
 
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -14,26 +17,29 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class InstitutionGradeAdminServiceImpl implements InstitutionGradeAdminService {
 
-    private final InstitutionRepository institutionRepository;
-    private final InstitutionGradeRepository institutionGradeRepository;
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    public InstitutionGradeAdminServiceImpl(
-            InstitutionRepository institutionRepository,
-            InstitutionGradeRepository institutionGradeRepository,
-            UserRepository userRepository) {
-        this.institutionRepository = institutionRepository;
-        this.institutionGradeRepository = institutionGradeRepository;
-        this.userRepository = userRepository;
-    }
+    @Autowired  
+    private final InstitutionGradeRepository institutionGradeRepository;
+
 
     private Institution getCurrentAdminInstitution() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
-        return institutionRepository.findByUserUsername(username)
-                .orElseThrow(() -> new RuntimeException("Institución no encontrada para el usuario"));
+    
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    
+        Institution institution = user.getInstitution();
+        if (institution == null) {
+            throw new RuntimeException("El usuario no tiene institución asignada");
+        }
+    
+        return institution;
     }
 
     @Override
@@ -45,7 +51,7 @@ public class InstitutionGradeAdminServiceImpl implements InstitutionGradeAdminSe
     @Override
     public InstitutionGrade assignGrade(InstitutionGrade grade) {
         Institution institution = getCurrentAdminInstitution();
-        grade.setInstitution(institution); // forzamos su institución
+        grade.setInstitution(institution);
         return institutionGradeRepository.save(grade);
     }
 
@@ -54,7 +60,7 @@ public class InstitutionGradeAdminServiceImpl implements InstitutionGradeAdminSe
         InstitutionGrade existing = institutionGradeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Asignación no encontrada"));
         grade.setId(existing.getId());
-        grade.setInstitution(existing.getInstitution()); // mantener su institución original
+        grade.setInstitution(existing.getInstitution());
         return institutionGradeRepository.save(grade);
     }
 

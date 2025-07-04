@@ -11,9 +11,7 @@ import Register from "./Pages/Register";
 import VerificationPage from "./Pages/VerificationPage";
 import Home from "./Pages/Home";
 import MainLayout from "./Components/MainLayout";
-import Tablero from "./Pages/Tablero";
 import PaymentPage from "./Pages/Payment";
-
 import SidebarAdmin from "./Components/SidebarAdmin";
 import InstitutionManager from "./Pages/Admin/InstitutionManager";
 import AcademicLevelManager from "./Pages/Admin/AcademicLevelManager";
@@ -30,7 +28,7 @@ import SidebarStudent from "./Components/SidebarStudent";
 import StudentProfile from "./Pages/Student/StudentProfile";
 import StudentManager from "./Pages/Admin/StudentManager";
 import SidebarInstitutionAdmin from "./Components/SidebarInstitutionAdmin";
-import InstitutionGradeManager from "./Pages/InstitutionAdmin/InstitutionGradeManager";
+import InstitutionGradeManager from "./Pages/Admin/InstitutionGradeManager";
 
 
 function App() {
@@ -46,14 +44,17 @@ function App() {
             <Route path="verification" element={<VerificationPage />} />
           </Route>
 
+          <Route element={<VerificationRole allowedRoles={["INSTITUTION_ADMIN"]} />}>
           <Route path="/institution-admin" element={<SidebarInstitutionAdmin />}>
           <Route index element={<Navigate to="grades" replace />} />
           <Route path="grades" element={<InstitutionGradeManager />} />
           </Route>
+          </Route>
+
           {/* Rutas de estudiante */}
           <Route element={<VerificationRole allowedRoles={["STUDENT"]} />}>
             <Route path="/estudiante" element={<SidebarStudent />}>
-              <Route index element={<Tablero />} />
+              <Route index element={<StudentProfile />} />
               <Route path="perfil" element={<StudentProfile />} />
               <Route path="payments" element={<PaymentPage />} />
             </Route>

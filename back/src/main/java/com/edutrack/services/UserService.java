@@ -43,6 +43,7 @@ public class UserService {
         u.setLastname(user.getLastname());
         u.setEmail(user.getEmail());
         u.setBirthdate(user.getBirthdate());
+        u.setInstitution(user.getInstitution());
         u.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return this.userRepository.save(u);

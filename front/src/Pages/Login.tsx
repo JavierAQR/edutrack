@@ -65,8 +65,8 @@ const Login = () => {
       case "TEACHER":
         navigate("/profesor");
         break;
-      case "DIRECTOR":
-        navigate("/director");
+      case "INSTITUTION_ADMIN":
+        navigate("/institution-admin");
         break;
       case "PARENT":
         navigate("/padre");
@@ -104,7 +104,6 @@ const Login = () => {
           username: username,
           role: role,
         });
-
         // Redirigir según el rol y estado del perfil
         await redirectUser(role, token);
       }
