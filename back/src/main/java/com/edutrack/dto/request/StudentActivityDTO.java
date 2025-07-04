@@ -1,4 +1,5 @@
 package com.edutrack.dto.request;
+
 public record StudentActivityDTO(
         Long id,
         String title,
