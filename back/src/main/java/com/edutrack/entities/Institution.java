@@ -2,7 +2,6 @@ package com.edutrack.entities;
 
 import java.util.List;
 
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,11 +20,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Institution {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(nullable = false)
     private String name;
 
@@ -40,6 +39,9 @@ public class Institution {
 
     @Column(nullable = true)
     private String website;
+
+    @Column(nullable = true)
+    private String director;
 
     @OneToMany(mappedBy = "institution", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InstitutionAcademicLevels> academicLevels;

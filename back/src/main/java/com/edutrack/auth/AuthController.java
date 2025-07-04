@@ -5,12 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.edutrack.dto.ApiResponse;
-import com.edutrack.dto.request.UserInfoDTO;
+import com.edutrack.entities.StudentProfile;
 import com.edutrack.entities.TeacherProfile;
 import com.edutrack.entities.User;
 import com.edutrack.entities.enums.UserType;
 import com.edutrack.repositories.UserRepository;
-import com.edutrack.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -156,6 +155,27 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/profile-status")
+    public ResponseEntity<?> getProfileStatus(Authentication authentication) {
+        try {
+            String username = authentication.getName();
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+         boolean needsProfileCompletion = !user.hasCompleteProfile();
+
+            Map<String, Object> status = Map.of(
+                    "userType", user.getUserType().toString(),
+                    "hasCompleteProfile", user.hasCompleteProfile(),
+                    "needsProfileCompletion", needsProfileCompletion);
+
+            return ResponseEntity.ok(status);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al verificar estado del perfil");
+        }
+    }
+
     @GetMapping("/my-complete-profile")
     public ResponseEntity<?> getCompleteProfile(Authentication authentication) {
         try {
@@ -184,6 +204,14 @@ public class AuthController {
                         "yearsExperience", teacherProfile.getYearsExperience(),
                         "biography", teacherProfile.getBiography() != null ? teacherProfile.getBiography() : "",
                         "cvUrl", teacherProfile.getCvUrl() != null ? teacherProfile.getCvUrl() : "");
+                completeProfile.put("professionalInfo", professionalInfo);
+            }
+
+            if (user.getUserType() == UserType.STUDENT && user.getStudentProfile() != null) {
+                StudentProfile studentProfile = user.getStudentProfile();
+                Map<String, Object> professionalInfo = Map.of(
+                        "academicLevel", studentProfile.getGrade(),
+                        "biography", studentProfile.getBiography() != null ? studentProfile.getBiography() : "");
                 completeProfile.put("professionalInfo", professionalInfo);
             }
 
