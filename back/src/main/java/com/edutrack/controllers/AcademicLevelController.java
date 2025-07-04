@@ -2,7 +2,11 @@ package com.edutrack.controllers;
 
 import java.util.List;
 
+import com.edutrack.dto.ApiResponse;
+import com.edutrack.repositories.AcademicLevelRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,16 +19,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.edutrack.entities.AcademicLevel;
 import com.edutrack.services.AcademicLevelService;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/admin/academic-levels")
 public class AcademicLevelController {
     
     @Autowired
     private AcademicLevelService academicLevelService;
+    private final AcademicLevelRepository academicLevelRepository;
 
     @GetMapping
-    public List<AcademicLevel> getAll() {
-        return academicLevelService.getAll();
+    public ResponseEntity<ApiResponse> getAllAcademicLevels() {
+        List<AcademicLevel> levels = academicLevelRepository.findAll();
+        return ResponseEntity.ok(new ApiResponse("Lista de niveles académicos obtenida", levels));
     }
 
     @GetMapping("/{id}")

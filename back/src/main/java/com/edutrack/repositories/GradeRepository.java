@@ -10,5 +10,6 @@ import com.edutrack.entities.Grade;
 @Repository
 public interface GradeRepository extends JpaRepository<Grade, Long>{
     List<Grade> findByAcademicLevelId(Long academicLevelId);
-    
+
+    List<Grade> findByAcademicLevel_Name(String name);
 }
