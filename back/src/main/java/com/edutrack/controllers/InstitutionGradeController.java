@@ -18,7 +18,7 @@ import com.edutrack.services.InstitutionGradeService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/admin/institution-grades")
+@RequestMapping("/api/institution-grades")
 @RequiredArgsConstructor
 public class InstitutionGradeController {
     private final InstitutionGradeService service;

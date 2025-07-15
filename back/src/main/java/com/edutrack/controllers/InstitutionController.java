@@ -18,7 +18,7 @@ import com.edutrack.entities.Institution;
 import com.edutrack.services.InstitutionService;
 
 @RestController
-@RequestMapping("/admin/institutions")
+@RequestMapping("/api/institutions")
 public class InstitutionController {
 
     private final InstitutionService institutionService;
