@@ -33,11 +33,12 @@ const GradeManager = () => {
   const fetchGrades = async () => {
     try {
      const [gradeRes, levelRes] = await Promise.all([
-            axios.get("http://localhost:8080/admin/grades"),
-            axios.get("http://localhost:8080/admin/academic-levels"),
+            axios.get("http://localhost:8080/api/grades"),
+            axios.get("http://localhost:8080/api/academic-levels"),
       ]);
-      setGrades(gradeRes.data);
-      setAcademicLevels(levelRes.data);
+      setGrades(gradeRes.data.data);
+      console.log(levelRes);
+      setAcademicLevels(levelRes.data.data);
       console.log(gradeRes.data);
     } catch (error) {
       console.error("Error al obtener grados:", error);
@@ -59,11 +60,11 @@ const GradeManager = () => {
     try {
       if (isEditing && editingId !== null) {
         await axios.put(
-          `http://localhost:8080/admin/grades/${editingId}`,
+          `http://localhost:8080/api/grades/${editingId}`,
           formData
         );
       } else {
-        await axios.post("http://localhost:8080/admin/grades", formData);
+        await axios.post("http://localhost:8080/api/grades", formData);
       }
       setFormData(initialForm);
       setIsEditing(false);
@@ -85,7 +86,7 @@ const GradeManager = () => {
     if (!confirm) return;
 
     try {
-      await axios.delete(`http://localhost:8080/admin/grades/${id}`);
+      await axios.delete(`http://localhost:8080/api/grades/${id}`);
       fetchGrades();
     } catch (error) {
       console.error("Error al eliminar grado:", error);
