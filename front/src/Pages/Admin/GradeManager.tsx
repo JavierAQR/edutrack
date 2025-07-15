@@ -6,7 +6,7 @@ type Grade = {
   id?: number;
   name: string;
   academicLevelId: number;
-  academicLevelName?: string;
+  academicLevel?: AcademicLevel;
 };
 
 const initialForm: Grade = {
@@ -37,9 +37,8 @@ const GradeManager = () => {
             axios.get("http://localhost:8080/api/academic-levels"),
       ]);
       setGrades(gradeRes.data.data);
-      console.log(levelRes);
       setAcademicLevels(levelRes.data.data);
-      console.log(gradeRes.data);
+      console.log(gradeRes.data.data);
     } catch (error) {
       console.error("Error al obtener grados:", error);
     }
@@ -167,7 +166,7 @@ const GradeManager = () => {
           {grades.map((grade) => (
             <tr key={grade.id} className="hover:bg-gray-50 transition-colors">
               <td className="px-4 py-3">{grade.name}</td>
-              <td className="px-4 py-3">{grade.academicLevelName}</td>
+              <td className="px-4 py-3">{grade.academicLevel?.name}</td>
               <td className="flex justify-center px-4 py-3 space-x-2">
                 <button
                   onClick={() => handleEdit(grade)}
