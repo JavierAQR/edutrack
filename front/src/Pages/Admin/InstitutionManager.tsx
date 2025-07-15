@@ -35,7 +35,7 @@ const InstitutionManager = () => {
   const fetchInstitutions = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:8080/admin/institutions/dto"
+        "http://localhost:8080/api/institutions/dto"
       );
       setInstitutions(res.data);
     } catch (error) {
@@ -69,13 +69,13 @@ const InstitutionManager = () => {
         // Actualizar institución existente
 
         await axios.put(
-          `http://localhost:8080/admin/institutions/${editingId}`,
+          `http://localhost:8080/api/institutions/${editingId}`,
           dataToSend
         );
       } else {
         // Crear nueva institución
         await axios.post(
-          "http://localhost:8080/admin/institutions",
+          "http://localhost:8080/api/institutions",
           dataToSend
         );
       }
@@ -101,7 +101,7 @@ const InstitutionManager = () => {
     if (!confirm) return;
 
     try {
-      await axios.delete(`http://localhost:8080/admin/institutions/${id}`);
+      await axios.delete(`http://localhost:8080/api/institutions/${id}`);
       fetchInstitutions();
     } catch (error) {
       console.error("Error al eliminar institución:", error);

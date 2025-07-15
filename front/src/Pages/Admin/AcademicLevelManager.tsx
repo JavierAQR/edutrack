@@ -21,9 +21,11 @@ const AcademicLevelManager = () => {
   const fetchLevels = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:8080/admin/academic-levels"
+        "http://localhost:8080/api/academic-levels"
       );
-      setLevels(res.data);
+      console.log(res.data.data);
+      
+      setLevels(res.data.data);
     } catch (err) {
       console.error("Error al obtener niveles académicos:", err);
     }
@@ -38,12 +40,12 @@ const AcademicLevelManager = () => {
     try {
       if (isEditing && editingId !== null) {
         await axios.put(
-          `http://localhost:8080/admin/academic-levels/${editingId}`,
+          `http://localhost:8080/api/academic-levels/${editingId}`,
           formData
         );
       } else {
         await axios.post(
-          "http://localhost:8080/admin/academic-levels",
+          "http://localhost:8080/api/academic-levels",
           formData
         );
       }
@@ -68,7 +70,7 @@ const AcademicLevelManager = () => {
     );
     if (!confirm) return;
     try {
-      await axios.delete(`http://localhost:8080/admin/academic-levels/${id}`);
+      await axios.delete(`http://localhost:8080/api/academic-levels/${id}`);
       fetchLevels();
     } catch (err) {
       console.error("Error al eliminar:", err);
@@ -125,7 +127,7 @@ const AcademicLevelManager = () => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-100">
-          {levels.map((level) => (
+          {Array.isArray(levels) && levels.map((level) => (
             <tr
               key={level.id}
               className="hover:bg-gray-50 transition-colors duration-200"

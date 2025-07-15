@@ -16,7 +16,7 @@ import com.edutrack.entities.InstitutionAcademicLevels;
 import com.edutrack.services.InstitutionAcademicLevelsService;
 
 @RestController
-@RequestMapping("/admin/institution-academic-levels")
+@RequestMapping("/api/institution-academic-levels")
 public class InstitutionAcademicLevelsController {
     @Autowired
     private InstitutionAcademicLevelsService service;
