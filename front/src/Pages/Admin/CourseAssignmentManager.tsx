@@ -40,9 +40,9 @@ const CourseManager = () => {
   const fetchAll = async () => {
     try {
       const [courseRes, gradeRes, instRes] = await Promise.all([
-        axios.get("http://localhost:8080/admin/courses"),
-        axios.get("http://localhost:8080/admin/grades"),
-        axios.get("http://localhost:8080/admin/institutions/dto"),
+        axios.get("http://localhost:8080/api/courses"),
+        axios.get("http://localhost:8080/api/grades"),
+        axios.get("http://localhost:8080/api/institutions/dto"),
       ]);
       setCourses(courseRes.data);
       setGrades(gradeRes.data);
@@ -67,7 +67,7 @@ const CourseManager = () => {
 
     try {
       const res = await axios.get(
-        `http://localhost:8080/admin/institution-academic-levels/by-institution/${id}`
+        `http://localhost:8080/api/institution-academic-levels/by-institution/${id}`
       );
       setAvailableLevels(res.data);
       setAvailableGrades([]);
@@ -85,9 +85,9 @@ const CourseManager = () => {
 
     try {
       const res = await axios.get(
-        `http://localhost:8080/admin/grades/by-level/${id}`
+        `http://localhost:8080/api/grades/by-level/${id}`
       );
-      setAvailableGrades(res.data);
+      setAvailableGrades(res.data.data);
     } catch (err) {
       console.error("Error cargando grados:", err);
       setAvailableGrades([]);
@@ -108,11 +108,11 @@ const CourseManager = () => {
     try {
       if (isEditing && editingId !== null) {
         await axios.put(
-          `http://localhost:8080/admin/courses/${editingId}`,
+          `http://localhost:8080/api/courses/${editingId}`,
           formData
         );
       } else {
-        await axios.post("http://localhost:8080/admin/courses", formData);
+        await axios.post("http://localhost:8080/api/courses", formData);
       }
       setFormData(initialForm);
       setIsEditing(false);
@@ -134,13 +134,13 @@ const CourseManager = () => {
     try {
       // Cargar niveles de la institución
       const levelRes = await axios.get(
-        `http://localhost:8080/admin/institution-academic-levels/by-institution/${institutionId}`
+        `http://localhost:8080/api/institution-academic-levels/by-institution/${institutionId}`
       );
       setAvailableLevels(levelRes.data);
   
       // Cargar grados del nivel
       const gradeRes = await axios.get(
-        `http://localhost:8080/admin/grades/by-level/${levelId}`
+        `http://localhost:8080/api/grades/by-level/${levelId}`
       );
       setAvailableGrades(gradeRes.data);
   
@@ -166,7 +166,7 @@ const CourseManager = () => {
 
   const handleDelete = async (id: number) => {
     if (confirm("¿Seguro que deseas eliminar este curso?")) {
-      await axios.delete(`http://localhost:8080/admin/courses/${id}`);
+      await axios.delete(`http://localhost:8080/api/courses/${id}`);
       fetchAll();
     }
   };

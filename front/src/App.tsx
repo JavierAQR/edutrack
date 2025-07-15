@@ -10,6 +10,9 @@ import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import VerificationPage from "./Pages/VerificationPage";
 import Home from "./Pages/Home";
+import Contact from "./Pages/Contact"
+import AboutUs from "./Pages/AboutUs"
+import Services from "./Pages/Services"
 import MainLayout from "./Components/MainLayout";
 import PaymentPage from "./Pages/Payment";
 import SidebarAdmin from "./Components/SidebarAdmin";
@@ -39,6 +42,9 @@ function App() {
           {/* Rutas públicas */}
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
+            <Route path="contactanos" element={<Contact />}/>
+            <Route path="nosotros" element={<AboutUs />}/>
+            <Route path="servicios" element={<Services />}/>
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route path="verification" element={<VerificationPage />} />

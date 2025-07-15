@@ -23,27 +23,54 @@ const StudentForm = ({ initialData, isEditing, onSubmit, onCancel }: StudentForm
         birthdate: "",
         password: "",
         enabled: true,
+        academicLevel: "",
         gradeId: ""
     });
 
+    const [academicLevels, setAcademicLevels] = useState<string[]>([]);
     const [grades, setGrades] = useState<GradeOption[]>([]);
-    const [loadingGrades, setLoadingGrades] = useState(true);
+    const [loadingLevels, setLoadingLevels] = useState(true);
+    const [loadingGrades, setLoadingGrades] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        const fetchGrades = async () => {
+        const fetchAcademicLevels = async () => {
             try {
-                const res = await axios.get("http://localhost:8080/admin/grades");
-                setGrades(res.data);
-                setLoadingGrades(false);
+                const res = await axios.get("http://localhost:8080/admin/academic-levels");
+                setAcademicLevels(res.data.data.map((level: any) => level.name));
+                setLoadingLevels(false);
             } catch (err) {
-                console.error("Error al cargar grados", err);
-                setLoadingGrades(false);
+                console.error("Error al cargar niveles académicos", err);
+                setLoadingLevels(false);
             }
         };
 
-        fetchGrades();
+        fetchAcademicLevels();
     }, []);
+
+    useEffect(() => {
+        if (formData.academicLevel) {
+            const fetchGradesByLevel = async () => {
+                try {
+                    setLoadingGrades(true);
+                    const res = await axios.get(
+                        `http://localhost:8080/admin/grades/by-academic-level/${formData.academicLevel}`
+                    );
+                    setGrades(res.data.map((grade: any) => ({
+                        id: grade.id,
+                        name: grade.name,
+                        academicLevel: grade.academicLevel.name
+                    })));
+                    setLoadingGrades(false);
+                } catch (err) {
+                    console.error("Error al cargar grados", err);
+                    setLoadingGrades(false);
+                }
+            };
+
+            fetchGradesByLevel();
+        }
+    }, [formData.academicLevel]);
 
     useEffect(() => {
         if (initialData) {
@@ -55,6 +82,7 @@ const StudentForm = ({ initialData, isEditing, onSubmit, onCancel }: StudentForm
                 birthdate: initialData.birthdate || "",
                 password: "",
                 enabled: initialData.enabled ?? true,
+                academicLevel: initialData.academicLevel || "",
                 gradeId: initialData.gradeId?.toString() || ""
             });
         }
@@ -66,7 +94,9 @@ const StudentForm = ({ initialData, isEditing, onSubmit, onCancel }: StudentForm
 
         setFormData(prev => ({
             ...prev,
-            [name]: type === "checkbox" ? checked : value
+            [name]: type === "checkbox" ? checked : value,
+            // Reset gradeId when academic level changes
+            ...(name === "academicLevel" && { gradeId: "" })
         }));
     };
 
@@ -176,6 +206,28 @@ const StudentForm = ({ initialData, isEditing, onSubmit, onCancel }: StudentForm
                             required
                         />
                     </div>
+                    
+                    {/* Selector de Nivel Académico */}
+                    <div className="mb-4">
+                        <label className="block text-gray-700 mb-2">Nivel Académico</label>
+                        <select
+                            name="academicLevel"
+                            value={formData.academicLevel}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 border rounded"
+                            disabled={loadingLevels}
+                            required
+                        >
+                            <option value="">Seleccione un nivel académico</option>
+                            {academicLevels.map(level => (
+                                <option key={level} value={level}>
+                                    {level}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    
+                    {/* Selector de Grado (dependiente del nivel académico) */}
                     <div className="mb-4">
                         <label className="block text-gray-700 mb-2">Grado</label>
                         <select
@@ -183,16 +235,18 @@ const StudentForm = ({ initialData, isEditing, onSubmit, onCancel }: StudentForm
                             value={formData.gradeId}
                             onChange={handleChange}
                             className="w-full px-3 py-2 border rounded"
-                            disabled={loadingGrades}
+                            disabled={loadingGrades || !formData.academicLevel}
+                            required
                         >
                             <option value="">Seleccione un grado</option>
                             {grades.map(grade => (
                                 <option key={grade.id} value={grade.id}>
-                                    {grade.name} {grade.academicLevel && `(${grade.academicLevel})`}
+                                    {grade.name}
                                 </option>
                             ))}
                         </select>
                     </div>
+                    
                     <div className="mb-4">
                         <label className="flex items-center">
                             <input
@@ -218,7 +272,7 @@ const StudentForm = ({ initialData, isEditing, onSubmit, onCancel }: StudentForm
                     <button
                         type="submit"
                         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || !formData.gradeId}
                     >
                         {isSubmitting ? "Guardando..." : isEditing ? "Actualizar Estudiante" : "Crear Estudiante"}
                     </button>

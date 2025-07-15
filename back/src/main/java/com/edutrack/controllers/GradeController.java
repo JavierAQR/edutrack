@@ -1,56 +1,58 @@
 package com.edutrack.controllers;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.edutrack.dto.request.GradeDTO;
+import com.edutrack.dto.ApiResponse;
 import com.edutrack.entities.Grade;
 import com.edutrack.services.GradeService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/admin/grades")
+@RequestMapping("/api/grades")
 public class GradeController {
 
-    @Autowired
-    private GradeService gradeService;
+    private final GradeService gradeService;
 
-    @GetMapping
-    public List<GradeDTO> getGradesWithLevelNames() {
-        return gradeService.getAllWithLevelNames();
+    public GradeController(GradeService gradeService) {
+        this.gradeService = gradeService;
     }
 
-    @GetMapping("/{id}")
-    public Grade getGradeById(@PathVariable Long id) {
-        return gradeService.getGradeById(id)
-                .orElseThrow(() -> new RuntimeException("Grado no encontrado con id " + id));
+    @GetMapping
+    public ResponseEntity<ApiResponse> getAllGrades() {
+        List<Grade> grades = gradeService.getAllGrades();
+        return ResponseEntity.ok(new ApiResponse("Lista de grados obtenida", grades));
     }
 
     @PostMapping
-    public Grade createGrade(@RequestBody GradeDTO dto) {
-        return gradeService.createGrade(dto);
+    public ResponseEntity<ApiResponse> createGrade(@RequestBody Grade grade) {
+        Grade createdGrade = gradeService.createGrade(grade);
+        return ResponseEntity.ok(new ApiResponse("Grado creado exitosamente", createdGrade));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse> getGradeById(@PathVariable Long id) {
+        Grade grade = gradeService.getGradeById(id);
+        return ResponseEntity.ok(new ApiResponse("Grado encontrado", grade));
     }
 
     @PutMapping("/{id}")
-    public Grade updateGrade(@PathVariable Long id, @RequestBody GradeDTO dto) {
-        return gradeService.updateGrade(id, dto);
+    public ResponseEntity<ApiResponse> updateGrade(
+            @PathVariable Long id,
+            @RequestBody Grade grade) {
+        Grade updatedGrade = gradeService.updateGrade(id, grade);
+        return ResponseEntity.ok(new ApiResponse("Grado actualizado", updatedGrade));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteGrade(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse> deleteGrade(@PathVariable Long id) {
         gradeService.deleteGrade(id);
+        return ResponseEntity.ok(new ApiResponse("Grado eliminado"));
     }
 
     @GetMapping("/by-level/{levelId}")
-    public List<Grade> getGradesByLevel(@PathVariable Long levelId) {
-    return gradeService.getGradesByLevel(levelId);
-}
+    public ResponseEntity<ApiResponse> getGradesByAcademicLevel(@PathVariable Long levelId) {
+        List<Grade> grades = gradeService.getGradesByAcademicLevel(levelId);
+        return ResponseEntity.ok(new ApiResponse("Grados por nivel académico", grades));
+    }
 }
