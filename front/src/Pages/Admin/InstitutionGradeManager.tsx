@@ -96,7 +96,7 @@ const InstitutionGradeManager = () => {
         axios
           .get(`http://localhost:8080/api/grades/by-level/${parsedValue}`)
           .then((res) => {
-            setAvailableGrades(res.data);
+            setAvailableGrades(res.data.data);
           })
           .catch((err) => {
             console.error("Error cargando grados:", err);

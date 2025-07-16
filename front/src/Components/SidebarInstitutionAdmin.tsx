@@ -8,7 +8,7 @@ const menuItems: MenuItem[] = [
   {
     icons: <RiAdminLine size={30} />,
     label: "Grados",
-    href: "/institution-admin/grades",
+    href: "/institution-admin",
   },
 ];
 
@@ -19,7 +19,7 @@ const SidebarInstitutionAdmin = () => {
     <UserLayout
       open={open}
       setOpen={setOpen}
-      userType={"ADMIN"}
+      userType={"INST_ADM"}
       menuItems={menuItems}
     >
       <Outlet />
