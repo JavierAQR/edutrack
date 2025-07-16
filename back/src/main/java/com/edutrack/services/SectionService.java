@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.edutrack.dto.response.SectionResponse;
+import com.edutrack.dto.response.StudentInSectionResponse;
 import com.edutrack.entities.AcademicLevel;
 import com.edutrack.entities.Course;
 import com.edutrack.entities.Grade;
@@ -13,6 +14,7 @@ import com.edutrack.entities.Institution;
 import com.edutrack.entities.Section;
 import com.edutrack.entities.StudentProfile;
 import com.edutrack.entities.TeacherProfile;
+import com.edutrack.entities.User;
 import com.edutrack.repositories.CourseRepository;
 import com.edutrack.repositories.InstitutionRepository;
 import com.edutrack.repositories.SectionRepository;
@@ -82,21 +84,53 @@ public class SectionService {
         Section section = sectionRepository.findById(sectionId)
                 .orElseThrow(() -> new RuntimeException("Sección no encontrada"));
 
+        Course course = section.getCourse();
+        Grade sectionGrade = course.getGrade();
+        AcademicLevel sectionLevel = sectionGrade.getAcademicLevel();
+        Institution institution = section.getInstitution();
+
         List<StudentProfile> students = studentProfileRepository.findAllById(studentIds);
 
-        if (students.size() != studentIds.size()) {
-            throw new RuntimeException("Algunos estudiantes no fueron encontrados");
+        for (StudentProfile student : students) {
+            User user = student.getUser();
+
+            if (!user.getInstitution().getId().equals(institution.getId())) {
+                throw new RuntimeException("El estudiante " + user.getName() + user.getLastname()
+                        + " no pertenece a la misma institución");
+            }
+
+            if (student.getGrade() == null ||
+                    !student.getGrade().getId().equals(sectionGrade.getId()) ||
+                    !student.getGrade().getAcademicLevel().getId().equals(sectionLevel.getId())) {
+
+                throw new RuntimeException("El estudiante " + user.getName() + user.getLastname()
+                        + " no pertenece al mismo grado o nivel académico");
+            }
         }
 
         section.getStudents().addAll(students);
-
         return sectionRepository.save(section);
     }
 
-    public List<StudentProfile> getStudentsInSection(Long sectionId) {
-        Section section = sectionRepository.findById(sectionId)
-            .orElseThrow(() -> new RuntimeException("Sección no encontrada"));
-    
-        return section.getStudents();
-    }
+    public List<StudentInSectionResponse> getStudentsInSection(Long sectionId) {
+    Section section = sectionRepository.findById(sectionId)
+        .orElseThrow(() -> new RuntimeException("Sección no encontrada"));
+
+    List<StudentProfile> students = section.getStudents();
+
+    return students.stream().map(student -> {
+        User user = student.getUser();
+        Grade grade = student.getGrade();
+        String academicLevelName = grade.getAcademicLevel().getName();
+
+        return new StudentInSectionResponse(
+            student.getId(),
+            user.getName(),
+            user.getLastname(),
+            user.getEmail(),
+            grade.getName(),
+            academicLevelName
+        );
+    }).collect(Collectors.toList());
+}
 }
