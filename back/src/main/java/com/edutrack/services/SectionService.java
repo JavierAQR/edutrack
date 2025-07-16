@@ -5,10 +5,15 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.edutrack.dto.response.AssignmentDTO;
+import com.edutrack.dto.response.AssignmentGradeDTO;
 import com.edutrack.dto.response.SectionResponse;
+import com.edutrack.dto.response.SectionStudentDashboardResponse;
 import com.edutrack.dto.response.StudentInSectionResponse;
 import com.edutrack.dto.response.StudentWithAverageResponse;
 import com.edutrack.entities.AcademicLevel;
+import com.edutrack.entities.Assignment;
+import com.edutrack.entities.AssignmentSubmission;
 import com.edutrack.entities.Course;
 import com.edutrack.entities.Grade;
 import com.edutrack.entities.Institution;
@@ -16,6 +21,7 @@ import com.edutrack.entities.Section;
 import com.edutrack.entities.StudentProfile;
 import com.edutrack.entities.TeacherProfile;
 import com.edutrack.entities.User;
+import com.edutrack.repositories.AssignmentRepository;
 import com.edutrack.repositories.AssignmentSubmissionRepository;
 import com.edutrack.repositories.CourseRepository;
 import com.edutrack.repositories.InstitutionRepository;
@@ -36,6 +42,7 @@ public class SectionService {
     private final StudentProfileRepository studentProfileRepository;
     private final InstitutionRepository institutionRepository;
     private final AssignmentSubmissionRepository submissionRepository;
+    private final AssignmentRepository assignmentRepository;
 
     public Section createSection(Long courseId, Long teacherId, Long institutionId, String name) {
         Course course = courseRepository.findById(courseId)
@@ -153,4 +160,47 @@ public class SectionService {
             );
         }).collect(Collectors.toList());
     }
+
+    public List<SectionStudentDashboardResponse> getStudentSectionDashboard(Long studentId) {
+    StudentProfile student = studentProfileRepository.findById(studentId)
+        .orElseThrow(() -> new RuntimeException("Student not found"));
+
+    List<Section> sections = sectionRepository.findByStudents_Id(studentId);
+
+    return sections.stream().map(section -> {
+        // Promedio general
+        Double average = submissionRepository.findAverageGradeByStudentInSection(studentId, section.getId());
+
+        // Historial de entregas con nota
+        List<AssignmentSubmission> submissions = submissionRepository.findByStudentIdAndSectionId(studentId, section.getId());
+        List<AssignmentGradeDTO> gradedAssignments = submissions.stream().map(s -> {
+            return new AssignmentGradeDTO(
+                s.getAssignment().getId(),
+                s.getAssignment().getTitle(),
+                s.getGrade(),
+                s.getSubmittedAt()
+            );
+        }).collect(Collectors.toList());
+
+        // Tareas pendientes
+        List<Assignment> pending = assignmentRepository.findPendingAssignmentsForStudent(section.getId(), studentId);
+        List<AssignmentDTO> pendingAssignments = pending.stream().map(a -> {
+            return new AssignmentDTO(
+                a.getId(),
+                a.getTitle(),
+                a.getDueDate()
+            );
+        }).collect(Collectors.toList());
+
+        return new SectionStudentDashboardResponse(
+            section.getId(),
+            section.getName(),
+            section.getCourse().getName(),
+            section.getTeacher().getUser().getName() + " " + section.getTeacher().getUser().getLastname(),
+            average != null ? average : 0.0,
+            gradedAssignments,
+            pendingAssignments
+        );
+    }).collect(Collectors.toList());
+}
 }

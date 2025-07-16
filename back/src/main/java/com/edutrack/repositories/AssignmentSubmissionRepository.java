@@ -16,4 +16,12 @@ public interface AssignmentSubmissionRepository extends JpaRepository<Assignment
 
     @Query("SELECT AVG(s.grade) FROM AssignmentSubmission s WHERE s.student.id = :studentId AND s.assignment.section.id = :sectionId AND s.grade IS NOT NULL")
     Double findAverageGradeByStudentInSection(@Param("studentId") Long studentId, @Param("sectionId") Long sectionId);
+
+    @Query("""
+        SELECT s FROM AssignmentSubmission s
+        WHERE s.student.id = :studentId
+        AND s.assignment.section.id = :sectionId
+    """)
+    List<AssignmentSubmission> findByStudentIdAndSectionId(@Param("studentId") Long studentId, @Param("sectionId") Long sectionId);
+
 }
