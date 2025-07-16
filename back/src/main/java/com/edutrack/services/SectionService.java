@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.edutrack.dto.response.SectionResponse;
 import com.edutrack.dto.response.StudentInSectionResponse;
+import com.edutrack.dto.response.StudentWithAverageResponse;
 import com.edutrack.entities.AcademicLevel;
 import com.edutrack.entities.Course;
 import com.edutrack.entities.Grade;
@@ -15,6 +16,7 @@ import com.edutrack.entities.Section;
 import com.edutrack.entities.StudentProfile;
 import com.edutrack.entities.TeacherProfile;
 import com.edutrack.entities.User;
+import com.edutrack.repositories.AssignmentSubmissionRepository;
 import com.edutrack.repositories.CourseRepository;
 import com.edutrack.repositories.InstitutionRepository;
 import com.edutrack.repositories.SectionRepository;
@@ -33,6 +35,7 @@ public class SectionService {
     private final TeacherProfileRepository teacherProfileRepository;
     private final StudentProfileRepository studentProfileRepository;
     private final InstitutionRepository institutionRepository;
+    private final AssignmentSubmissionRepository submissionRepository;
 
     public Section createSection(Long courseId, Long teacherId, Long institutionId, String name) {
         Course course = courseRepository.findById(courseId)
@@ -113,24 +116,41 @@ public class SectionService {
     }
 
     public List<StudentInSectionResponse> getStudentsInSection(Long sectionId) {
-    Section section = sectionRepository.findById(sectionId)
-        .orElseThrow(() -> new RuntimeException("Sección no encontrada"));
+        Section section = sectionRepository.findById(sectionId)
+                .orElseThrow(() -> new RuntimeException("Sección no encontrada"));
 
-    List<StudentProfile> students = section.getStudents();
+        List<StudentProfile> students = section.getStudents();
 
-    return students.stream().map(student -> {
-        User user = student.getUser();
-        Grade grade = student.getGrade();
-        String academicLevelName = grade.getAcademicLevel().getName();
+        return students.stream().map(student -> {
+            User user = student.getUser();
+            Grade grade = student.getGrade();
+            String academicLevelName = grade.getAcademicLevel().getName();
 
-        return new StudentInSectionResponse(
-            student.getId(),
-            user.getName(),
-            user.getLastname(),
-            user.getEmail(),
-            grade.getName(),
-            academicLevelName
-        );
-    }).collect(Collectors.toList());
-}
+            return new StudentInSectionResponse(
+                    student.getId(),
+                    user.getName(),
+                    user.getLastname(),
+                    user.getEmail(),
+                    grade.getName(),
+                    academicLevelName);
+        }).collect(Collectors.toList());
+    }
+
+    public List<StudentWithAverageResponse> getStudentsWithAveragesInSection(Long sectionId) {
+        Section section = sectionRepository.findById(sectionId)
+            .orElseThrow(() -> new RuntimeException("Section not found"));
+    
+        List<StudentProfile> students = section.getStudents();
+    
+        return students.stream().map(student -> {
+            Double average = submissionRepository.findAverageGradeByStudentInSection(student.getId(), sectionId);
+            String fullName = student.getUser().getName() + " " + student.getUser().getLastname();
+    
+            return new StudentWithAverageResponse(
+                student.getId(),
+                fullName,
+                average != null ? average : 0.0
+            );
+        }).collect(Collectors.toList());
+    }
 }
