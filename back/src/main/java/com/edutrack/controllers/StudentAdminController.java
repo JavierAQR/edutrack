@@ -27,6 +27,12 @@ public class StudentAdminController {
         return ResponseEntity.ok(new ApiResponse("Lista de estudiantes obtenida", students));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse> getStudentById(@PathVariable Long id) {
+        StudentInfoDTO student = studentService.getStudentById(id);
+        return ResponseEntity.ok(new ApiResponse("Estudiante obtenido exitosamente", student));
+    }
+
     @PostMapping
     public ResponseEntity<ApiResponse> createStudent(@RequestBody @Valid StudentCreateDTO studentDTO) {
         StudentInfoDTO createdStudent = studentService.createStudent(studentDTO);
