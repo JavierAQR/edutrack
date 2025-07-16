@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.edutrack.dto.request.AssignStudentsRequest;
 import com.edutrack.dto.request.SectionRequest;
 import com.edutrack.dto.response.SectionResponse;
+import com.edutrack.dto.response.StudentInSectionResponse;
 import com.edutrack.entities.Section;
-import com.edutrack.entities.StudentProfile;
 import com.edutrack.services.SectionService;
 
 import lombok.RequiredArgsConstructor;
@@ -51,7 +51,7 @@ public class SectionController {
     }
 
     @GetMapping("/{sectionId}/students")
-    public ResponseEntity<List<StudentProfile>> getStudents(@PathVariable Long sectionId) {
+    public ResponseEntity<List<StudentInSectionResponse>> getStudents(@PathVariable Long sectionId) {
         return ResponseEntity.ok(sectionService.getStudentsInSection(sectionId));
     }
 }
