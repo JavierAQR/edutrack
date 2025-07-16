@@ -13,8 +13,6 @@ interface CourseDTO {
   institutionName?: string;
 }
 
-
-
 const initialForm: CourseDTO = {
   name: "",
   gradeId: 0,
@@ -45,7 +43,7 @@ const CourseManager = () => {
         axios.get("http://localhost:8080/api/institutions/dto"),
       ]);
       setCourses(courseRes.data);
-      setGrades(gradeRes.data);
+      setGrades(gradeRes.data.data);
       setInstitutions(instRes.data);
       console.log(courseRes.data);
     } catch (err) {
@@ -124,25 +122,25 @@ const CourseManager = () => {
   };
 
   const handleEdit = async (course: CourseDTO) => {
-    const selectedGrade = grades.find((g) => g.id === course.gradeId);
+    
+    const selectedGrade = grades.find((g) => g.id === course.gradeId);   
     const levelId =
       course.academicLevelId || selectedGrade?.academicLevelId || 0;
-    const institutionId = course.institutionId || 0;
-    console.log(course);
-    
+    const institutionId = course.institutionId || 0;    
   
     try {
       // Cargar niveles de la institución
       const levelRes = await axios.get(
         `http://localhost:8080/api/institution-academic-levels/by-institution/${institutionId}`
       );
+      
       setAvailableLevels(levelRes.data);
   
       // Cargar grados del nivel
       const gradeRes = await axios.get(
         `http://localhost:8080/api/grades/by-level/${levelId}`
       );
-      setAvailableGrades(gradeRes.data);
+      setAvailableGrades(gradeRes.data.data);
   
       // Luego de que ya se han cargado, actualizamos el formData
       setFormData({

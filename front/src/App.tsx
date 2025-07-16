@@ -10,9 +10,9 @@ import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import VerificationPage from "./Pages/VerificationPage";
 import Home from "./Pages/Home";
-import Contact from "./Pages/Contact"
-import AboutUs from "./Pages/AboutUs"
-import Services from "./Pages/Services"
+import Contact from "./Pages/Contact";
+import AboutUs from "./Pages/AboutUs";
+import Services from "./Pages/Services";
 import MainLayout from "./Components/MainLayout";
 import PaymentPage from "./Pages/Payment";
 import SidebarAdmin from "./Components/SidebarAdmin";
@@ -33,7 +33,6 @@ import StudentManager from "./Pages/Admin/StudentManager";
 import SidebarInstitutionAdmin from "./Components/SidebarInstitutionAdmin";
 import InstitutionGradeManager from "./Pages/Admin/InstitutionGradeManager";
 
-
 function App() {
   return (
     <AuthProvider>
@@ -42,19 +41,25 @@ function App() {
           {/* Rutas públicas */}
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
-            <Route path="contactanos" element={<Contact />}/>
-            <Route path="nosotros" element={<AboutUs />}/>
-            <Route path="servicios" element={<Services />}/>
+            <Route path="contactanos" element={<Contact />} />
+            <Route path="nosotros" element={<AboutUs />} />
+            <Route path="servicios" element={<Services />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route path="verification" element={<VerificationPage />} />
           </Route>
 
-          <Route element={<VerificationRole allowedRoles={["INSTITUTION_ADMIN"]} />}>
-          <Route path="/institution-admin" element={<SidebarInstitutionAdmin />}>
-          <Route index element={<Navigate to="grades" replace />} />
-          <Route path="grades" element={<InstitutionGradeManager />} />
-          </Route>
+          {/* Rutas de administrador */}
+          <Route
+            element={<VerificationRole allowedRoles={["INSTITUTION_ADMIN"]} />}
+          >
+            <Route
+              path="/institution-admin"
+              element={<SidebarInstitutionAdmin />}
+            >
+              <Route index element={<Navigate to="grades" replace />} />
+              <Route path="grades" element={<InstitutionGradeManager />} />
+            </Route>
           </Route>
 
           {/* Rutas de estudiante */}
@@ -70,6 +75,7 @@ function App() {
             />
           </Route>
 
+          {/* Rutas de profesor */}
           <Route element={<VerificationRole allowedRoles={["TEACHER"]} />}>
             <Route path="/profesor" element={<SidebarTeacher />}>
               <Route index element={<Navigate to="perfil" replace />} />
@@ -81,19 +87,22 @@ function App() {
             />
           </Route>
 
+          {/* Rutas de administrador */}
           <Route element={<VerificationRole allowedRoles={["ADMIN"]} />}>
-          <Route path="/admin" element={<SidebarAdmin/> }>
-            <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="teachers" element={<TeacherManager />} />
-            <Route path="students" element={<StudentManager />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="institutions" element={<InstitutionManager />} />
-            <Route path="academic-levels" element={<AcademicLevelManager />} />
-            <Route path="academic-grades" element={<GradeManager />} />
-            <Route path="courses" element={<CourseAssignmentManager />} />
+            <Route path="/admin" element={<SidebarAdmin />}>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="teachers" element={<TeacherManager />} />
+              <Route path="students" element={<StudentManager />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="institutions" element={<InstitutionManager />} />
+              <Route
+                path="academic-levels"
+                element={<AcademicLevelManager />}
+              />
+              <Route path="academic-grades" element={<GradeManager />} />
+              <Route path="courses" element={<CourseAssignmentManager />} />
+            </Route>
           </Route>
-          </Route>
-
         </Routes>
       </Router>
     </AuthProvider>
