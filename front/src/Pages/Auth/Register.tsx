@@ -62,7 +62,6 @@ const Register = () => {
         setTimeout(() => {
           window.location.href = "/login";
         }, 2000);
-        localStorage.setItem("IDInstitucion", institutionId)
       } else {
         setError(response.data.message || "No se pudo completar el registro.");
       }
