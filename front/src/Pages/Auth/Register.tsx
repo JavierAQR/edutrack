@@ -24,7 +24,7 @@ const Register = () => {
   const fetchInstitutions = async () => {
     try {
       const [instRes] = await Promise.all([
-        axios.get("http://localhost:8080/admin/institutions/dto"),
+        axios.get("http://localhost:8080/api/institutions/dto"),
       ]);
       setInstitutions(instRes.data);
     } catch (err) {
