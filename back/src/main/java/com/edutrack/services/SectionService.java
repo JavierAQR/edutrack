@@ -162,8 +162,6 @@ public class SectionService {
     }
 
     public List<SectionStudentDashboardResponse> getStudentSectionDashboard(Long studentId) {
-    StudentProfile student = studentProfileRepository.findById(studentId)
-        .orElseThrow(() -> new RuntimeException("Student not found"));
 
     List<Section> sections = sectionRepository.findByStudents_Id(studentId);
 

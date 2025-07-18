@@ -70,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
         var authenticate = authenticationManager.authenticate(authToken);
 
         // Genera y devuelve un token JWT utilizando el nombre de usuario autenticado.
-        return JwtUtils.generateToken(((UserDetails) (authenticate.getPrincipal())).getUsername(), user.getUserType());
+        return JwtUtils.generateToken(((UserDetails) (authenticate.getPrincipal())).getUsername(), user.getUserType(), user.getInstitution().getId());
     }
 
     @Override
