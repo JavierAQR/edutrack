@@ -1,16 +1,17 @@
 import axios from "axios";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router";
-import Navbar from "../Components/Navbar";
-import Footer from "../Components/Footer";
+import Navbar from "../../Components/Navbar";
+import Footer from "../../Components/Footer";
 
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { jwtDecode } from "jwt-decode";
 
 // Interfaz para los datos que vienen en el token
 interface JwtPayload {
   sub: string; // username
   role: string; // rol del usuario
+  institutionId: number; //id de institucion de usuario
   exp: number; // expiración
 }
 
@@ -34,6 +35,7 @@ const Login = () => {
           },
         }
       );
+      
       return response.data;
     } catch (error) {
       console.error("Error checking profile status:", error);
@@ -91,20 +93,19 @@ const Login = () => {
       );
 
       if (response.data.authStatus === "LOGIN_SUCCESS") {
-        setSuccessMessage("Inicio de sesión exitoso"); // Muestra el mensaje de éxito
-        // Guarda el token JWT en el almacenamiento local para futuras solicitudes
+        setSuccessMessage("Inicio de sesión exitoso");
         const token = response.data.token;
         localStorage.setItem("token", token);
 
-        // Decodificamos el token
-        const decoded = jwtDecode<JwtPayload>(token);
+        const decoded = jwtDecode<JwtPayload>(token);     
         const role = decoded.role;
-
+        
         login(response.data.token, {
           username: username,
           role: role,
+          institutionId: decoded.institutionId
         });
-        // Redirigir según el rol y estado del perfil
+
         await redirectUser(role, token);
       }
     } catch (err: unknown) {

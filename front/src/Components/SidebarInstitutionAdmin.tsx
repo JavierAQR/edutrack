@@ -10,6 +10,11 @@ const menuItems: MenuItem[] = [
     label: "Grados",
     href: "/institution-admin",
   },
+  {
+    icons: <RiAdminLine size={30} />,
+    label: "Secciones",
+    href: "/institution-admin/sections",
+  },
 ];
 
 const SidebarInstitutionAdmin = () => {

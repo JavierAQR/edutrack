@@ -3,6 +3,7 @@ export type UserType = "STUDENT" | "TEACHER" | "PARENT" | "ADMIN" | "SUPER_ADMIN
 export interface User {
     username: string,
     role: string
+    institutionId: number,
 }
 
 export interface Usuario {

@@ -17,7 +17,10 @@ public class SectionResponse {
     private Long teacherId;
     private String teacherFullName;
 
+    private Long gradeId;
     private String gradeName;
+
+    private Long academicLevelId;
     private String academicLevelName;
 
     private Long institutionId;

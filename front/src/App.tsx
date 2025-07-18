@@ -6,8 +6,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import Login from "./Pages/Login";
-import Register from "./Pages/Register";
+import Login from "./Pages/Auth/Login";
+import Register from "./Pages/Auth/Register";
 import VerificationPage from "./Pages/VerificationPage";
 import Home from "./Pages/Home";
 import Contact from "./Pages/Contact";
@@ -32,6 +32,7 @@ import StudentProfile from "./Pages/Student/StudentProfile";
 import StudentManager from "./Pages/Admin/StudentManager";
 import SidebarInstitutionAdmin from "./Components/SidebarInstitutionAdmin";
 import InstitutionGradeManager from "./Pages/Admin/InstitutionGradeManager";
+import SectionManager from "./Pages/Institution_Admin/SectionManager";
 
 function App() {
   return (
@@ -59,6 +60,7 @@ function App() {
             >
               <Route index element={<Navigate to="grades" replace />} />
               <Route path="grades" element={<InstitutionGradeManager />} />
+              <Route path="sections" element={<SectionManager />} />
             </Route>
           </Route>
 

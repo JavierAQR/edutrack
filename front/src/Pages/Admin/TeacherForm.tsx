@@ -2,7 +2,20 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 interface TeacherFormProps {
-    initialData: any;
+    initialData: {
+        id?: number;
+        username?: string;
+        name?: string;
+        lastname?: string;
+        email?: string;
+        birthdate?: string;
+        enabled?: boolean;
+        degree?: string;
+        specialization?: string;
+        teachingExperience?: number;
+        biography?: string;
+        cvUrl?: string;
+    };
     isEditing: boolean;
     onSubmit: () => void;
     onCancel: () => void;
@@ -62,11 +75,11 @@ const TeacherForm = ({ initialData, isEditing, onSubmit, onCancel }: TeacherForm
         try {
             if (isEditing && initialData?.id) {
                 await axios.put(
-                    `http://localhost:8080/admin/teachers/${initialData.id}`,
+                    `http://localhost:8080/api/teachers/${initialData.id}`,
                     formData
                 );
             } else {
-                await axios.post("http://localhost:8080/admin/teachers", formData);
+                await axios.post("http://localhost:8080/api/teachers", formData);
             }
             onSubmit();
         } catch (err) {

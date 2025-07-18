@@ -49,8 +49,7 @@ public class JwtUtils {
         return claimsOptional.map(Claims::getSubject);
     }
 
-    /* cambios */
-    public static String generateToken (String username, UserType role){
+    public static String generateToken (String username, UserType role, Long institutionId){
         var currentDate = new Date();
         var jwtExpirationInMinutes = 10;
         var expiration = DateUtils.addMinutes(currentDate, jwtExpirationInMinutes);
@@ -60,6 +59,7 @@ public class JwtUtils {
                 .issuer(ISSUER)
                 .subject(username)
                 .claim("role", role)
+                .claim("institutionId", institutionId)
                 .signWith(secretKey)
                 .issuedAt(currentDate)
                 .expiration(expiration)

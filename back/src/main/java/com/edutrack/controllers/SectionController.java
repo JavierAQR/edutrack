@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.edutrack.dto.request.AssignStudentsRequest;
 import com.edutrack.dto.request.SectionRequest;
 import com.edutrack.dto.response.SectionResponse;
+import com.edutrack.dto.response.SectionStudentDashboardResponse;
 import com.edutrack.dto.response.StudentInSectionResponse;
+import com.edutrack.dto.response.StudentWithAverageResponse;
 import com.edutrack.entities.Section;
 import com.edutrack.services.SectionService;
 
@@ -53,5 +55,15 @@ public class SectionController {
     @GetMapping("/{sectionId}/students")
     public ResponseEntity<List<StudentInSectionResponse>> getStudents(@PathVariable Long sectionId) {
         return ResponseEntity.ok(sectionService.getStudentsInSection(sectionId));
+    }
+
+    @GetMapping("/{sectionId}/students-averages")
+    public ResponseEntity<List<StudentWithAverageResponse>> getStudentsWithAverages(@PathVariable Long sectionId) {
+        return ResponseEntity.ok(sectionService.getStudentsWithAveragesInSection(sectionId));
+    }
+
+    @GetMapping("/dashboard/student/{studentId}")
+    public ResponseEntity<List<SectionStudentDashboardResponse>> getStudentDashboard(@PathVariable Long studentId) {
+        return ResponseEntity.ok(sectionService.getStudentSectionDashboard(studentId));
     }
 }

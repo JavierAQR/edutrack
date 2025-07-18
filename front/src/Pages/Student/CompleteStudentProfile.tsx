@@ -11,7 +11,7 @@ interface StudentProfileData {
 const CompleteStudentProfile = () => {
   const [availableLevels, setAvailableLevels] = useState<AcademicLevel[]>([]);
   const [availableGrades, setAvailableGrades] = useState<Grade[]>([]);
-  const [selectedInstitution, setSelectedInstitution] = useState("")
+  const [selectedInstitution, setSelectedInstitution] = useState("");
   const [profileData, setProfileData] = useState<StudentProfileData>({
     gradeId: "",
     biography: "",
@@ -23,28 +23,48 @@ const CompleteStudentProfile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedInstitutionId = localStorage.getItem("IDInstitucion");
-    if (storedInstitutionId) {
-      loadAcademicLevels(storedInstitutionId);
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        const institutionId = user.institutionId;
+
+        if (institutionId) {
+          loadAcademicLevels(institutionId);
+        }
+      } catch (error) {
+        console.error("Error parsing user data from localStorage:", error);
+      }
     }
     fetchInstitution();
   }, []);
 
   const fetchInstitution = async () => {
-    const storedInstitutionId = localStorage.getItem("IDInstitucion");
-    if (storedInstitutionId) {
-      const res = await axios.get(`http://localhost:8080/admin/institutions/${storedInstitutionId}`);
-      setSelectedInstitution(res.data.name);
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        console.log(user);
+        
+        const institutionId = user.institutionId;
+        
+        if (institutionId) {
+          const res = await axios.get(`http://localhost:8080/api/institutions/${institutionId}`);
+          setSelectedInstitution(res.data.name);
+        }
+      } catch (error) {
+        console.error("Error parsing user data from localStorage:", error);
+      }
     }
   };
 
   const loadAcademicLevels = async (institutionId: string) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/admin/institution-academic-levels/by-institution/${institutionId}`
+        `http://localhost:8080/api/institution-academic-levels/by-institution/${institutionId}`
       );
       setAvailableLevels(res.data);
-      setAvailableGrades([]); 
+      setAvailableGrades([]);
       setSelectedLevelId("");
       setProfileData((prev) => ({ ...prev, gradeId: "" }));
     } catch (err) {
@@ -53,14 +73,13 @@ const CompleteStudentProfile = () => {
     }
   };
 
-
   const handleLevelChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const id = e.target.value;
     setSelectedLevelId(id);
 
     try {
       const res = await axios.get(
-        `http://localhost:8080/admin/grades/by-level/${id}`
+        `http://localhost:8080/api/grades/by-level/${id}`
       );
       setAvailableGrades(res.data);
       setProfileData((prev) => ({ ...prev, gradeId: "" }));
@@ -121,7 +140,6 @@ const CompleteStudentProfile = () => {
       setIsLoading(false);
     }
   };
-
 
   return (
     <main className="pt-21 px-4 max-w-3xl mx-auto">

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { Link } from "react-router";
-import type { Institution, UserType } from "../types";
+import type { Institution, UserType } from "../../types";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -62,14 +62,13 @@ const Register = () => {
         setTimeout(() => {
           window.location.href = "/login";
         }, 2000);
-        localStorage.setItem("IDInstitucion", institutionId)
       } else {
         setError(response.data.message || "No se pudo completar el registro.");
       }
     } catch (err: unknown) {
-      if (err.response?.data?.message) {
+      if (axios.isAxiosError(err) && err.response?.data?.message) {
         setError(err.response.data.message);
-      } else if (err.response?.data?.authStatus === "USER_NOT_CREATED") {
+      } else if (axios.isAxiosError(err) && err.response?.data?.authStatus === "USER_NOT_CREATED") {
         setError("No se pudo crear el usuario. Por favor, intente nuevamente.");
       } else {
         setError("Error en el registro. Por favor intente más tarde.");
