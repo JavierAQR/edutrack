@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.edutrack.dto.ApiResponse;
 import com.edutrack.dto.request.StudentProfileDTO;
+import com.edutrack.dto.response.StudentByGradeResponse;
 import com.edutrack.dto.response.StudentProfileResponse;
 import com.edutrack.dto.response.StudentProfileResponseDTO;
 import com.edutrack.entities.StudentProfile;
@@ -141,12 +143,20 @@ public class StudentProfileController {
     }
 
     @GetMapping("/institution/{institutionId}")
-public ResponseEntity<List<StudentProfileResponse>> getStudentsByInstitution(@PathVariable Long institutionId) {
-    List<StudentProfileResponse> result = studentProfileRepository.findByUser_Institution_Id(institutionId)
-        .stream()
-        .map(s -> new StudentProfileResponse(s.getId(), s.getUser().getName() + " " + s.getUser().getLastname()))
-        .toList();
+    public ResponseEntity<List<StudentProfileResponse>> getStudentsByInstitution(@PathVariable Long institutionId) {
+        List<StudentProfileResponse> result = studentProfileRepository.findByUser_Institution_Id(institutionId)
+                .stream()
+                .map(s -> new StudentProfileResponse(s.getId(),
+                        s.getUser().getName() + " " + s.getUser().getLastname()))
+                .toList();
 
-    return ResponseEntity.ok(result);
-}
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/by-grade-and-institution")
+    public List<StudentByGradeResponse> getByGradeAndInstitution(
+            @RequestParam Long gradeId,
+            @RequestParam Long institutionId) {
+        return studentProfileRepository.findByGradeAndInstitution(gradeId, institutionId);
+    }
 }

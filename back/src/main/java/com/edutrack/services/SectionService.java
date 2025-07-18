@@ -78,10 +78,14 @@ public class SectionService {
                     course.getId(),
                     course.getName(),
 
+
                     section.getTeacher().getId(),
                     section.getTeacher().getUser().getName(),
 
+                    grade.getId(),
                     grade.getName(),
+
+                    level.getId(),
                     level.getName(),
 
                     section.getInstitution().getId(),
