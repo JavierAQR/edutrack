@@ -1,5 +1,6 @@
 package com.edutrack.controllers;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,10 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.edutrack.dto.ApiResponse;
 import com.edutrack.dto.request.StudentProfileDTO;
+import com.edutrack.dto.response.StudentProfileResponse;
 import com.edutrack.dto.response.StudentProfileResponseDTO;
 import com.edutrack.entities.StudentProfile;
 import com.edutrack.entities.User;
 import com.edutrack.entities.enums.UserType;
+import com.edutrack.repositories.StudentProfileRepository;
 import com.edutrack.repositories.UserRepository;
 import com.edutrack.services.StudentProfileService;
 
@@ -31,7 +35,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StudentProfileController {
     private final StudentProfileService studentProfileService;
-    private final UserRepository userRepository; 
+    private final UserRepository userRepository;
+    private final StudentProfileRepository studentProfileRepository;
 
     @PostMapping("/create")
     public ResponseEntity<?> createProfile(
@@ -109,28 +114,39 @@ public class StudentProfileController {
     public ResponseEntity<?> updateProfessionalInfo(
             @RequestBody @Valid StudentProfileDTO profileDTO,
             Authentication authentication) {
-        
+
         try {
             String username = authentication.getName();
             User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-            
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
             // Verificar que es un estudiante
             if (user.getUserType() != UserType.STUDENT) {
                 return ResponseEntity.badRequest()
-                    .body(new ApiResponse("Solo los estudiantes pueden actualizar información estudiantil"));
+                        .body(new ApiResponse("Solo los estudiantes pueden actualizar información estudiantil"));
             }
-            
+
             StudentProfileResponseDTO updatedProfile = studentProfileService.updateProfile(user.getId(), profileDTO);
-            
-            return ResponseEntity.ok(new ApiResponse("Información estudiantil actualizada exitosamente", updatedProfile));
-            
+
+            return ResponseEntity
+                    .ok(new ApiResponse("Información estudiantil actualizada exitosamente", updatedProfile));
+
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ApiResponse("Error: " + e.getMessage()));
+                    .body(new ApiResponse("Error: " + e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse("Error interno del servidor"));
+                    .body(new ApiResponse("Error interno del servidor"));
         }
     }
+
+    @GetMapping("/institution/{institutionId}")
+public ResponseEntity<List<StudentProfileResponse>> getStudentsByInstitution(@PathVariable Long institutionId) {
+    List<StudentProfileResponse> result = studentProfileRepository.findByUser_Institution_Id(institutionId)
+        .stream()
+        .map(s -> new StudentProfileResponse(s.getId(), s.getUser().getName() + " " + s.getUser().getLastname()))
+        .toList();
+
+    return ResponseEntity.ok(result);
+}
 }
