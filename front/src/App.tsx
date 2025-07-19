@@ -32,7 +32,7 @@ import StudentProfile from "./Pages/Student/StudentProfile";
 import StudentManager from "./Pages/Admin/StudentManager";
 import SidebarInstitutionAdmin from "./Components/SidebarInstitutionAdmin";
 import InstitutionGradeManager from "./Pages/Admin/InstitutionGradeManager";
-import SectionManager from "./Pages/Institution_Admin/SectionManager";
+import SectionManager from "./Pages/Institution_Admin/Section/SectionManager";
 
 function App() {
   return (

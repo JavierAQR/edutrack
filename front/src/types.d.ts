@@ -59,4 +59,23 @@ export type MenuItem = {
     name: string;
     academicLevelId: number;
   }
+
+  export interface Section {
+    id?: number;
+    name: string;
+    courseId: number;
+    teacherId: number;
+    studentIds: number[];
+    academicLevelId?: number;
+    academicLevelName?:string;
+    gradeId?: number;
+    gradeName?:string;
+    courseName?:string;
+    teacherFullName?:string;
+  }
   
+  export interface Student {
+    id: number;
+    name: string;
+    lastName: string;
+  }
