@@ -161,6 +161,32 @@ const SectionManager = () => {
     }
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    try {
+
+        // Crear nueva sección
+        const payload = {
+          name: sectionForm.name,
+          courseId: sectionForm.courseId,
+          teacherId: sectionForm.teacherId,
+          institutionId: institutionId,
+        };
+  
+        await axios.post(
+          "http://localhost:8080/api/sections",
+          payload
+        );
+  
+      setShowForm(false);
+      setEditingSection(null);
+      fetchSections();
+    } catch (error) {
+      console.error("Error al crear o actualizar la sección", error);
+    }
+  };
+
   const saveStudentAssignments = async (studentIds: number[]) => {
     if (!editingSection) return;
 
@@ -250,7 +276,7 @@ const SectionManager = () => {
             }}
           >
             <form
-              // onSubmit={handleSubmit}
+              onSubmit={handleSubmit}
               className="mt-8 space-y-4 bg-gray-100 p-6 rounded shadow"
             >
               <div>
