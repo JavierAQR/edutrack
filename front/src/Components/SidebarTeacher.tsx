@@ -33,7 +33,7 @@ const menuItems: MenuItem[] = [
   {
     icons: <HiMiniAcademicCap size={30} />,
     label: "Secciones",
-    href: "/profesor",
+    href: "/profesor/sections",
   },
 ];
 

@@ -204,4 +204,47 @@ public class SectionService {
                     pendingAssignments);
         }).collect(Collectors.toList());
     }
+
+    public List<SectionResponse> getSectionsByTeacherId(Long teacherId) {
+        List<Section> sections = sectionRepository.findByTeacherId(teacherId);
+    
+        return sections.stream()
+            .map(this::mapToSectionResponse)
+            .collect(Collectors.toList());
+    }
+
+    private SectionResponse mapToSectionResponse(Section section) {
+        Course course = courseRepository.findById(section.getCourse().getId())
+            .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
+    
+        Grade grade = course.getGrade(); 
+        AcademicLevel academicLevel = grade.getAcademicLevel(); 
+    
+        TeacherProfile teacher = teacherProfileRepository.findById(section.getTeacher().getId())
+            .orElseThrow(() -> new RuntimeException("Profesor no encontrado"));
+        User teacherUser = teacher.getUser(); 
+    
+        Institution institution = institutionRepository.findById(section.getInstitution().getId())
+            .orElseThrow(() -> new RuntimeException("Institución no encontrada"));
+    
+        return new SectionResponse(
+            section.getId(),
+            section.getName(),
+    
+            course.getId(),
+            course.getName(),
+    
+            teacher.getId(),
+            teacherUser.getName() + " " + teacherUser.getLastname(),
+    
+            grade.getId(),
+            grade.getName(),
+    
+            academicLevel.getId(),
+            academicLevel.getName(),
+    
+            institution.getId(),
+            institution.getName()
+        );
+    }
 }

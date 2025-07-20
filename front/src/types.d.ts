@@ -72,6 +72,7 @@ export type MenuItem = {
     gradeName?:string;
     courseName?:string;
     teacherFullName?:string;
+    institutionName?:string
   }
   
   export interface Student {
