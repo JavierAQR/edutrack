@@ -1,9 +1,21 @@
 import { useState, useEffect } from "react";
 
+interface Grade {
+    id: number;
+    name: string;
+    academicLevelId: number;
+    academicLevelName: string;
+}
+
 interface CourseFormProps {
-    course?: any;
-    grades: any[];
-    onSubmit: (e: React.FormEvent, formData: any) => void;
+    course?: {
+        id?: number;
+        name: string;
+        gradeId?: number;
+        gradeName?: string;
+    };
+    grades: Grade[];
+    onSubmit: (formData: { name: string; gradeId: string }) => void;
     onCancel: () => void;
 }
 
@@ -17,7 +29,12 @@ const CourseForm = ({ course, grades, onSubmit, onCancel }: CourseFormProps) => 
         if (course) {
             setFormData({
                 name: course.name,
-                gradeId: course.gradeId || ""
+                gradeId: course.gradeId ? course.gradeId.toString() : ""
+            });
+        } else {
+            setFormData({
+                name: "",
+                gradeId: ""
             });
         }
     }, [course]);
@@ -27,37 +44,46 @@ const CourseForm = ({ course, grades, onSubmit, onCancel }: CourseFormProps) => 
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        onSubmit(formData);
+    };
+
     return (
-        <form onSubmit={(e) => onSubmit(e, formData)} className="space-y-4 p-6">
+        <form onSubmit={handleSubmit} className="space-y-4 p-6">
             <h2 className="text-xl font-semibold">
                 {course ? "Editar Curso" : "Agregar Nuevo Curso"}
             </h2>
 
             <div>
-                <label className="block mb-1">Nombre del Curso</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Nombre del Curso
+                </label>
                 <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full border p-2 rounded"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     required
                 />
             </div>
 
             <div>
-                <label className="block mb-1">Grado</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Grado
+                </label>
                 <select
                     name="gradeId"
                     value={formData.gradeId}
                     onChange={handleChange}
-                    className="w-full border p-2 rounded"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     required
                 >
                     <option value="">Seleccione un grado</option>
                     {grades.map(grade => (
-                        <option key={grade.id} value={grade.gradeId}>
-                            {grade.academicLevelName} - {grade.gradeName}
+                        <option key={grade.id} value={grade.id}>
+                            {grade.academicLevelName} - {grade.name}
                         </option>
                     ))}
                 </select>
@@ -67,13 +93,13 @@ const CourseForm = ({ course, grades, onSubmit, onCancel }: CourseFormProps) => 
                 <button
                     type="button"
                     onClick={onCancel}
-                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                    className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                     Cancelar
                 </button>
                 <button
                     type="submit"
-                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                     {course ? "Actualizar" : "Crear"}
                 </button>
