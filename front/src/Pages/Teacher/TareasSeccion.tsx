@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import SubmissionModal from "../../Components/Teacher/SubmissionModal";
 
 interface Assignment {
   id: number;
@@ -16,6 +17,9 @@ const TareasSeccion = () => {
   const sectionId = Number(id);
   const teacherId = Number(localStorage.getItem("teacher_id"));
 
+  const [selectedAssignmentId, setSelectedAssignmentId] = useState<
+    number | null
+  >(null);
   const [tareas, setTareas] = useState<Assignment[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({
@@ -31,6 +35,8 @@ const TareasSeccion = () => {
       const res = await axios.get(
         `http://localhost:8080/api/assignments/section/${sectionId}`
       );
+      console.log(res.data);
+      
       setTareas(res.data);
     } catch (error) {
       console.error("Error al obtener tareas:", error);
@@ -94,19 +100,38 @@ const TareasSeccion = () => {
               <p>
                 <strong>Fecha de entrega:</strong> {tarea.dueDate}
               </p>
-              {tarea.fileUrl && (
-                <a
-                  href={`http://localhost:8080${tarea.fileUrl}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 underline"
+              <div className="flex space-x-5 items-center">
+                {tarea.fileUrl && (
+                  <button className="mt-2 px-3 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700">
+                    <a
+                      href={`http://localhost:8080${tarea.fileUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white-600 "
+                    >
+                      Ver archivo
+                    </a>
+                  </button>
+                )}
+
+                <button
+                   onClick={() => {
+                    setSelectedAssignmentId(tarea.id);
+                  }}
+                  className="mt-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
                 >
-                  Ver archivo
-                </a>
-              )}
+                  Ver entregas
+                </button>
+              </div>
             </li>
           ))}
         </ul>
+      )}
+      {selectedAssignmentId && (
+        <SubmissionModal
+          assignmentId={selectedAssignmentId}
+          onClose={() => setSelectedAssignmentId(null)}
+        />
       )}
 
       {showModal && (

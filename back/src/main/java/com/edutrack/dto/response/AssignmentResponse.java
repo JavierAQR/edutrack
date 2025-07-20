@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AssignmentResponse {
-     private String title;
+    private Long id;
+    private String title;
     private String description;
     private String type;
     private LocalDate dueDate;

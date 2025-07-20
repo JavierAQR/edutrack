@@ -69,6 +69,7 @@ public class AssignmentService {
 
         return assignments.stream()
                 .map(a -> new AssignmentResponse(
+                        a.getId(),
                         a.getTitle(),
                         a.getDescription(),
                         a.getType(),
