@@ -34,6 +34,7 @@ import SidebarInstitutionAdmin from "./Components/SidebarInstitutionAdmin";
 import InstitutionGradeManager from "./Pages/Admin/InstitutionGradeManager";
 import SectionManager from "./Pages/Institution_Admin/Section/SectionManager";
 import TeacherSections from "./Pages/Teacher/TeacherSections";
+import DetalleSeccion from "./Pages/Teacher/DetalleSeccion";
 
 function App() {
   return (
@@ -84,6 +85,7 @@ function App() {
               <Route index element={<Navigate to="perfil" replace />} />
               <Route path="perfil" element={<TeacherProfile />} />
               <Route path="sections" element={<TeacherSections />} />
+              <Route path="/profesor/secciones/:id" element={<DetalleSeccion />} />
             </Route>
             <Route
               path="complete-teacher-profile"

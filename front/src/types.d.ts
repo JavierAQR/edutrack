@@ -80,3 +80,18 @@ export type MenuItem = {
     name: string;
     lastName: string;
   }
+
+  export interface StudentInSectionResponse {
+    id: number;
+    name: string;
+    lastname: string;
+    email: string;
+    grade: string;
+    academicLevel: string;
+  }
+
+  export interface StudentWithAverageResponse {
+    studentId: number;
+    studentName: string;
+    averageGrade: number;
+  }
