@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import StudentForm from "./StudentForm";
 
@@ -32,6 +32,49 @@ const StudentManager = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [academicLevels, setAcademicLevels] = useState<AcademicLevel[]>([]);
+
+    // Estados para paginación y filtros
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(10);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedLevel, setSelectedLevel] = useState("");
+    const [selectedStatus, setSelectedStatus] = useState("");
+
+    // Obtener niveles académicos únicos para el filtro
+    const uniqueAcademicLevels = useMemo(() => {
+        const levels = new Set<string>();
+        students.forEach(student => {
+            if (student.academicLevel) {
+                levels.add(student.academicLevel);
+            }
+        });
+        return Array.from(levels);
+    }, [students]);
+
+    // Filtrar estudiantes según criterios
+    const filteredStudents = useMemo(() => {
+        return students.filter(student => {
+            const matchesSearch =
+                student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                student.lastname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                student.email.toLowerCase().includes(searchTerm.toLowerCase());
+
+            const matchesLevel = selectedLevel === "" ||
+                (student.academicLevel === selectedLevel);
+
+            const matchesStatus = selectedStatus === "" ||
+                (selectedStatus === "active" && student.enabled) ||
+                (selectedStatus === "inactive" && !student.enabled);
+
+            return matchesSearch && matchesLevel && matchesStatus;
+        });
+    }, [students, searchTerm, selectedLevel, selectedStatus]);
+
+    // Calcular paginación
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredStudents.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
 
     const fetchStudents = async () => {
         try {
@@ -134,6 +177,32 @@ const StudentManager = () => {
         fetchStudents();
     };
 
+    const handlePageChange = (pageNumber: number) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const handleLevelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedLevel(e.target.value);
+        setCurrentPage(1);
+    };
+
+    const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedStatus(e.target.value);
+        setCurrentPage(1);
+    };
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value);
+        setCurrentPage(1);
+    };
+
+    const handleClearFilters = () => {
+        setSearchTerm("");
+        setSelectedLevel("");
+        setSelectedStatus("");
+        setCurrentPage(1);
+    };
+
     if (loading) {
         return <div className="p-4">Cargando estudiantes...</div>;
     }
@@ -154,66 +223,185 @@ const StudentManager = () => {
                 </button>
             </div>
 
-            {students.length === 0 ? (
-                <div className="text-gray-500">No hay estudiantes registrados</div>
-            ) : (
-                <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200 shadow-sm border border-gray-200 rounded-lg overflow-hidden">
-                        <thead className="bg-blue-600 text-white">
-                            <tr>
-                                <th className="px-4 py-2 text-left">Nombre</th>
-                                <th className="px-4 py-2 text-left">Correo</th>
-                                <th className="px-4 py-2 text-left">Grado/Nivel</th>
-                                <th className="px-4 py-2 text-center">Estado</th>
-                                <th className="px-4 py-2 text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-100">
-                            {students.map((student) => (
-                                <tr key={student.id} className="hover:bg-gray-50">
-                                    <td className="px-4 py-2">
-                                        {student.name} {student.lastname}
-                                    </td>
-                                    <td className="px-4 py-2">{student.email}</td>
-                                    <td className="px-4 py-2">
-                                        {student.gradeName || "No asignado"}{" "}
-                                        {student.academicLevel && `(${student.academicLevel})`}
-                                    </td>
-                                    <td className="px-4 py-2 text-center">
-                                        <span
-                                            className={`px-2 py-1 rounded-full text-xs ${student.enabled
-                                                ? "bg-green-100 text-green-800"
-                                                : "bg-red-100 text-red-800"
-                                                }`}
-                                        >
-                                            {student.enabled ? "Activo" : "Inactivo"}
-                                        </span>
-                                    </td>
-                                    <td className="px-4 py-2 flex gap-2 justify-center">
-                                        <button
-                                            onClick={() => handleEdit(student)}
-                                            className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
-                                        >
-                                            Editar
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(student.id)}
-                                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-                                        >
-                                            Eliminar
-                                        </button>
-                                        <button
-                                            onClick={() => handleViewProfile(student)}
-                                            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
-                                        >
-                                            Ver
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+            {/* Filtros y búsqueda */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Buscar por nombre, apellido o correo
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="Buscar estudiantes..."
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    />
                 </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Filtrar por nivel académico
+                    </label>
+                    <select
+                        value={selectedLevel}
+                        onChange={handleLevelChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    >
+                        <option value="">Todos los niveles</option>
+                        {uniqueAcademicLevels.map(level => (
+                            <option key={level} value={level}>
+                                {level}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Filtrar por estado
+                    </label>
+                    <select
+                        value={selectedStatus}
+                        onChange={handleStatusChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    >
+                        <option value="">Todos los estados</option>
+                        <option value="active">Activo</option>
+                        <option value="inactive">Inactivo</option>
+                    </select>
+                </div>
+            </div>
+
+            <div className="mb-6">
+                <button
+                    onClick={handleClearFilters}
+                    className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md"
+                >
+                    Limpiar filtros
+                </button>
+            </div>
+
+            {filteredStudents.length === 0 ? (
+                <div className="text-gray-500">No se encontraron estudiantes que coincidan con los filtros</div>
+            ) : (
+                <>
+                    <div className="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-blue-600 text-white">
+                                <tr>
+                                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                                        Nombre
+                                    </th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                                        Correo
+                                    </th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                                        Grado/Nivel
+                                    </th>
+                                    <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                        Estado
+                                    </th>
+                                    <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                        Acciones
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {currentItems.map((student) => (
+                                    <tr key={student.id} className="hover:bg-gray-50">
+                                        <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            {student.name} {student.lastname}
+                                        </td>
+                                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {student.email}
+                                        </td>
+                                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {student.gradeName || "No asignado"}{" "}
+                                            {student.academicLevel && `(${student.academicLevel})`}
+                                        </td>
+                                        <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-center">
+                                            <span
+                                                className={`px-2 py-1 rounded-full text-xs ${student.enabled
+                                                    ? "bg-green-100 text-green-800"
+                                                    : "bg-red-100 text-red-800"
+                                                    }`}
+                                            >
+                                                {student.enabled ? "Activo" : "Inactivo"}
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                                            <div className="flex gap-2 justify-center">
+                                                <button
+                                                    onClick={() => handleEdit(student)}
+                                                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
+                                                >
+                                                    Editar
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(student.id)}
+                                                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                                                >
+                                                    Eliminar
+                                                </button>
+                                                <button
+                                                    onClick={() => handleViewProfile(student)}
+                                                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
+                                                >
+                                                    Ver
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Paginación */}
+                    <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-4">
+                        <div className="text-sm text-gray-700">
+                            Mostrando {Math.min(indexOfFirstItem + 1, filteredStudents.length)} a{" "}
+                            {Math.min(indexOfLastItem, filteredStudents.length)} de{" "}
+                            {filteredStudents.length} estudiantes
+                        </div>
+
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className={`px-3 py-1 rounded-md ${currentPage === 1
+                                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                    : "bg-gray-200 hover:bg-gray-300 text-gray-700"}`}
+                            >
+                                Anterior
+                            </button>
+
+                            <div className="flex gap-1">
+                                {[...Array(totalPages)].map((_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => handlePageChange(index + 1)}
+                                        className={`px-3 py-1 rounded-md ${currentPage === index + 1
+                                            ? "bg-blue-600 text-white"
+                                            : "bg-gray-200 hover:bg-gray-300 text-gray-700"}`}
+                                    >
+                                        {index + 1}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <button
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className={`px-3 py-1 rounded-md ${currentPage === totalPages
+                                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                    : "bg-gray-200 hover:bg-gray-300 text-gray-700"}`}
+                            >
+                                Siguiente
+                            </button>
+                        </div>
+                    </div>
+                </>
             )}
 
             {isModalOpen && (
