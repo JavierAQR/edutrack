@@ -11,4 +11,5 @@ import com.edutrack.entities.Section;
 public interface SectionRepository extends JpaRepository<Section, Long> {
     List<Section> findByInstitutionId(Long institutionId);
     List<Section> findByStudents_Id(Long studentId);
+    List<Section> findByTeacherId(Long teacherId);
 }

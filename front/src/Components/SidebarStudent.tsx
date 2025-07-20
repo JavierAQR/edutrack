@@ -10,6 +10,11 @@ const menuItems: MenuItem[] = [
       label: "Mi Perfil",
       href: "/estudiante/perfil",
     },
+    {
+      icons: <MdOutlineDashboard size={30} />,
+      label: "Secciones",
+      href: "/estudiante/sections",
+    },
   ];
 
 const SidebarStudent = () => {

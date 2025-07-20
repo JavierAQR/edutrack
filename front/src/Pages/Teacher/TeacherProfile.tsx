@@ -53,10 +53,12 @@ const TeacherProfile = () => {
           },
         }
       );
-      console.log(response);
       if (response.ok) {
         const result = await response.json();
-        console.log(result);
+        const id = result.data.id;
+        console.log(id);
+        localStorage.setItem('teacher_id', id);
+        
 
         if (result.data) {
           setProfileData(result.data);

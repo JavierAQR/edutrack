@@ -8,11 +8,13 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.edutrack.dto.request.CreateAssignmentRequest;
+import com.edutrack.dto.response.AssignmentResponse;
 import com.edutrack.entities.Assignment;
 import com.edutrack.entities.Section;
 import com.edutrack.entities.TeacherProfile;
@@ -30,7 +32,8 @@ public class AssignmentService {
     private final SectionRepository sectionRepository;
     private final TeacherProfileRepository teacherProfileRepository;
 
-    public Assignment createAssignment(CreateAssignmentRequest request, MultipartFile file, Long teacherId) throws IOException {
+    public Assignment createAssignment(CreateAssignmentRequest request, MultipartFile file, Long teacherId)
+            throws IOException {
         Section section = sectionRepository.findById(request.getSectionId())
                 .orElseThrow(() -> new RuntimeException("Sección no encontrada"));
 
@@ -61,7 +64,17 @@ public class AssignmentService {
         return assignmentRepository.save(assignment);
     }
 
-    public List<Assignment> getAssignmentsBySection(Long sectionId) {
-        return assignmentRepository.findBySectionId(sectionId);
+    public List<AssignmentResponse> getAssignmentsBySection(Long sectionId) {
+        List<Assignment> assignments = assignmentRepository.findBySectionId(sectionId);
+
+        return assignments.stream()
+                .map(a -> new AssignmentResponse(
+                        a.getId(),
+                        a.getTitle(),
+                        a.getDescription(),
+                        a.getType(),
+                        a.getDueDate(),
+                        a.getFileUrl()))
+                .collect(Collectors.toList());
     }
 }

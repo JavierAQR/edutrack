@@ -35,7 +35,11 @@ import StudentManager from "./Pages/Admin/StudentManager";
 import Institution_StudentManager from "./Pages/Institution_Admin/StudentManager";
 import SidebarInstitutionAdmin from "./Components/SidebarInstitutionAdmin";
 import InstitutionGradeManager from "./Pages/Admin/InstitutionGradeManager";
-import SectionManager from "./Pages/Institution_Admin/SectionManager";
+import SectionManager from "./Pages/Institution_Admin/Section/SectionManager";
+import TeacherSections from "./Pages/Teacher/TeacherSections";
+import DetalleSeccion from "./Pages/Teacher/DetalleSeccion";
+import TareasSeccion from "./Pages/Teacher/TareasSeccion";
+import StudentSectionsView from "./Pages/Student/StudentSectionsView";
 import Institution_CourseManager from "./Pages/Institution_Admin/CourseManager";
 
 function App() {
@@ -71,6 +75,7 @@ function App() {
             <Route path="/estudiante" element={<SidebarStudent />}>
               <Route index element={<StudentProfile />} />
               <Route path="perfil" element={<StudentProfile />} />
+              <Route path="sections" element={<StudentSectionsView />} />
               <Route path="payments" element={<PaymentPage />} />
             </Route>
             <Route
@@ -84,6 +89,9 @@ function App() {
             <Route path="/profesor" element={<SidebarTeacher />}>
               <Route index element={<Navigate to="perfil" replace />} />
               <Route path="perfil" element={<TeacherProfile />} />
+              <Route path="sections" element={<TeacherSections />} />
+              <Route path="secciones/:id" element={<DetalleSeccion />} />
+              <Route path="secciones/:id/tareas" element={<TareasSeccion />} />
             </Route>
             <Route
               path="complete-teacher-profile"
