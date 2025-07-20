@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.edutrack.dto.request.CreateAssignmentRequest;
+import com.edutrack.dto.response.AssignmentResponse;
 import com.edutrack.entities.Assignment;
 import com.edutrack.services.AssignmentService;
 
@@ -48,7 +49,7 @@ public class AssignmentController {
     }
 
     @GetMapping("/section/{sectionId}")
-    public ResponseEntity<List<Assignment>> getBySection(@PathVariable Long sectionId) {
+    public ResponseEntity<List<AssignmentResponse>> getBySection(@PathVariable Long sectionId) {
         return ResponseEntity.ok(assignmentService.getAssignmentsBySection(sectionId));
     }
 }

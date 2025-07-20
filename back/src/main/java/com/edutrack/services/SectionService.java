@@ -1,5 +1,6 @@
 package com.edutrack.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,7 +79,6 @@ public class SectionService {
                     course.getId(),
                     course.getName(),
 
-
                     section.getTeacher().getId(),
                     section.getTeacher().getUser().getName(),
 
@@ -122,7 +122,8 @@ public class SectionService {
             }
         }
 
-        section.getStudents().addAll(students);
+        section.setStudents(new ArrayList<>(students));
+
         return sectionRepository.save(section);
     }
 
@@ -149,60 +150,103 @@ public class SectionService {
 
     public List<StudentWithAverageResponse> getStudentsWithAveragesInSection(Long sectionId) {
         Section section = sectionRepository.findById(sectionId)
-            .orElseThrow(() -> new RuntimeException("Section not found"));
-    
+                .orElseThrow(() -> new RuntimeException("Section not found"));
+
         List<StudentProfile> students = section.getStudents();
-    
+
         return students.stream().map(student -> {
             Double average = submissionRepository.findAverageGradeByStudentInSection(student.getId(), sectionId);
             String fullName = student.getUser().getName() + " " + student.getUser().getLastname();
-    
+
             return new StudentWithAverageResponse(
-                student.getId(),
-                fullName,
-                average != null ? average : 0.0
-            );
+                    student.getId(),
+                    fullName,
+                    average != null ? average : 0.0);
         }).collect(Collectors.toList());
     }
 
     public List<SectionStudentDashboardResponse> getStudentSectionDashboard(Long studentId) {
 
-    List<Section> sections = sectionRepository.findByStudents_Id(studentId);
+        List<Section> sections = sectionRepository.findByStudents_Id(studentId);
 
-    return sections.stream().map(section -> {
-        // Promedio general
-        Double average = submissionRepository.findAverageGradeByStudentInSection(studentId, section.getId());
+        return sections.stream().map(section -> {
+            // Promedio general
+            Double average = submissionRepository.findAverageGradeByStudentInSection(studentId, section.getId());
 
-        // Historial de entregas con nota
-        List<AssignmentSubmission> submissions = submissionRepository.findByStudentIdAndSectionId(studentId, section.getId());
-        List<AssignmentGradeDTO> gradedAssignments = submissions.stream().map(s -> {
-            return new AssignmentGradeDTO(
-                s.getAssignment().getId(),
-                s.getAssignment().getTitle(),
-                s.getGrade(),
-                s.getSubmittedAt()
-            );
+            // Historial de entregas con nota
+            List<AssignmentSubmission> submissions = submissionRepository.findByStudentIdAndSectionId(studentId,
+                    section.getId());
+            List<AssignmentGradeDTO> gradedAssignments = submissions.stream().map(s -> {
+                return new AssignmentGradeDTO(
+                        s.getAssignment().getId(),
+                        s.getAssignment().getTitle(),
+                        s.getAssignment().getFileUrl(),
+                        s.getGrade(),
+                        s.getSubmittedAt());
+            }).collect(Collectors.toList());
+
+            // Tareas pendientes
+            List<Assignment> pending = assignmentRepository.findPendingAssignmentsForStudent(section.getId(),
+                    studentId);
+            List<AssignmentDTO> pendingAssignments = pending.stream().map(a -> {
+                return new AssignmentDTO(
+                        a.getId(),
+                        a.getTitle(),
+                        a.getFileUrl(),
+                        a.getDueDate());
+            }).collect(Collectors.toList());
+
+            return new SectionStudentDashboardResponse(
+                    section.getId(),
+                    section.getName(),
+                    section.getCourse().getName(),
+                    section.getTeacher().getUser().getName() + " " + section.getTeacher().getUser().getLastname(),
+                    average != null ? average : 0.0,
+                    gradedAssignments,
+                    pendingAssignments);
         }).collect(Collectors.toList());
+    }
 
-        // Tareas pendientes
-        List<Assignment> pending = assignmentRepository.findPendingAssignmentsForStudent(section.getId(), studentId);
-        List<AssignmentDTO> pendingAssignments = pending.stream().map(a -> {
-            return new AssignmentDTO(
-                a.getId(),
-                a.getTitle(),
-                a.getDueDate()
-            );
-        }).collect(Collectors.toList());
+    public List<SectionResponse> getSectionsByTeacherId(Long teacherId) {
+        List<Section> sections = sectionRepository.findByTeacherId(teacherId);
+    
+        return sections.stream()
+            .map(this::mapToSectionResponse)
+            .collect(Collectors.toList());
+    }
 
-        return new SectionStudentDashboardResponse(
+    private SectionResponse mapToSectionResponse(Section section) {
+        Course course = courseRepository.findById(section.getCourse().getId())
+            .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
+    
+        Grade grade = course.getGrade(); 
+        AcademicLevel academicLevel = grade.getAcademicLevel(); 
+    
+        TeacherProfile teacher = teacherProfileRepository.findById(section.getTeacher().getId())
+            .orElseThrow(() -> new RuntimeException("Profesor no encontrado"));
+        User teacherUser = teacher.getUser(); 
+    
+        Institution institution = institutionRepository.findById(section.getInstitution().getId())
+            .orElseThrow(() -> new RuntimeException("Institución no encontrada"));
+    
+        return new SectionResponse(
             section.getId(),
             section.getName(),
-            section.getCourse().getName(),
-            section.getTeacher().getUser().getName() + " " + section.getTeacher().getUser().getLastname(),
-            average != null ? average : 0.0,
-            gradedAssignments,
-            pendingAssignments
+    
+            course.getId(),
+            course.getName(),
+    
+            teacher.getId(),
+            teacherUser.getName() + " " + teacherUser.getLastname(),
+    
+            grade.getId(),
+            grade.getName(),
+    
+            academicLevel.getId(),
+            academicLevel.getName(),
+    
+            institution.getId(),
+            institution.getName()
         );
-    }).collect(Collectors.toList());
-}
+    }
 }

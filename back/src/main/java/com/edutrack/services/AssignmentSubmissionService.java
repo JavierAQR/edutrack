@@ -51,7 +51,7 @@ public class AssignmentSubmissionService {
 
         // Guardar archivo
         String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        Path uploadPath = Paths.get("uploads/submissions");
+        Path uploadPath = Paths.get("uploads", "submissions");
         Files.createDirectories(uploadPath);
         Path filePath = uploadPath.resolve(fileName);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -62,7 +62,7 @@ public class AssignmentSubmissionService {
         submission.setFileUrl("/uploads/submissions/" + fileName);
         submission.setComment(comment);
         submission.setSubmittedAt(LocalDateTime.now());
-        submission.setGrade(null); // aún sin calificar
+        submission.setGrade(null);
 
         return submissionRepository.save(submission);
     }
@@ -77,7 +77,7 @@ public class AssignmentSubmissionService {
             return new SubmissionResponse(
                     submission.getId(),
                     student.getId(),
-                    user.getName() + " " + user.getLastname(), 
+                    user.getName() + " " + user.getLastname(),
                     submission.getFileUrl(),
                     submission.getSubmittedAt(),
                     submission.getComment(),

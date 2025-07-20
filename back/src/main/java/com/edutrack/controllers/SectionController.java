@@ -66,4 +66,9 @@ public class SectionController {
     public ResponseEntity<List<SectionStudentDashboardResponse>> getStudentDashboard(@PathVariable Long studentId) {
         return ResponseEntity.ok(sectionService.getStudentSectionDashboard(studentId));
     }
+
+    @GetMapping("/by-teacher/{teacherId}")
+    public ResponseEntity<List<SectionResponse>> getSectionsByTeacher(@PathVariable Long teacherId) {
+        return ResponseEntity.ok(sectionService.getSectionsByTeacherId(teacherId));
+    }
 }

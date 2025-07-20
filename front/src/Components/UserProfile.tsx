@@ -80,6 +80,11 @@ const UserProfile = () => {
 
       if (response.ok) {
         const data = await response.json();
+        const id = data.data.professionalInfo.id;
+        console.log(id);
+        
+        localStorage.setItem('student_id', id);
+        
         const personalInfo = data.data.personalInfo;
 
         const formattedInfo = {
