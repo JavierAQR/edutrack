@@ -36,6 +36,7 @@ import SectionManager from "./Pages/Institution_Admin/Section/SectionManager";
 import TeacherSections from "./Pages/Teacher/TeacherSections";
 import DetalleSeccion from "./Pages/Teacher/DetalleSeccion";
 import TareasSeccion from "./Pages/Teacher/TareasSeccion";
+import StudentSectionsView from "./Pages/Student/StudentSectionsView";
 
 function App() {
   return (
@@ -72,6 +73,7 @@ function App() {
             <Route path="/estudiante" element={<SidebarStudent />}>
               <Route index element={<StudentProfile />} />
               <Route path="perfil" element={<StudentProfile />} />
+              <Route path="sections" element={<StudentSectionsView />} />
               <Route path="payments" element={<PaymentPage />} />
             </Route>
             <Route

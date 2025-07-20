@@ -120,7 +120,7 @@ const TareasSeccion = () => {
                   }}
                   className="mt-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
                 >
-                  Ver entregas
+                  Ver material
                 </button>
               </div>
             </li>

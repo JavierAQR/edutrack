@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 interface Submission {
-  id: number;
+  submissionId: number;
   studentName: string;
   fileUrl: string;
   comment?: string;
@@ -24,10 +24,12 @@ const SubmissionModal = ({ assignmentId, onClose }: SubmissionsModalProps) => {
           `http://localhost:8080/api/submissions/assignment/${assignmentId}`
         );
         setSubmissions(res.data);
+        console.log(res.data);
+
         // Inicializar grading con notas actuales o vacías
         const initialGrades: { [key: number]: number | "" } = {};
         res.data.forEach((s: Submission) => {
-          initialGrades[s.id] = s.grade ?? "";
+          initialGrades[s.submissionId] = s.grade ?? "";
         });
         setGrading(initialGrades);
       } catch (error) {
@@ -54,7 +56,7 @@ const SubmissionModal = ({ assignmentId, onClose }: SubmissionsModalProps) => {
     }
     try {
       await axios.put(
-        `http://localhost:8080/api/assignment-submissions/${submissionId}/grade`,
+        `http://localhost:8080/api/submissions/${submissionId}/grade`,
         null,
         { params: { grade } }
       );
@@ -70,13 +72,16 @@ const SubmissionModal = ({ assignmentId, onClose }: SubmissionsModalProps) => {
   return (
     <div className="fixed inset-0 bg-black/40 bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white rounded p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
-        <h3 className="text-xl font-bold mb-4">Entregas de la tarea</h3>
-        <button
-          onClick={onClose}
-          className="mb-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-        >
-          Cerrar
-        </button>
+        <div className="flex items-center justify-between">
+          <h3 className="text-xl font-bold mb-4">Entregas de la tarea</h3>
+          <button
+            onClick={onClose}
+            className="mb-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            Cerrar
+          </button>
+        </div>
+
         {submissions.length === 0 ? (
           <p>No hay entregas aún.</p>
         ) : (
@@ -92,7 +97,7 @@ const SubmissionModal = ({ assignmentId, onClose }: SubmissionsModalProps) => {
             </thead>
             <tbody>
               {submissions.map((submission) => (
-                <tr key={submission.id} className="border-t">
+                <tr key={submission.submissionId} className="border-t">
                   <td className="border px-2 py-1">{submission.studentName}</td>
                   <td className="border px-2 py-1">
                     <a
@@ -112,16 +117,19 @@ const SubmissionModal = ({ assignmentId, onClose }: SubmissionsModalProps) => {
                       type="number"
                       min={0}
                       max={20}
-                      value={grading[submission.id]}
+                      value={grading[submission.submissionId]}
                       onChange={(e) =>
-                        handleGradeChange(submission.id, e.target.value)
+                        handleGradeChange(
+                          submission.submissionId,
+                          e.target.value
+                        )
                       }
                       className="w-16 border px-1 py-0.5 rounded text-center"
                     />
                   </td>
                   <td className="border px-2 py-1">
                     <button
-                      onClick={() => saveGrade(submission.id)}
+                      onClick={() => saveGrade(submission.submissionId)}
                       className="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700"
                     >
                       Guardar

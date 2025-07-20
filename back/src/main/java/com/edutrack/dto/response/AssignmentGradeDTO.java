@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class AssignmentGradeDTO {
     private Long assignmentId;
     private String title;
+    private String fileUrl;
     private Double grade;
     private LocalDateTime submittedAt;
 }

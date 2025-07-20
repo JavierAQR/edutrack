@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class AssignmentDTO {
     private Long assignmentId;
     private String title;
+    private String fileUrl;
     private LocalDate dueDate;
 }

@@ -180,6 +180,7 @@ public class SectionService {
                 return new AssignmentGradeDTO(
                         s.getAssignment().getId(),
                         s.getAssignment().getTitle(),
+                        s.getAssignment().getFileUrl(),
                         s.getGrade(),
                         s.getSubmittedAt());
             }).collect(Collectors.toList());
@@ -191,6 +192,7 @@ public class SectionService {
                 return new AssignmentDTO(
                         a.getId(),
                         a.getTitle(),
+                        a.getFileUrl(),
                         a.getDueDate());
             }).collect(Collectors.toList());
 
