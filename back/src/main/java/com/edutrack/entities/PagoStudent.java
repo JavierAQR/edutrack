@@ -1,6 +1,5 @@
 package com.edutrack.entities;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
@@ -17,29 +16,26 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "precios_institutions")
+@Table(name = "pagos_student")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PrecioInstitution {
+public class PagoStudent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "institution_id", nullable = false)
-    private Institution institution;
+    @JoinColumn(name = "student_id", nullable = false)
+    private StudentProfile student;
+
+    @ManyToOne
+    @JoinColumn(name = "precio_institution_id", nullable = false)
+    private PrecioInstitution precioInstitution;
+
+    private LocalDate fechaPago;
 
     @Column(nullable = false)
-    private String tipo; // "matricula" o "cuota"
-
-    @Column(nullable = false)
-    private BigDecimal monto;
-
-    @Column(nullable = false)
-    private int anio;
-
-    private LocalDate fechaInicio;
-    private LocalDate fechaFin;
+    private String estadoPago; // "pendiente" o "pagado"
 }
