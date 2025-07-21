@@ -41,6 +41,8 @@ import DetalleSeccion from "./Pages/Teacher/DetalleSeccion";
 import TareasSeccion from "./Pages/Teacher/TareasSeccion";
 import StudentSectionsView from "./Pages/Student/StudentSectionsView";
 import Institution_CourseManager from "./Pages/Institution_Admin/CourseManager";
+import PagoStudent from "./Pages/Student/PagoStudent";
+
 
 function App() {
   return (
@@ -77,6 +79,7 @@ function App() {
               <Route path="perfil" element={<StudentProfile />} />
               <Route path="sections" element={<StudentSectionsView />} />
               <Route path="payments" element={<PaymentPage />} />
+              <Route path="pagos" element={<PagoStudent />} /> 
             </Route>
             <Route
               path="complete-student-profile"
