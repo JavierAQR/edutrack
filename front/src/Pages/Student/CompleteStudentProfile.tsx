@@ -45,9 +45,9 @@ const CompleteStudentProfile = () => {
       try {
         const user = JSON.parse(storedUser);
         console.log(user);
-        
+
         const institutionId = user.institutionId;
-        
+
         if (institutionId) {
           const res = await axios.get(`http://localhost:8080/api/institutions/${institutionId}`);
           setSelectedInstitution(res.data.name);
@@ -63,7 +63,7 @@ const CompleteStudentProfile = () => {
       const res = await axios.get(
         `http://localhost:8080/api/institution-academic-levels/by-institution/${institutionId}`
       );
-      setAvailableLevels(res.data);
+      setAvailableLevels(res.data.data || res.data);
       setAvailableGrades([]);
       setSelectedLevelId("");
       setProfileData((prev) => ({ ...prev, gradeId: "" }));
@@ -81,7 +81,7 @@ const CompleteStudentProfile = () => {
       const res = await axios.get(
         `http://localhost:8080/api/grades/by-level/${id}`
       );
-      setAvailableGrades(res.data);
+      setAvailableGrades(res.data.data);
       setProfileData((prev) => ({ ...prev, gradeId: "" }));
     } catch (err) {
       console.error("Error cargando grados:", err);
