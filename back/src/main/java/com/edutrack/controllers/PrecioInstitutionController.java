@@ -37,4 +37,9 @@ public class PrecioInstitutionController {
     public void delete(@PathVariable Long id) {
         service.delete(id);
     }
+
+    @GetMapping("/student/{studentId}")
+    public List<PrecioInstitution> getByStudent(@PathVariable Long studentId) {
+        return service.getPreciosByStudent(studentId);
+    }
 }

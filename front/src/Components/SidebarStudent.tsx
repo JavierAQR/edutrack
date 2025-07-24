@@ -18,7 +18,7 @@ const menuItems: MenuItem[] = [
   {
     icons: <MdOutlineDashboard size={30} />,
     label: "Pagos",
-    href: "/estudiante/pagos",
+    href: "/estudiante/precios_estudiante",
   },
 
 ];

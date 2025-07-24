@@ -1,5 +1,90 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import type { AuthContextType, User } from '../types';
+
+
+// src/types.ts
+export interface Institution {
+  id: number;
+  name: string;
+  // otras propiedades según tu entidad
+}
+
+export interface Grade {
+  id: number;
+  name: string;
+  academicLevel?: {
+    id: number;
+    name: string;
+  };
+}
+
+export interface StudentProfile {
+  id: number;
+  biography?: string;
+  grade?: Grade;
+  user?: User; // referencia circular opcional
+}
+
+export interface TeacherProfile {
+  id: number;
+  title: string;
+  specialization: string;
+  yearsExperience: number;
+  biography?: string;
+  cvUrl?: string;
+  user?: User; // referencia circular opcional
+}
+
+export enum UserType {
+  STUDENT = "STUDENT",
+  TEACHER = "TEACHER",
+  PARENT = "PARENT",
+  INSTITUTION_ADMIN = "INSTITUTION_ADMIN",
+  ADMIN = "ADMIN"
+}
+
+export interface User {
+  id: number;
+  username: string;
+  name: string;
+  lastname: string;
+  email: string;
+  birthdate: string; // o Date si haces transformación
+  enabled: boolean;
+  institution?: Institution;
+  userType: UserType;
+  studentProfile?: StudentProfile;
+  teacherProfile?: TeacherProfile;
+}
+
+export interface AuthContextType {
+  user: User | null;
+  token: string | null;
+  isloading: boolean;
+  login: (token: string, userData: User) => void;
+  logout: () => void;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

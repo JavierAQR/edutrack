@@ -79,7 +79,7 @@ function App() {
               <Route path="perfil" element={<StudentProfile />} />
               <Route path="sections" element={<StudentSectionsView />} />
               <Route path="payments" element={<PaymentPage />} />
-              <Route path="pagos" element={<PagoStudent />} /> 
+              <Route path="precios_estudiante" element={<PagoStudent />} /> 
             </Route>
             <Route
               path="complete-student-profile"

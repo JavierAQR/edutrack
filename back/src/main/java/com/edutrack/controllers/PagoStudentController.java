@@ -1,39 +1,37 @@
 package com.edutrack.controllers;
 
 import java.util.List;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.edutrack.entities.PagoStudent;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import com.edutrack.entities.*;
 import com.edutrack.services.PagoStudentService;
-
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/pagos")
 @RequiredArgsConstructor
 public class PagoStudentController {
-
     private final PagoStudentService service;
 
-    @PostMapping
-    public PagoStudent registrarPago(@RequestBody PagoStudent pago) {
-        return service.registrarPago(pago);
+    @PostMapping("/{studentProfileId}/{precioInstitutionId}")
+    public ResponseEntity<PagoStudent> registrarPago(
+            @PathVariable Long studentProfileId,
+            @PathVariable Long precioInstitutionId) {
+        return ResponseEntity.ok(service.registrarPago(studentProfileId, precioInstitutionId));
     }
 
-    @GetMapping("/verificar-matricula/{studentId}")
-    public boolean verificarPagoMatricula(@PathVariable Long studentId) {
-        return service.verificarPagoMatricula(studentId);
+    @GetMapping("/verificar-matricula/{studentProfileId}")
+    public ResponseEntity<Boolean> verificarPagoMatricula(@PathVariable Long studentProfileId) {
+        return ResponseEntity.ok(service.verificarPagoMatricula(studentProfileId));
     }
 
-    @GetMapping("/student/{studentId}")
-    public List<PagoStudent> getPagosByStudent(@PathVariable Long studentId) {
-        return service.getPagosByStudent(studentId);
+    @GetMapping("/student/{studentProfileId}")
+    public ResponseEntity<List<PagoStudent>> getPagosByStudent(@PathVariable Long studentProfileId) {
+        return ResponseEntity.ok(service.getPagosByStudent(studentProfileId));
     }
 
+    @GetMapping("/precios-disponibles/{studentProfileId}")
+    public ResponseEntity<List<PrecioInstitution>> getPreciosDisponibles(@PathVariable Long studentProfileId) {
+        return ResponseEntity.ok(service.getPreciosByStudentProfileId(studentProfileId));
+    }
 }
