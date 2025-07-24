@@ -85,7 +85,7 @@ const CourseManager = () => {
       const res = await axios.get(
         `http://localhost:8080/api/grades/by-level/${id}`
       );
-      setAvailableGrades(res.data.data);
+      setAvailableGrades(res.data.data); //aquí
     } catch (err) {
       console.error("Error cargando grados:", err);
       setAvailableGrades([]);
