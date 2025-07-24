@@ -109,15 +109,26 @@ public class SectionService {
             User user = student.getUser();
 
             if (!user.getInstitution().getId().equals(institution.getId())) {
-                throw new RuntimeException("El estudiante " + user.getName() + user.getLastname()
+                throw new RuntimeException("El estudiante " + user.getName() + " " + user.getLastname()
                         + " no pertenece a la misma institución");
             }
 
-            if (student.getGrade() == null ||
-                    !student.getGrade().getId().equals(sectionGrade.getId()) ||
-                    !student.getGrade().getAcademicLevel().getId().equals(sectionLevel.getId())) {
+            Grade studentGrade = student.getGrade();
+            if (studentGrade == null) {
+                throw new RuntimeException("El estudiante " + user.getName() + " " + user.getLastname()
+                        + " no tiene asignado un grado");
+            }
 
-                throw new RuntimeException("El estudiante " + user.getName() + user.getLastname()
+            AcademicLevel studentLevel = studentGrade.getAcademicLevel();
+            if (studentLevel == null) {
+                throw new RuntimeException("El estudiante " + user.getName() + " " + user.getLastname()
+                        + " no tiene asignado un nivel académico");
+            }
+
+            if (!studentGrade.getId().equals(sectionGrade.getId()) ||
+                    !studentLevel.getId().equals(sectionLevel.getId())) {
+
+                throw new RuntimeException("El estudiante " + user.getName() + " " + user.getLastname()
                         + " no pertenece al mismo grado o nivel académico");
             }
         }
@@ -209,44 +220,43 @@ public class SectionService {
 
     public List<SectionResponse> getSectionsByTeacherId(Long teacherId) {
         List<Section> sections = sectionRepository.findByTeacherId(teacherId);
-    
+
         return sections.stream()
-            .map(this::mapToSectionResponse)
-            .collect(Collectors.toList());
+                .map(this::mapToSectionResponse)
+                .collect(Collectors.toList());
     }
 
     private SectionResponse mapToSectionResponse(Section section) {
         Course course = courseRepository.findById(section.getCourse().getId())
-            .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
-    
-        Grade grade = course.getGrade(); 
-        AcademicLevel academicLevel = grade.getAcademicLevel(); 
-    
+                .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
+
+        Grade grade = course.getGrade();
+        AcademicLevel academicLevel = grade.getAcademicLevel();
+
         TeacherProfile teacher = teacherProfileRepository.findById(section.getTeacher().getId())
-            .orElseThrow(() -> new RuntimeException("Profesor no encontrado"));
-        User teacherUser = teacher.getUser(); 
-    
+                .orElseThrow(() -> new RuntimeException("Profesor no encontrado"));
+        User teacherUser = teacher.getUser();
+
         Institution institution = institutionRepository.findById(section.getInstitution().getId())
-            .orElseThrow(() -> new RuntimeException("Institución no encontrada"));
-    
+                .orElseThrow(() -> new RuntimeException("Institución no encontrada"));
+
         return new SectionResponse(
-            section.getId(),
-            section.getName(),
-    
-            course.getId(),
-            course.getName(),
-    
-            teacher.getId(),
-            teacherUser.getName() + " " + teacherUser.getLastname(),
-    
-            grade.getId(),
-            grade.getName(),
-    
-            academicLevel.getId(),
-            academicLevel.getName(),
-    
-            institution.getId(),
-            institution.getName()
-        );
+                section.getId(),
+                section.getName(),
+
+                course.getId(),
+                course.getName(),
+
+                teacher.getId(),
+                teacherUser.getName() + " " + teacherUser.getLastname(),
+
+                grade.getId(),
+                grade.getName(),
+
+                academicLevel.getId(),
+                academicLevel.getName(),
+
+                institution.getId(),
+                institution.getName());
     }
 }

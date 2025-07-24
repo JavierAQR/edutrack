@@ -31,14 +31,15 @@ public class PrecioInstitution {
     @JoinColumn(name = "institution_id", nullable = false)
     private Institution institution;
 
+    @ManyToOne
+    @JoinColumn(name = "grade_id", nullable = false)
+    private Grade grade;
+
     @Column(nullable = false)
     private String tipo; // "matricula" o "cuota"
 
     @Column(nullable = false)
     private BigDecimal monto;
-
-    @Column(nullable = false)
-    private int anio;
 
     private LocalDate fechaInicio;
     private LocalDate fechaFin;

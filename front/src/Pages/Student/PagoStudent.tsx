@@ -2,11 +2,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+interface Grade {
+  id: number;
+  name: string;
+}
+
 interface PrecioInstitution {
   id: number;
   tipo: string;
   monto: number;
-  anio: number;
+  grade: Grade;
 }
 
 interface PagoStudent {
@@ -18,55 +23,63 @@ interface PagoStudent {
 
 const PagosEstudiante = () => {
   const [pagos, setPagos] = useState<PagoStudent[]>([]);
-  const studentId = Number(localStorage.getItem("studentId")); // asegúrate de guardar esto en login
+  const [precios, setPrecios] = useState<PrecioInstitution[]>([]);
+  const studentId = Number(localStorage.getItem("studentId"));
 
   useEffect(() => {
     if (!studentId) return;
 
     axios
-      .get(`http://localhost:8080/api/pagos/student/${studentId}`)
+      .get(`http://localhost:8080/api/pagos/dashboard/student/${studentId}`)
       .then((res) => setPagos(res.data))
-      .catch((err) => console.error("Error cargando pagos:", err));
+      .catch((err) => console.error("Error al cargar pagos:", err));
+
+    axios
+      .get(`http://localhost:8080/api/precios`)
+      .then((res) => setPrecios(res.data))
+      .catch((err) => console.error("Error al cargar precios:", err));
   }, [studentId]);
+
+  const handlePagar = (precio: PrecioInstitution) => {
+    axios
+      .post("http://localhost:8080/api/pagos", {
+        studentId,
+        precioInstitutionId: precio.id,
+      })
+      .then(() => {
+        alert("Pago registrado");
+        return axios.get(`http://localhost:8080/api/pagos/dashboard/student/${studentId}`);
+      })
+      .then((res) => setPagos(res.data))
+      .catch((err) => console.error("Error al registrar pago:", err));
+  };
+
+  const yaPagado = (precio: PrecioInstitution) =>
+    pagos.some((p) => p.precioInstitution.id === precio.id);
 
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow rounded">
       <h1 className="text-2xl font-bold mb-4">Mis Pagos</h1>
 
-      {pagos.length === 0 ? (
-        <p>No hay pagos registrados.</p>
-      ) : (
-        <table className="w-full table-auto border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border p-2">Tipo</th>
-              <th className="border p-2">Monto</th>
-              <th className="border p-2">Año</th>
-              <th className="border p-2">Fecha de Pago</th>
-              <th className="border p-2">Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pagos.map((pago) => (
-              <tr key={pago.id}>
-                <td className="border p-2">{pago.precioInstitution.tipo}</td>
-                <td className="border p-2">S/. {pago.precioInstitution.monto}</td>
-                <td className="border p-2">{pago.precioInstitution.anio}</td>
-                <td className="border p-2">
-                  {new Date(pago.fechaPago).toLocaleDateString()}
-                </td>
-                <td
-                  className={`border p-2 ${
-                    pago.estadoPago === "pagado" ? "text-green-600" : "text-red-600"
-                  }`}
-                >
-                  {pago.estadoPago}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+      {precios.map((precio) => (
+        <div key={precio.id} className="flex justify-between items-center border p-4 mb-2">
+          <div>
+            <p><strong>Tipo:</strong> {precio.tipo}</p>
+            <p><strong>Monto:</strong> S/. {precio.monto}</p>
+            <p><strong>Grado:</strong> {precio.grade?.name}</p>
+          </div>
+          {yaPagado(precio) ? (
+            <span className="text-green-600 font-bold">Pagado</span>
+          ) : (
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              onClick={() => handlePagar(precio)}
+            >
+              Pagar
+            </button>
+          )}
+        </div>
+      ))}
     </div>
   );
 };
