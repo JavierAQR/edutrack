@@ -19,10 +19,11 @@ const menuItems: MenuItem[] = [
     label: "Dashboard",
     href: "/admin/dashboard",
   },
+
   {
     icons: <RiAdminLine size={30} />,
     label: "Administradores",
-    href: "/admin/dashboard",
+    href: "/admin/administrators",
   },
   {
     icons: <FaUserTie size={30} />,

@@ -14,13 +14,14 @@ import MainLayout from "./Components/MainLayout";
 import StudentLayout from "./Components/StudentLayout";
 import Tablero from "./Pages/Tablero";
 import PaymentPage from "./Pages/Payment";
+import AdministradoresAdmin from "./Pages/AdministradoresAdmin";
 
 import SidebarAdmin from "./Components/SidebarAdmin";
 import InstitutionManager from "./Pages/Admin/InstitutionManager";
 import AcademicLevelManager from "./Pages/Admin/AcademicLevelManager";
 import GradeManager from "./Pages/Admin/GradeManager";
 import CourseAssignmentManager from "./Pages/Admin/CourseAssignmentManager";
-import Dashboard from "./Pages/Admin/Dashboard";
+import Dashboard from "./Pages/Admin/DashboardAdmin";
 import TeacherManager from "./Pages/Admin/TeacherManager";
 import CompleteTeacherProfile from "./Pages/Teacher/CompleteTeacherProfile";
 import TeacherProfile from "./Pages/Teacher/TeacherProfile";
@@ -57,9 +58,10 @@ function App() {
             <Route path="perfil" element={<TeacherProfile />} />
           </Route>
 
-          <Route path="/admin" element={<SidebarAdmin allowedRoles={["ADMIN"]}/> }>
+          <Route path="/admin" element={<SidebarAdmin allowedRoles={["ADMIN"]}/>}>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="teachers" element={<TeacherManager />} />
+            <Route path="administrators" element={<AdministradoresAdmin />} />
             <Route path="students" element={<StudentManager />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="institutions" element={<InstitutionManager />} />
